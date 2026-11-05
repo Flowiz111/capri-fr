@@ -20,6 +20,10 @@ Required Notice: Anyone who uses Capri's code, art, animations or any of its oth
 Get-FileHash .\CapriFR-Setup.exe -Algorithm SHA256
 ```
 
+## Aide
+
+Tout est expliqué dans **[l'aide de Capri FR](AIDE.md)** : démarrer, lui parler, résoudre les problèmes, sécurité et vie privée. Le bouton **Aide** de l'application ouvre cette page.
+
 ## À savoir avant de l'utiliser
 
 - **Contrôle du PC :** une fois reliée à une IA, elle peut voir l'écran et utiliser la souris et le clavier. Capri FR démarre en mode **Guarded**, qui demande avant la plupart des actions. Le réglage se trouve dans Mainframe > Réglages > HABITUDES > Sécurité.
@@ -62,4 +66,3 @@ Il faut Windows, le .NET Framework 4.8 et le SDK Windows. Le résultat se trouve
 - **Usage non commercial uniquement :** pas de vente, de version payante ni d'usage commercial. En cas de partage, garde ce crédit, la licence et les lignes `Required Notice`.
 - **Composants tiers :** voir [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) et la liste du [README d'origine](README-Capri-original.md).
 - **Création de fans :** Capri est un projet de fans non officiel, qui n'est ni approuvé ni soutenu par CD PROJEKT RED, les ayants droit de l'anime ou ses comédiens de doublage. La licence ne donne aucun droit sur ce qui leur appartient.
-- **Soutenir le projet d'origine :** [la page Ko-fi de Lachy](https://ko-fi.com/lachysdev).

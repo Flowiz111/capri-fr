@@ -2088,8 +2088,7 @@ namespace CapriDesktop
         private const string RouterKeyPage = "https://openrouter.ai/keys";
         private const string GuidePage = "https://capriai.app/setup/#voice";
         private const string DiscordPage = "https://discord.gg/capridesktop";
-        private const string HelpPage = "https://capriai.app/help/";
-        internal const string SupportPage = "https://ko-fi.com/lachysdev";
+        private const string HelpPage = "https://github.com/Flowiz111/capri-fr/blob/fr/AIDE.md";
         private const string GuideLine = "Follow the guide I just opened. Make your ElevenLabs key with Restrict key turned off, paste it in the box under VOICE, press Connect and pick my voice in the Voice ID box." + Brain.Stuck;
         private const string FreeKeyLine = "Connecte-toi sur cette page, appuie sur Generate API Key et copie la clé. Colle-la ensuite dans la case sous CERVEAU et appuie sur Connecter. C'est gratuit." + Brain.Stuck;
         private const string GeminiKeyLine = "Connecte-toi sur cette page, crée une clé et copie-la. Colle-la dans la case sous CERVEAU et appuie sur Connecter. C'est gratuit, mais le débit peut être limité." + Brain.Stuck;
@@ -3145,7 +3144,7 @@ namespace CapriDesktop
 
         private static void OpenPage(string page)
         {
-            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != DiscordPage && page != HelpPage && page != SupportPage && page != CableSetup.Page) return;
+            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != DiscordPage && page != HelpPage && page != CableSetup.Page) return;
             Browse(page);
         }
 
@@ -10029,7 +10028,6 @@ namespace CapriDesktop
         internal void OpenRouterKeyPage() { OpenPage(RouterKeyPage); Tell("free key", RouterKeyLine); }
 
         internal void OpenHelp() { OpenPage(HelpPage); }
-        internal void OpenSupport() { OpenPage(SupportPage); }
 
         // Windows Settings > Privacy & security > Speech, where Online speech recognition is.
         internal const string SpeechSettings = "ms-settings:privacy-speech";
@@ -33254,9 +33252,7 @@ namespace CapriDesktop
                                 Control updateButton = null;
                                 foreach (Control control in mainframe.Controls) if (control is Button && control.Text == "Mises à jour") updateButton = control;
                                 if (updateButton == null) throw new Exception("Mainframe lost its update button.");
-                                bool supportShown = false;
-                                foreach (Control control in mainframe.Controls) if (control is Button && control.Text == "Support") supportShown = true;
-                                if (!supportShown || SupportPage != "https://ko-fi.com/lachysdev") throw new Exception("Mainframe lost its Support button or its Ko-fi link.");
+                                foreach (Control control in mainframe.Controls) if (control is Button && control.Text == "Soutenir") throw new Exception("Capri FR's Mainframe should have no Support button.");
                                 FormWindowState beforeUpdate = mainframe.WindowState;
                                 mainframe.WindowState = FormWindowState.Normal;
                                 ((Button)updateButton).PerformClick();

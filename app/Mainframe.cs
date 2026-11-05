@@ -572,20 +572,17 @@ namespace CapriDesktop
             int v = VoiceHeight;
             Lower(Section("CAPRI >", 0, 184 + v));
             // Shorter than a band's other keys and level with CAPRI, so its lit rim stays off the band's teal rule (Lachy, 4 Nov).
-            support = Lower(Make("Soutenir", 268, 183 + v, 88, 18, delegate { capri.OpenSupport(); }));
-            support.Heart = true;
-            support.AccessibleName = "Soutenir le projet : ouvre le Ko-fi de Lachy dans ton navigateur";
-            // Her version sits where Mods was, beside Support, now Mods is up by Settings.
-            build = Lower(Caption("v" + version, 196, 183 + v, small, Faint));
+            // Capri FR: no Support button, so her version takes its place at the band's right edge.
+            build = Lower(Caption("v" + version, 290, 183 + v, small, Faint));
             build.AutoSize = false;
             build.TextAlign = ContentAlignment.MiddleRight;
-            build.Bounds = new Rectangle(196, 183 + v, 66, 18);
+            build.Bounds = new Rectangle(290, 183 + v, 66, 18);
             showHide = Lower(Make("Masquer Capri", 28, 206 + v, 104, 28, delegate { capri.ToggleHidden(); }));
             Lower(Make("Amener ici", 140, 206 + v, 104, 28, delegate { capri.BringHere(); }));
             perch = Lower(Make("Sur le curseur", 252, 206 + v, 104, 28, delegate { capri.TogglePerch(); }));
             Lower(Make("Mises à jour", 28, 250 + v, 150, 28, delegate { capri.CheckUpdates(); }));
             Key help = Lower(Make("Aide", 186, 250 + v, 62, 28, delegate { capri.OpenHelp(); }));
-            help.AccessibleName = "Aide : demande à Capri sur le site";
+            help.AccessibleName = "Aide : ouvre la page d'aide de Capri FR dans ton navigateur";
             Key quit = Lower(Make("Quitter Capri", 256, 250 + v, 100, 28, delegate { capri.Quit(); }));
             quit.Accent = Hot;
             updateNote = Lower(Caption("", 28, 288 + v, small, Faint));
