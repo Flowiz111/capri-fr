@@ -27,6 +27,7 @@ Get-FileHash .\CapriFR-Setup.exe -Algorithm SHA256
 - **Démarrage de Windows :** une copie installée se lance au démarrage. Tu peux le couper dans Mainframe > Réglages > HABITUDES > Lancer avec Windows.
 - **Pas de mise à jour automatique :** les correctifs de sécurité de Capri n'arrivent pas tout seuls. Reviens sur cette page pour installer les nouvelles versions de Capri FR.
 - **Clés API :** si tu relies un service d'IA en ligne, tes échanges passent par ce service, selon ses propres conditions.
+- **Désinstallation :** elle retire le programme, ses modèles, ses raccourcis et le lancement au démarrage, mais **garde tes discussions, ta mémoire et tes réglages** dans `%LOCALAPPDATA%\CapriFR`, même si sa fenêtre ne mentionne que la position et la taille. Pour tout effacer, supprime ce dossier après la désinstallation.
 
 ## Ce qui change par rapport à Capri
 
@@ -41,7 +42,7 @@ Capri FR repose sur **Capri v0.8.3**. Elle ne contient pas les corrections et no
 
 **Encore en anglais :** certaines fiches d'aide (« What's new » et les fiches réservées au modèle), des messages techniques rares, les noms de couleurs des mods et les préréglages de sécurité. Les instructions destinées au modèle d'IA restent en anglais, et il répond en français. Certaines fiches d'aide ont été condensées par rapport à l'original.
 
-**Tests :** la suite de tests complète de Capri (`--smoke-test`) n'a pas été adaptée à cette version, donc certaines de ses vérifications ne correspondent plus. L'installation et le démarrage ont été vérifiés sous Windows 11 uniquement. Les versions Mac et Linux et l'application Quest présentes dans ce dépôt n'ont pas été traduites ni testées.
+**Tests :** la suite de tests complète de Capri (`--smoke-test`) n'a pas été adaptée à cette version, donc certaines de ses vérifications ne correspondent plus. L'installation, le démarrage et la désinstallation ont été vérifiés sous Windows 11 uniquement. Les versions Mac et Linux et l'application Quest présentes dans ce dépôt n'ont pas été traduites ni testées.
 
 ## Problèmes
 
