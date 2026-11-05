@@ -42,20 +42,20 @@ namespace CapriDesktop
         internal static Func<string, string, string> Ask;
 
         // Lines in her style for each kind of moment, shown to her brain as examples. None of them ever goes up itself.
-        internal static readonly string[] Kills = { "did you SEE that??", "GET DOWN", "deleted.", "clean!!", "sit DOWN", "who's next??", "bodied, choom", "too easy", "no way you hit that", "oh that was filthy" };
-        internal static readonly string[] Streaks = { "you're on FIRE", "someone stop them", "carry me, choom", "they can't touch you", "the lobby's scared of you", "streak streak STREAK" };
-        internal static readonly string[] Comebacks = { "FINALLY", "redemption!!", "about time, choom", "revenge tastes good", "THERE it is" };
-        internal static readonly string[] Deaths = { "nooo", "who did that??", "rest in pieces", "that was rigged", "you got robbed", "not like this", "noo choom", "run it back", "respawn and cook them" };
-        internal static readonly string[] Again = { "again??", "the floor misses you", "that's {0}, choom", "ok this game hates you", "deep breaths", "we are NOT tilting" };
-        internal static readonly string[] Ended = { "the streak's over, nooo", "it was fun while it lasted", "they got lucky", "we were COOKING", "rude. so rude" };
-        internal static readonly string[] Hits = { "ow ow ow", "careful!!", "you're getting cooked", "heal up!!", "behind you??", "get out of there", "that stung", "they're on you" };
-        internal static readonly string[] Flashes = { "my EYES", "who turned the sun on??", "flashbang??", "whoa whoa whoa", "bright!!", "I'm blind, choom" };
-        internal static readonly string[] Sounds = { "what was THAT", "LOUD", "boom!!", "that was huge", "something blew up", "my ears, choom", "who's shooting??" };
-        internal static readonly string[] Scenes = { "ooh where are we", "new area??", "wait what's this", "plot twist", "here we go", "ooh fancy", "where'd you take us" };
-        internal static readonly string[] Darks = { "uh oh", "lights out", "is that bad", "who turned off the lights", "don't you dare jumpscare me", "hello??" };
-        internal static readonly string[] Wins = { "WE WON", "LET'S GOOO", "GG, too easy", "victory, choom!!", "told you we had it", "W. huge W", "that's a dub" };
-        internal static readonly string[] Losses = { "nooo we lost", "GG. we go again", "robbed. totally robbed", "next one's ours", "that one hurt", "L. run it back" };
-        internal static readonly string[] Unlocks = { "achievement get!!", "look at you go", "big brain", "unlocked!!", "ooh shiny", "proud of you, choom" };
+        internal static readonly string[] Kills = { "t'as VU ça ??", "À TERRE", "deleted.", "propre !!", "ASSIS", "au suivant ??", "éclaté, choom", "trop facile", "t'as vraiment touché ça ?!", "oh c'était sale" };
+        internal static readonly string[] Streaks = { "t'es EN FEU", "que quelqu'un l'arrête", "porte-moi, choom", "personne ne te touche", "le lobby a peur de toi", "série série SÉRIE" };
+        internal static readonly string[] Comebacks = { "FINALLY", "la revanche !!", "enfin, choom", "la vengeance a bon goût", "ET VOILÀ" };
+        internal static readonly string[] Deaths = { "nooo", "qui a fait ça ??", "repose en morceaux", "c'était truqué", "on t'a volé", "pas comme ça", "nooon choom", "on remet ça", "reviens et grille-les" };
+        internal static readonly string[] Again = { "encore ??", "le sol t'a manqué", "ça fait {0}, choom", "ok ce jeu te déteste", "respire", "on ne craque PAS" };
+        internal static readonly string[] Ended = { "la série est finie, nooon", "c'était bien tant que ça a duré", "coup de chance", "on était LANCÉS", "malpoli. trop malpoli" };
+        internal static readonly string[] Hits = { "aïe aïe aïe", "attention !!", "tu te fais griller", "soigne-toi !!", "derrière toi ??", "sors de là", "ça pique", "ils sont sur toi" };
+        internal static readonly string[] Flashes = { "mes YEUX", "qui a allumé le soleil ??", "une flash ??", "wow wow wow", "ça brille !!", "je suis aveugle, choom" };
+        internal static readonly string[] Sounds = { "c'était QUOI ça", "LOUD", "boum !!", "c'était énorme", "un truc a explosé", "mes oreilles, choom", "qui tire ??" };
+        internal static readonly string[] Scenes = { "oh on est où", "nouvelle zone ??", "attends c'est quoi", "retournement", "c'est parti", "oh la classe", "tu nous emmènes où" };
+        internal static readonly string[] Darks = { "oh oh", "lumières éteintes", "c'est mauvais ?", "qui a éteint la lumière", "ose pas me faire sursauter", "allô ??" };
+        internal static readonly string[] Wins = { "ON A GAGNÉ", "ALLEZ !!!", "GG, trop facile", "victoire, choom !!", "je t'avais dit", "énorme victoire", "c'est gagné" };
+        internal static readonly string[] Losses = { "nooon on a perdu", "GG. on recommence", "volés. complètement volés", "la prochaine est pour nous", "celle-là fait mal", "perdu. on remet ça" };
+        internal static readonly string[] Unlocks = { "succès débloqué !!", "regarde-toi", "gros cerveau", "débloqué !!", "oh ça brille", "fière de toi, choom" };
         private static readonly string[] Bigs = { "kill", "death", "win", "loss", "advancement" };
 
         // Her rules for a quick line, after who she is and her safety lines.

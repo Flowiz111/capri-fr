@@ -138,12 +138,12 @@ namespace CapriDesktop
 
     internal sealed class MicMix : IDisposable
     {
-        internal const string Missing = "Needs VB-CABLE (free).";
-        internal const string Unopened = "The virtual mic won't open. Trying again.";
+        internal const string Missing = "Nécessite VB-CABLE (gratuit).";
+        internal const string Unopened = "Le micro virtuel ne s'ouvre pas. Nouvel essai.";
         // What they pick in Discord or Roblox for each cable.
         internal const string CableEnd = "CABLE Output", SteamEnd = "Steam Streaming Microphone";
-        internal const string NoMic = "No mic found, so only her voice goes in.";
-        internal const string MicGone = "Your mic won't open, so only her voice goes in.";
+        internal const string NoMic = "Aucun micro trouvé : seule sa voix passe.";
+        internal const string MicGone = "Ton micro ne s'ouvre pas : seule sa voix passe.";
         // Where she finds the mic and the cable. The smoke test swaps in stand-ins.
         internal static IMixDevices Devices = new Endpoints();
         // The mix that's on, for her speakers to hand her voice to.
@@ -272,7 +272,7 @@ namespace CapriDesktop
         internal static string EndOf(MixDevice cable) { return cable != null && IsSteam(cable.Name) ? SteamEnd : CableEnd; }
 
         // Settings' note for an end, short enough for its column.
-        internal static string PickLine(string end) { return "Calls only. Pick " + end + "."; }
+        internal static string PickLine(string end) { return "Appels uniquement. Choisis " + end + "."; }
 
         // The cable from Windows' active speakers and mics, with its far end: the one they picked on Settings' Output while it's
         // there, else VB-CABLE's before Steam's, since they installed it for this, and either with its far end on before one
@@ -309,10 +309,10 @@ namespace CapriDesktop
         }
 
         // The line in Settings when Windows has a cable's far end muted, so friends hear nothing.
-        internal static string MutedLine(string end) { return "Windows has " + end + " muted."; }
+        internal static string MutedLine(string end) { return "Windows a coupé " + end + "."; }
 
         // The line in Settings when Windows has a cable's far end turned off, so Discord or Roblox can't pick it.
-        internal static string OffLine(string end) { return "Turn on " + end + " in Windows."; }
+        internal static string OffLine(string end) { return "Active " + end + " dans Windows."; }
 
         // The far end of a cable from Windows' active mics: Steam's for Steam's, CABLE Output for VB-CABLE's, or a renamed one with
         // VB-Audio's own name for the cable in brackets after it. Null when it's not listed.
@@ -426,7 +426,7 @@ namespace CapriDesktop
                 while (!stopping)
                 {
                     try { Step(); }
-                    catch (Exception error) { Note("Her mic mix hit a snag: " + error.Message); }
+                    catch (Exception error) { Note("Son mixage micro a un problème : " + error.Message); }
                     if (stopping) break;
                     if (handles == null) handles = Handles();
                     if (handles.Length == 1) wake.WaitOne(cable == null ? 250 : 5);
@@ -487,7 +487,7 @@ namespace CapriDesktop
             catch (Exception) { return; }
             if (wantCable == null || wantCable.Id != cableDevice.Id)
             {
-                LoseCable(now, wantCable == null ? cableDevice.Name + " is gone." : "The cable changed to " + wantCable.Name + ".");
+                LoseCable(now, wantCable == null ? cableDevice.Name + " a disparu." : "Le câble est passé à " + wantCable.Name + ".");
                 return;
             }
             if (wantCable.Far != cableDevice.Far)

@@ -13,7 +13,7 @@ namespace CapriDesktop
             foreach (string arg in args)
             {
                 if (arg == "--uninstall") remove = true;
-                else if (arg != "--silent") throw new ArgumentException("That silent setup command is invalid.");
+                else if (arg != "--silent") throw new ArgumentException("Cette commande d'installation silencieuse n'est pas valide.");
             }
             return remove ? 2 : 1;
         }
@@ -62,7 +62,7 @@ namespace CapriDesktop
     {
         internal static string RunKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
         internal static string ApprovedKey = "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run";
-        internal const string Name = "Capri";
+        internal const string Name = "CapriFR";
 
         internal static bool On(string exe)
         {

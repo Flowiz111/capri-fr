@@ -85,7 +85,7 @@ namespace CapriDesktop
                     case "intro": read.Intro = value == "yes"; break;
                 }
             }
-            if (!marked) throw new ModException("A code mod starts with a // capri-mod: 1 line.");
+            if (!marked) throw new ModException("Un mod de code commence par une ligne // capri-mod: 1.");
             CheckDetails(read);
             return read;
         }
@@ -112,11 +112,11 @@ namespace CapriDesktop
             byte[] bytes;
             try
             {
-                if (new FileInfo(file).Length > LargestCode) throw new ModException("That code mod is too big.");
+                if (new FileInfo(file).Length > LargestCode) throw new ModException("Ce mod de code est trop gros.");
                 bytes = File.ReadAllBytes(file);
             }
-            catch (IOException error) { throw new ModException("Couldn't read that file: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't read that file: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible de lire ce fichier : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible de lire ce fichier : " + error.Message); }
             string text = Words(bytes), hash = HashOf(bytes);
             ModFile read = ReadCode(text);
             if (!ask(read, hash)) return null;
@@ -134,8 +134,8 @@ namespace CapriDesktop
                 HashSet<string> off = Off();
                 if (off.Remove(read.Id)) WriteOff(off);
             }
-            catch (IOException error) { throw new ModException("Couldn't save that mod: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't save that mod: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible d'enregistrer ce mod : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible d'enregistrer ce mod : " + error.Message); }
             Load();
             StartOne(read.Id, made);
             return All.Find(mod => mod.File.Id == read.Id);
@@ -216,23 +216,23 @@ namespace CapriDesktop
                     built = compiler.CompileAssemblyFromSource(options, text);
                 }
                 foreach (CompilerError error in built.Errors)
-                    if (!error.IsWarning) throw new ModException("That code didn't compile, line " + error.Line + ": " + error.ErrorText);
+                    if (!error.IsWarning) throw new ModException("Ce code ne compile pas, ligne " + error.Line + ": " + error.ErrorText);
                 foreach (Type type in built.CompiledAssembly.GetTypes())
                     if (typeof(ICapriMod).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface) mods.Add(type);
             }
-            catch (System.Runtime.InteropServices.ExternalException error) { throw new ModException("Couldn't compile that mod: " + error.Message); }
-            catch (InvalidOperationException error) { throw new ModException("Couldn't compile that mod: " + error.Message); }
-            catch (ArgumentException error) { throw new ModException("Couldn't compile that mod: " + error.Message); }
-            catch (ReflectionTypeLoadException error) { throw new ModException("Couldn't load that mod: " + error.Message); }
-            catch (TypeLoadException error) { throw new ModException("Couldn't load that mod: " + error.Message); }
-            catch (BadImageFormatException error) { throw new ModException("Couldn't load that mod: " + error.Message); }
-            catch (System.Security.SecurityException error) { throw new ModException("Couldn't load that mod: " + error.Message); }
+            catch (System.Runtime.InteropServices.ExternalException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
+            catch (InvalidOperationException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
+            catch (ArgumentException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
+            catch (ReflectionTypeLoadException error) { throw new ModException("Impossible de charger ce mod : " + error.Message); }
+            catch (TypeLoadException error) { throw new ModException("Impossible de charger ce mod : " + error.Message); }
+            catch (BadImageFormatException error) { throw new ModException("Impossible de charger ce mod : " + error.Message); }
+            catch (System.Security.SecurityException error) { throw new ModException("Impossible de charger ce mod : " + error.Message); }
             // The compiler writes temp files, so a blocked temp folder or an antivirus lock fails here too.
-            catch (IOException error) { throw new ModException("Couldn't compile that mod: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't compile that mod: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
             if (mods.Count != 1) throw new ModException("A code mod needs exactly one class that implements ICapriMod. That one has " + mods.Count + ".");
             try { return (ICapriMod)Activator.CreateInstance(mods[0]); }
-            catch (Exception error) { throw new ModException("That mod failed while loading: " + Inner(error).Message); }
+            catch (Exception error) { throw new ModException("Ce mod a échoué au chargement : " + Inner(error).Message); }
         }
 
         private static Exception Inner(Exception error) { return error is TargetInvocationException && error.InnerException != null ? error.InnerException : error; }
@@ -244,7 +244,7 @@ namespace CapriDesktop
             catch (Exception error)
             {
                 Brain.Log("mod " + id, -1, Inner(error).ToString());
-                throw new ModException("That mod failed while starting: " + Inner(error).Message);
+                throw new ModException("Ce mod a échoué au démarrage : " + Inner(error).Message);
             }
             running[id] = made;
         }
@@ -276,7 +276,7 @@ namespace CapriDesktop
                     try
                     {
                         byte[] bytes = File.ReadAllBytes(starting.Path);
-                        if (HashOf(bytes) != starting.Hash) throw new ModException("it changed after it was approved.");
+                        if (HashOf(bytes) != starting.Hash) throw new ModException("il a changé après son approbation.");
                         ICapriMod made = Compile(Words(bytes));
                         onWindow(delegate
                         {
@@ -351,7 +351,7 @@ namespace CapriDesktop
             public Bitmap Art(string name)
             {
                 if (name == null || !Regex.IsMatch(name, "^[a-z_]+$")) return null;
-                return LoadArt("Capri.Sprite." + name + ".png");
+                return LoadArt("CapriFR.Sprite." + name + ".png");
             }
 
             public void Sound(string name)
@@ -645,7 +645,7 @@ namespace CapriDesktop
                 if (mods.Running != 1 || !File.Exists(started) || !mods.All[0].Code || !mods.All[0].On) throw new Exception("An approved code mod did not start.");
                 if (mods.Heard("something else")) throw new Exception("A mod took a line it didn't want.");
                 string replyWas = reply;
-                Hear("mod check", "mod check", "> you: ");
+                Hear("mod check", "mod check", "> \u00e0 toi : ");
                 for (int i = 0; i < 20 && reply != "Code mod online."; i++) { System.Windows.Forms.Application.DoEvents(); Thread.Sleep(50); }
                 if (reply != "Code mod online.") throw new Exception("A code mod's line wasn't said. Reply: " + replyWas + " -> " + reply);
                 checks.Add("PASS code mods: approved code compiles, starts, hears what they say and speaks through her");

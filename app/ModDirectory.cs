@@ -38,7 +38,7 @@ namespace CapriDesktop
             get
             {
                 string extension = Path.GetExtension(FileName);
-                return string.Equals(extension, Mods.CodeExtension, StringComparison.OrdinalIgnoreCase) ? "RUNS CODE." : string.Equals(extension, Mods.SkinExtension, StringComparison.OrdinalIgnoreCase) ? "SKIN." : "SETTINGS.";
+                return string.Equals(extension, Mods.CodeExtension, StringComparison.OrdinalIgnoreCase) ? "EXÉCUTE DU CODE." : string.Equals(extension, Mods.SkinExtension, StringComparison.OrdinalIgnoreCase) ? "APPARENCE." : "RÉGLAGES.";
             }
         }
         internal string Id { get { return Path.GetFileNameWithoutExtension(FileName); } }
@@ -167,7 +167,7 @@ namespace CapriDesktop
             {
                 using (MemoryStream body = new MemoryStream(json)) tree = (Tree)new DataContractJsonSerializer(typeof(Tree)).ReadObject(body);
             }
-            catch (SerializationException) { throw new ModException("The mods directory sent something I can't read."); }
+            catch (SerializationException) { throw new ModException("L'annuaire des mods a envoyé quelque chose d'illisible."); }
             List<ModListing> found = new List<ModListing>();
             Dictionary<string, string> previews = new Dictionary<string, string>();
             foreach (TreeEntry entry in tree.Entries ?? new TreeEntry[0])
@@ -299,7 +299,7 @@ namespace CapriDesktop
             {
                 using (MemoryStream read = new MemoryStream(Get(StatsPage, LargestPreview))) body = (StatsBody)new DataContractJsonSerializer(typeof(StatsBody)).ReadObject(read);
             }
-            catch (SerializationException) { throw new ModException("The mods directory's numbers couldn't be read."); }
+            catch (SerializationException) { throw new ModException("Les chiffres de l'annuaire des mods sont illisibles."); }
             Dictionary<string, ModStats> found = new Dictionary<string, ModStats>(StringComparer.OrdinalIgnoreCase);
             foreach (StatsEntry entry in body.Mods ?? new StatsEntry[0])
                 if (entry != null && entry.Folder != null) found[entry.Folder] = new ModStats { Downloads = Math.Max(0, entry.Downloads), Rating = Math.Max(0, Math.Min(5, entry.Rating)), Votes = Math.Max(0, entry.Votes) };
@@ -320,13 +320,13 @@ namespace CapriDesktop
 
         internal static string RatingLine(ModListing listing)
         {
-            return listing.Votes == 0 ? "No ratings" : listing.Rating.ToString("0.0", CultureInfo.InvariantCulture) + " (" + listing.Votes + ")";
+            return listing.Votes == 0 ? "Pas de note" : listing.Rating.ToString("0.0", CultureInfo.InvariantCulture) + " (" + listing.Votes + ")";
         }
 
         internal static string DownloadLine(ModListing listing)
         {
             string count = listing.Downloads >= 1000000 ? (listing.Downloads / 1000000.0).ToString("0.#", CultureInfo.InvariantCulture) + "M" : listing.Downloads >= 1000 ? (listing.Downloads / 1000.0).ToString("0.#", CultureInfo.InvariantCulture) + "K" : listing.Downloads.ToString(CultureInfo.InvariantCulture);
-            return count + (listing.Downloads == 1 ? " download" : " downloads");
+            return count + (listing.Downloads == 1 ? " téléchargement" : " téléchargements");
         }
 
         internal static void CountDownload(string folder)
@@ -342,18 +342,18 @@ namespace CapriDesktop
             {
                 using (MemoryStream read = new MemoryStream(answer)) entry = (StatsEntry)new DataContractJsonSerializer(typeof(StatsEntry)).ReadObject(read);
             }
-            catch (SerializationException) { throw new ModException("Your rating's answer couldn't be read."); }
+            catch (SerializationException) { throw new ModException("La réponse à ta note est illisible."); }
             return new ModStats { Downloads = Math.Max(0, entry.Downloads), Rating = Math.Max(0, Math.Min(5, entry.Rating)), Votes = Math.Max(0, entry.Votes) };
         }
 
         internal static string PublishSteps(Mod mod)
         {
             string id = mod.File.Id, file = Path.GetFileName(mod.Path);
-            return "1. Press Fork capri-mods and make your own copy on GitHub. You'll need a free account.\n\n"
-                + "2. In your copy, add a folder called mods/" + id + "/.\n\n"
-                + "3. Put in " + file + " and a short README.md that says what it does and who made it.\n\n"
-                + "4. Add a picture called preview.png, around 16:9. It's what people see in the mods window.\n\n"
-                + "5. Open a pull request to capri-mods. Every mod is checked for malware before it goes up."
+            return "1. Appuie sur Forker capri-mods et crée ta copie sur GitHub. Il te faut un compte gratuit.\n\n"
+                + "2. Dans ta copie, ajoute un dossier nommé mods/" + id + "/.\n\n"
+                + "3. Mets-y " + file + " et un court README.md qui dit ce qu'il fait et qui l'a créé.\n\n"
+                + "4. Ajoute une image preview.png, environ 16:9. C'est ce qu'on voit dans la fenêtre des mods.\n\n"
+                + "5. Ouvre une pull request vers capri-mods. Chaque mod est contrôlé contre les malwares avant publication."
                 + (mod.Code ? "\n\nThis is a code mod, so Capri will ask people before running it." : "");
         }
 
@@ -372,7 +372,7 @@ namespace CapriDesktop
         {
             ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             request.Accept = url.Contains("/blobs/") ? "application/vnd.github.raw+json" : "application/vnd.github+json";
             request.Timeout = 15000;
             request.ReadWriteTimeout = 30000;
@@ -384,7 +384,7 @@ namespace CapriDesktop
                 int read;
                 while ((read = body.Read(chunk, 0, chunk.Length)) > 0)
                 {
-                    if (kept.Length + read > most) throw new ModException("That's too big to come from the mods directory.");
+                    if (kept.Length + read > most) throw new ModException("C'est trop gros pour venir de l'annuaire des mods.");
                     kept.Write(chunk, 0, read);
                 }
                 return kept.ToArray();
@@ -396,7 +396,7 @@ namespace CapriDesktop
             ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             request.ContentType = "application/json";
             request.Timeout = 15000;
             request.ReadWriteTimeout = 15000;

@@ -16,17 +16,17 @@ namespace CapriDesktop
     // unpacks the pack untouched and opens VB-Audio's own setup, Windows asks them to let it run, and they click Install Driver in it.
     internal static class CableSetup
     {
-        internal const string Resource = "Capri.VBCABLE.zip";
+        internal const string Resource = "CapriFR.VBCABLE.zip";
         // VBCABLE_Driver_Pack45.zip as VB-Audio publishes it.
         internal const string PackHash = "b950e39f01af1d04ea623c8f6d8eb9b6ea5c477c637295fabf20631c85116bfb";
         // VB-CABLE's page, where people can donate. Settings' credit opens it.
         internal const string Page = "https://vb-audio.com/Cable/";
-        internal const string Credit = "VB-CABLE is donationware from vb-cable.com.";
-        internal const string Better = "VB-CABLE usually sounds better than Steam's.";
-        internal const string Running = "In VB-Audio's setup, click Install Driver.";
-        internal const string Finish = "If it installed, restart your PC.";
+        internal const string Credit = "VB-CABLE est un donationware de vb-cable.com.";
+        internal const string Better = "VB-CABLE sonne en général mieux que celui de Steam.";
+        internal const string Running = "Dans l'installeur de VB-Audio, clique sur Install Driver.";
+        internal const string Finish = "Si c'est installé, redémarre ton PC.";
         internal const string Declined = "Windows didn't let the setup run.";
-        internal const string Failed = "VB-CABLE's setup didn't start.";
+        internal const string Failed = "L'installeur de VB-CABLE n'a pas démarré.";
         // Opens a setup elevated. A real PC asks Windows; the smoke test hands it a stand-in.
         internal static Func<string, Process> Start = Elevated;
 

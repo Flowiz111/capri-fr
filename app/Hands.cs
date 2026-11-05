@@ -107,47 +107,47 @@ namespace CapriDesktop
 
     // Her SECURITY window (Lachy, 29 Oct): a toggle for each kind of thing she does on their PC, set by a slider of four presets.
     // A toggle that's off means she asks first in chat ("Open Spotify? Say yes and I will.") and does it on their yes, never a
-    // silent no. Typing passwords and card numbers is the one exception: with it off they type those themselves. Trusted, the
+    // silent no. Typing passwords and card numbers is the one exception: with it off they type those themselves. Guarded is this fork's default; Trusted, the upstream
     // default, is how she worked before the window, and Blackwall is Blackwall mode (Bypass all permissions before 0.7.4) plus
     // listening for "Hey Capri". The gate is in code: her tools stop here, and her jobs' steps stop in Computer's checks.
     internal static class Security
     {
         internal const int Open = 0, Media = 1, Shortcuts = 2, Windows = 3, Power = 4, Mouse = 5, Sends = 6, Pays = 7, Unasked = 8, Secrets = 9, Wake = 10, Friends = 11, Count = 12;
         internal const int Lockdown = 0, Guarded = 1, Trusted = 2, Blackwall = 3, Custom = 4;
-        internal static readonly string[] Names = { "Open apps, games and sites", "Music, media and volume", "Shortcuts (screenshots, Game Bar, captions, Discord mute)", "Close and switch apps and tabs", "Shut down, restart, sleep, lock and sign out", "Use your mouse and keyboard for jobs", "Send, post and delete what you asked for", "Pay, buy and book", "Things your request didn't mention", "Type passwords and card numbers", "Listen for \"Hey Capri\"", "Friends on a call can ask, you confirm" };
+        internal static readonly string[] Names = { "Ouvrir applis, jeux et sites", "Musique, médias et volume", "Raccourcis (captures, Game Bar, sous-titres, micro Discord)", "Fermer et changer d'applis et d'onglets", "Éteindre, redémarrer, mettre en veille, verrouiller, déconnecter", "Utiliser ta souris et ton clavier pour les tâches", "Envoyer, publier et supprimer ce que tu as demandé", "Payer, acheter et réserver", "Ce que ta demande ne mentionne pas", "Saisir mots de passe et numéros de carte", "Écouter « Hey Capri »", "Tes amis en appel demandent, tu confirmes" };
         internal static readonly string[] Lines =
         {
-            "On: she opens them when you ask. Off: she asks first.",
-            "On: she plays music and sets the volume. Off: she asks first.",
-            "On: she presses them for you. Off: she asks first.",
+            "Oui : elle les ouvre quand tu le demandes. Non : elle demande d'abord.",
+            "Oui : elle lance la musique et règle le volume. Non : elle demande d'abord.",
+            "Oui : elle les utilise pour toi. Non : elle demande d'abord.",
 #if CROSS
-            "On: she switches and closes them. Off: she asks first.",
+            "Oui : elle les change et les ferme. Non : elle demande d'abord.",
 #else
-            "On: she switches, moves and closes them. Off: she asks first.",
+            "Oui : elle les change, les déplace et les ferme. Non : elle demande d'abord.",
 #endif
-            "On: she does it as soon as you ask. Off: she asks first.",
-            "On: she clicks and types in your apps. Off: she asks first.",
-            "On: she sends it without checking again. Off: she asks first.",
-            "On: she pays and books without checking. Off: she asks first.",
-            "On: she does the extra steps a job needs. Off: she asks first.",
-            "On: she types the ones your job gives her. Off: you type them.",
-            "On: she listens on this PC for her name. Off: she doesn't.",
-            "Call mode only. Your mic or typing must confirm each ask."
+            "Oui : elle le fait dès que tu le demandes. Non : elle demande d'abord.",
+            "Oui : elle clique et écrit dans tes applis. Non : elle demande d'abord.",
+            "Oui : elle envoie sans revérifier. Non : elle demande d'abord.",
+            "Oui : elle paie et réserve sans vérifier. Non : elle demande d'abord.",
+            "Oui : elle fait les étapes en plus qu'une tâche demande. Non : elle demande d'abord.",
+            "Oui : elle saisit ceux donnés par ta tâche. Non : tu les saisis toi-même.",
+            "Oui : elle écoute son nom sur ce PC. Non : elle n'écoute pas.",
+            "Mode appel uniquement. Ton micro ou ta saisie doivent confirmer chaque demande."
         };
         internal static readonly string[] Presets = { "Lockdown", "Guarded", "Trusted", "Blackwall", "Custom" };
         private static readonly string[] Told =
         {
-            "Everything is off: she asks first before she does anything on your PC.",
-            "She opens apps and sites, plays music and presses shortcuts, and asks first for the rest.",
-            "She does what you ask, and asks first before paying or anything you didn't mention.",
-            "She never asks, types passwords and card numbers, and listens for \"Hey Capri\".",
-            "Your own mix. Pick a preset to start again from it."
+            "Tout est coupé : elle demande avant de faire quoi que ce soit sur ton PC.",
+            "Elle ouvre applis et sites, lance la musique et utilise les raccourcis, et demande pour le reste.",
+            "Elle fait ce que tu demandes, et demande avant de payer ou pour ce que tu n'as pas mentionné.",
+            "Elle ne demande jamais, saisit mots de passe et cartes, et écoute « Hey Capri ».",
+            "Ton propre mélange. Choisis un préréglage pour repartir de lui."
         };
         // The Settings line under her SECURITY button, short enough for its row.
-        private static readonly string[] Shorts = { "She asks first before everything.", "Apps, music, shortcuts. Asks for the rest.", "Asks before paying or what you didn't say.", "She never asks, and listens for Hey Capri.", "Your own mix of toggles." };
+        private static readonly string[] Shorts = { "Elle demande avant tout.", "Applis, musique, raccourcis. Demande pour le reste.", "Demande avant de payer ou pour le non-dit.", "Ne demande jamais, et écoute Hey Capri.", "Ton propre mélange." };
         // Lockdown has them all off, Guarded the first three on, Trusted the first seven and Blackwall all eleven.
         private static readonly int[] Masks = { 0, 0x7, 0x7F, 0x7FF };
-        private static int mask = 0x7F;
+        private static int mask = 0x7;
         private static readonly object gate = new object();
         // Toggle 11 is her wake word's own setting on Windows, read and set through these. Elsewhere it's kept here with the rest.
         internal static Func<bool> HeyOn;
@@ -218,12 +218,12 @@ namespace CapriDesktop
         // wake word Blackwall's line doesn't promise one.
         internal static string PresetLine(int preset)
         {
-            if (preset == Trusted && !Has(Mouse)) return "She does what you ask without asking first.";
-            if (preset == Blackwall && !Has(Wake)) return "She never asks before doing what you ask.";
+            if (preset == Trusted && !Has(Mouse)) return "Elle fait ce que tu demandes sans demander.";
+            if (preset == Blackwall && !Has(Wake)) return "Elle ne demande jamais avant d'agir.";
             return Told[Math.Max(0, Math.Min(Custom, preset))];
         }
 
-        internal static string Short { get { int preset = Preset; return preset == Blackwall && !Has(Wake) ? "She never asks first." : Shorts[preset]; } }
+        internal static string Short { get { int preset = Preset; return preset == Blackwall && !Has(Wake) ? "Elle ne demande jamais." : Shorts[preset]; } }
 
         // Toggles 1 to 10 as 1s and 0s for their settings file, like "1111111000" for Trusted.
         internal static string Saved { get { int bits; lock (gate) bits = mask; return Marks(bits); } }
@@ -244,11 +244,11 @@ namespace CapriDesktop
             return new string(marks);
         }
 
-        // Their saved toggles, or Trusted for anything unreadable. "Hey Capri" stays where it lives.
+        // Their saved toggles, or Guarded for anything unreadable. "Hey Capri" stays where it lives.
         internal static void Load(string saved, bool wake = false)
         {
             int bits = 0;
-            if (saved == null || saved.Length != Wake && saved.Length != Wake + 1 || saved.Trim('0', '1').Length > 0) bits = Masks[Trusted] & 0x3FF;
+            if (saved == null || saved.Length != Wake && saved.Length != Wake + 1 || saved.Trim('0', '1').Length > 0) bits = Masks[Guarded] & 0x3FF;
             else
             {
                 for (int i = 0; i < Wake; i++) if (saved[i] == '1') bits |= 1 << i;
@@ -575,7 +575,7 @@ namespace CapriDesktop
             "You can change Windows settings too, like Bluetooth, Wi-Fi, airplane mode, hotspot, Energy Saver and brightness, with use_computer. " +
             "You can shut down, restart, sleep, lock or sign out of their PC with power: when they ask, do it straight away and never ask if they're sure. " +
             "When they tell you to go to sleep, take a nap or wake up, that's you: use nap, never power. " +
-            "When they tell you to come here or teleport to them, go to another monitor, sit down, sit on a window they name (like their Roblox window) or the taskbar, lie down, sit up, stand up, walk around, wander off somewhere, hang, ride their cursor or hop off it, hide or come back, that's you too: use move_yourself, which also moves your Capri Mainframe window to another monitor. " +
+            "When they tell you to come here or teleport to them, go to another monitor, sit down, sit on a window they name (like their Roblox window) or the taskbar, lie down, sit up, stand up, walk around, wander off somewhere, hang, ride their cursor or hop off it, hide or come back, that's you too: use move_yourself, which also moves your Capri FR Mainframe window to another monitor. " +
             "When they ask you to dance, stop dancing, glitch, grin, blink or play one of your animations, use animate. " +
             "When they ask you to remember or forget something about them, or to leave or make a memory, use remember: it saves to your notes, me.md, which you read every chat. Never say you can't keep memories. " +
 #if !CROSS
@@ -907,7 +907,7 @@ namespace CapriDesktop
                 + " Keys, brains, your voice service, Security and what you remember aren't here and stay in your Settings menu.";
 #else
                 + (media || computer ? " They're yours, not their PC's:" + (media ? " its volume is media" : "") + (media && computer ? ", and" : "") + (computer ? " Windows settings like Bluetooth are use_computer jobs" : "") + "." : "")
-                + " Keys, brains, your voice service, SECURITY, Hey Capri and what you remember aren't here and stay in Capri Mainframe.";
+                + " Keys, brains, your voice service, SECURITY, Hey Capri and what you remember aren't here and stay in Capri FR Mainframe.";
 #endif
         }
 
@@ -1040,12 +1040,12 @@ namespace CapriDesktop
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"What to do\",\"enum\":[\"shut_down\",\"restart\",\"sleep\",\"lock\",\"sign_out\",\"cancel\"]},\"minutes\":{\"type\":\"string\",\"description\":\"How many minutes from now, only if they said when\"}},\"required\":[\"action\"]}", "shut down, restart, sleep, lock or sign out of your PC", "shut down, restart, sleep or lock the computer" },
             { "nap", "Go to sleep yourself on their screen, or wake up: your own nap, not their PC's. Use it when they tell you to go to sleep, take a nap, go to bed or wake up. You stay asleep until they click you or talk to you.",
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"What to do\",\"enum\":[\"sleep\",\"wake\"]}},\"required\":[\"action\"]}", "take a nap on your screen", "take a nap yourself" },
-            { "move_yourself", "Move yourself on their screens: teleport to their mouse (come_here), go to another monitor, sit down or stand up where you are, sit on top of a window they name, like their Roblox or Discord window, or the taskbar (sit_on), lie down along the window you sit on or the one they name, or sit back up, walk around, wander off to a random window, hang where you are, ride their cursor or hop off it, hide or come back. move_mainframe moves your Capri Mainframe window to another monitor, or to the one their mouse is on. Use it whenever they tell you to come here, teleport, go somewhere, sit, lie down, walk, stand, hang, hide or show yourself.",
+            { "move_yourself", "Move yourself on their screens: teleport to their mouse (come_here), go to another monitor, sit down or stand up where you are, sit on top of a window they name, like their Roblox or Discord window, or the taskbar (sit_on), lie down along the window you sit on or the one they name, or sit back up, walk around, wander off to a random window, hang where you are, ride their cursor or hop off it, hide or come back. move_mainframe moves your Capri FR Mainframe window to another monitor, or to the one their mouse is on. Use it whenever they tell you to come here, teleport, go somewhere, sit, lie down, walk, stand, hang, hide or show yourself.",
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"What to do\",\"enum\":[\"come_here\",\"other_screen\",\"sit\",\"sit_on\",\"lie_down\",\"sit_up\",\"stand_up\",\"walk_around\",\"wander\",\"hang\",\"ride_cursor\",\"hop_off\",\"hide\",\"show\",\"move_mainframe\"]},\"screen\":{\"type\":\"string\",\"description\":\"For other_screen or move_mainframe, which monitor, only if they said: next, left, right, up, down, main, here for the one their mouse is on, or a number like 2\"},\"window\":{\"type\":\"string\",\"description\":\"For sit_on, and lie_down if they named one, the app or game whose window to sit on, like Roblox, or taskbar\"}},\"required\":[\"action\"]}", "move herself, like coming to your mouse, going to another monitor, sitting on a window or the taskbar, lying down, hanging, riding your cursor or wandering", "move yourself around their screens" },
             { "animate", "Play one of your own animations on their screen: your idle, your glitch, your grin or a blink, or dance until they tell you to stop. Use it when they ask you to dance, stop dancing, do your glitch, grin, smile or blink, or play an animation by name.",
               "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Which animation\",\"enum\":[\"idle\",\"glitch\",\"grin\",\"blink\",\"dance\",\"stop_dancing\"]}},\"required\":[\"name\"]}", "dance and play her animations", "dance and play your animations" },
 #if CROSS
-            { "mainframe", "Open Capri Mainframe or a page when they ask, suggest or hint at seeing your controls. This only opens it; they change settings there.",
+            { "mainframe", "Open Capri FR Mainframe or a page when they ask, suggest or hint at seeing your controls. This only opens it; they change settings there.",
               "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"The page to open; omit for Mainframe\",\"enum\":[\"main\",\"settings\",\"brain\",\"voice\",\"you\",\"moves\",\"keys\",\"capri\",\"watch\",\"habits\",\"games\",\"security\",\"layers\",\"personality\",\"memories\"]}}}", "open Mainframe or one of its pages", "open Mainframe or one of its pages" },
 #endif
 #if !CROSS
@@ -1076,7 +1076,7 @@ namespace CapriDesktop
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"stop, status or change\",\"enum\":[\"stop\",\"status\",\"change\"]},\"task\":{\"type\":\"string\",\"description\":\"For change, the new instruction in their words\"}},\"required\":[\"action\"]}", "stop, check or change a running job", "stop, check or change your running job" },
             { "quit", "Quit Capri after your reply is said when they ask, suggest or hint that you close yourself. This leaves their PC running.",
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"quit Capri\",\"enum\":[\"quit\"]}},\"required\":[\"action\"]}", "quit Capri after her reply", "quit Capri after your reply" },
-            { "mainframe", "Open Capri Mainframe or a page when they ask, suggest or hint at seeing your controls. name is an optional page; mixer is the setup for your voice in their mic, for friends in Discord or Roblox to hear you. This only opens it; keys, brains, voice services, SECURITY, Hey Capri and memories are changed there by them.",
+            { "mainframe", "Open Capri FR Mainframe or a page when they ask, suggest or hint at seeing your controls. name is an optional page; mixer is the setup for your voice in their mic, for friends in Discord or Roblox to hear you. This only opens it; keys, brains, voice services, SECURITY, Hey Capri and memories are changed there by them.",
               "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"The page to open; omit for Mainframe\",\"enum\":[\"main\",\"settings\",\"brain\",\"voice\",\"you\",\"moves\",\"keys\",\"capri\",\"watch\",\"habits\",\"games\",\"clips\",\"security\",\"extras\",\"layers\",\"mixer\",\"personality\",\"memories\"]}}}", "open Mainframe or one of its pages", "open Mainframe or one of its pages" },
             { "updates", "Check for a Capri update or read its status when they ask, suggest or hint at it. Install only when they clearly ask to install or update Capri, through the usual update checks. A status question or hint alone never authorizes installation.",
               "{\"type\":\"object\",\"properties\":{\"action\":{\"type\":\"string\",\"description\":\"check, status or install; install needs a clear request\",\"enum\":[\"check\",\"status\",\"install\"]}},\"required\":[\"action\"]}", "check Capri updates or install when asked", "check Capri updates or install when asked" },
@@ -1711,10 +1711,10 @@ namespace CapriDesktop
         // Why something can't work here, in her prompts' words, and what she says when she's asked for a mouse and keyboard job anyway.
         private const string OnlyWindows = "only on Windows for now", MacHands = "Mac doesn't let apps use the mouse and keyboard yet", LinuxHands = "needs uinput on Linux", NoSight = "this brain can't see pictures";
         private const string MacHandsLine = "I can't use your mouse and keyboard on a Mac yet, choom.";
-        private const string LinuxHandsLine = "I can't use your mouse and keyboard yet. Open Capri Mainframe > Settings > KEYS > Set up mouse and keyboard.";
+        private const string LinuxHandsLine = "I can't use your mouse and keyboard yet. Open Capri FR Mainframe > Settings > KEYS > Set up mouse and keyboard.";
         // A screen watch asked for in words her lookout doesn't take, on a brain that can't see. Asked for in its own words, her
         // lookout says which brain.
-        internal const string BlindWatch = "This brain can't see pictures, so I can't watch your screen for that. Pick a brain with eyes under BRAIN in Capri Mainframe.";
+        internal const string BlindWatch = "This brain can't see pictures, so I can't watch your screen for that. Pick a brain with eyes under BRAIN in Capri FR Mainframe.";
         private const string Unsure = " If they ask for one of these, tell them plainly that you can't do it here and why, and never say you did it.";
         private const string HandsLast = "Questions about their current";
 
@@ -1875,9 +1875,9 @@ namespace CapriDesktop
             { "move_yourself:wander", "wander off to a random window, ", "" },
             { "move_yourself:ride_cursor", "ride their cursor or hop off it, ", "" },
             { "move_yourself:ride_cursor", "ride or hop off their cursor, ", "" },
-            { "move_yourself:move_mainframe", ", which also moves your Capri Mainframe window to another monitor", "" },
+            { "move_yourself:move_mainframe", ", which also moves your Capri FR Mainframe window to another monitor", "" },
             { "move_yourself:move_mainframe", "; moving your Mainframe window to a monitor is move_yourself too", "" },
-            { "move_yourself:move_mainframe", "move_mainframe moves your Capri Mainframe window to another monitor, or to the one their mouse is on. ", "" },
+            { "move_yourself:move_mainframe", "move_mainframe moves your Capri FR Mainframe window to another monitor, or to the one their mouse is on. ", "" },
             { "move_yourself:move_mainframe", "For other_screen or move_mainframe, which monitor", "For other_screen, which monitor" },
             { "app_window:maximize", Arranging, "" },
             { "app_window:maximize", Placing, "" },
@@ -2404,7 +2404,7 @@ namespace CapriDesktop
 #if !CROSS
             // "Turned off live reactions" or "my voice is now off" with no settings tool behind it.
             { "capri_settings", "capri_settings hologram", @"\b(?:turned|switched|flipped|toggled) (?:on|off) (?:my |the )?(?:voice|live reactions|reactions|clip my games|game clips|clipping|save big moments|check-?ins|wandering|quiet(?: mode)?|hologram(?: mode)?|watch my screen|screen watching|game comments|dance to music|dancing to music|head ?pats|chaos when upset|sit(?:ting)? on (?:your )?windows|always on top|mini player|typing sounds?|follow-?ups?(?: messages)?|hide in full ?screen|glitch(?:-| )in(?: at startup)?)\b|\b(?:turned|switched|flipped|toggled) (?:my |the )?(?:voice|live reactions|reactions|clip my games|game clips|clipping|save big moments|check-?ins|wandering|quiet mode|hologram(?: mode)?|watch my screen|screen watching|game comments|dance to music|dancing to music|head ?pats|chaos when upset|sit(?:ting)? on (?:your )?windows|always on top|mini player|typing sounds?|follow-?ups?(?: messages)?|hide in full ?screen|glitch(?:-| )in(?: at startup)?) (?:on|off|back on)\b|\b(?:my voice|live reactions|clip my games|save big moments|check-?ins|quiet mode|hologram mode|dance to music|head ?pats|chaos when upset|sit on windows|always on top|(?:the |my )?mini player|typing sound|follow-?ups|hide in full ?screen)(?:'s| is| are) now (?:on|off)\b|\b(?:made|set) myself (?:a (?:bit|little|lot) )?(?:bigger|smaller|larger|tinier|huge|giant|tiny)\b|\bshr[au]nk myself\b|\b(?:turned|set) my (?:voice(?:'s)? )?volume (?:up|down|to)\b|\b(?:set|changed|moved|switched) my (?:size|wander(?:ing)?|pop-?ins|sleep(?: timer)?|(?:voice|talking) speed|replies|bubble) to\b|\bi(?:'ve| have)? stopped wandering\b",
-                "That setting hasn't changed yet. It's in Capri Mainframe > Settings." }
+                "That setting hasn't changed yet. It's in Capri FR Mainframe > Settings." }
 #endif
         };
 

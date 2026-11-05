@@ -251,7 +251,7 @@ namespace CapriDesktop
         // Windows' default mic's full name, to tell VB-CABLE's output apart. The smoke test points it at a stand-in.
         internal static Func<string> DefaultName = delegate { return FullName(DefaultDevice()); };
 
-        internal const string OnlyCable = "Your only mic is VB-CABLE's, which has her own voice in it. Plug in a mic.";
+        internal const string OnlyCable = "Ton seul micro est celui de VB-CABLE, qui contient sa voix. Branche un micro.";
 
         // A Bluetooth headset's mic is its hands-free side: while it's open the headset is on a call, and everything Windows
         // plays through it drops to phone-call quality. The mic's name when a pick would open one, else null.
@@ -309,9 +309,9 @@ namespace CapriDesktop
         internal static string Problem(int result)
         {
             if (result == unchecked((int)0x80070005)) return Dictation.MicBlocked;
-            if (result == 4 || result == unchecked((int)0x8889000A)) return "Can't open your mic: another app has it to itself. Close it, or untick exclusive mode in your mic's Sound settings.";
+            if (result == 4 || result == unchecked((int)0x8889000A)) return "Impossible d'ouvrir ton micro : une autre appli le monopolise. Ferme-la, ou décoche le mode exclusif dans les paramètres de son du micro.";
             if (result == 2 || result == 6 || result == unchecked((int)0x80070490) || result == unchecked((int)0x88890004)) return Dictation.NoMic;
-            return "Can't open your mic (Windows error 0x" + result.ToString("X8") + "). Check Settings > System > Sound > Input, or pick another under VOICE.";
+            return "Impossible d'ouvrir ton micro (erreur Windows 0x" + result.ToString("X8") + "). Vérifie Paramètres > Système > Son > Entrée, ou choisis-en un autre sous VOIX.";
         }
 
         private static void CheckWave(int result, string operation)
@@ -514,7 +514,7 @@ namespace CapriDesktop
             Rate = wave.SampleRate; Channels = wave.Channels; Bits = wave.Bits; Align = wave.Align;
             Float = tag == 3 && Bits == 32;
             if ((!Float && !(tag == 1 && (Bits == 8 || Bits == 16 || Bits == 24 || Bits == 32))) || Channels < 1 || Channels > 64 || Rate < 8000 || Rate > 192000 || Align != Channels * (Bits / 8))
-                throw new VoiceException("Your mic's format isn't supported: " + Format + ". Pick PCM or 32-bit float in Windows Sound settings.");
+                throw new VoiceException("Le format de ton micro n'est pas pris en charge : " + Format + ". Choisis PCM ou 32 bits flottant dans les paramètres de son de Windows.");
             left = Rate;
         }
 
@@ -536,7 +536,7 @@ namespace CapriDesktop
             int channel = 0;
             if (!silent)
             {
-                if (data == IntPtr.Zero) throw new VoiceException("Your mic returned audio without a buffer.");
+                if (data == IntPtr.Zero) throw new VoiceException("Ton micro a renvoyé du son sans tampon.");
                 int length = checked(frames * Align);
                 if (bytes.Length < length) bytes = new byte[length];
                 Marshal.Copy(data, bytes, 0, length);
@@ -592,7 +592,7 @@ namespace CapriDesktop
             worker = new Thread(Run) { IsBackground = true, Name = "Capri WASAPI mic" };
             worker.SetApartmentState(ApartmentState.STA);
             worker.Start();
-            if (!ready.WaitOne(3000)) { stopped = true; throw new VoiceException("Windows took too long to open your mic."); }
+            if (!ready.WaitOne(3000)) { stopped = true; throw new VoiceException("Windows met trop de temps à ouvrir ton micro."); }
             if (failure != null) throw new VoiceException(failure);
         }
 
@@ -884,9 +884,9 @@ namespace CapriDesktop
 
         internal static string Speakers(int failed)
         {
-            if (failed == 2 || failed == 6) return "Can't open your speakers: Windows has no speakers or headphones on. Pick one in Settings > System > Sound.";
-            if (failed == 4) return "Can't open your speakers: another app has them to itself. Close it, or untick exclusive mode in your speaker's Sound settings.";
-            return "Can't open your speakers (Windows error " + failed + "). Check Settings > System > Sound, then try again.";
+            if (failed == 2 || failed == 6) return "Impossible d'ouvrir ta sortie audio : aucun haut-parleur ou casque actif. Choisis-en un dans Paramètres > Système > Son.";
+            if (failed == 4) return "Impossible d'ouvrir ta sortie audio : une autre appli la monopolise. Ferme-la, ou décoche le mode exclusif dans ses paramètres de son.";
+            return "Impossible d'ouvrir ta sortie audio (erreur Windows " + failed + "). Vérifie Paramètres > Système > Son, puis réessaie.";
         }
 
         internal bool Busy { get { return Stopwatch.GetTimestamp() < Interlocked.Read(ref until) + Stopwatch.Frequency * 35 / 100; } }
@@ -1091,7 +1091,7 @@ namespace CapriDesktop
             feeder = new Thread(Run) { IsBackground = true, Name = "Capri speakers" };
             feeder.SetApartmentState(ApartmentState.MTA);
             feeder.Start();
-            if (!ready.WaitOne(3000)) { stopped = true; throw new VoiceException("Windows took too long to open your speakers."); }
+            if (!ready.WaitOne(3000)) { stopped = true; throw new VoiceException("Windows met trop de temps à ouvrir ta sortie audio."); }
             if (failure != null) throw new VoiceException(failure);
         }
 
@@ -1192,7 +1192,7 @@ namespace CapriDesktop
                     opened = true;
                     alive = true;
                 }
-                catch (Exception error) { failure = "Windows wouldn't open your speakers: " + error.Message; return; }
+                catch (Exception error) { failure = "Windows refuse d'ouvrir ta sortie audio : " + error.Message; return; }
                 finally { ready.Set(); }
                 short[] chunk = new short[frames];
                 int waiting = 0;
@@ -1295,7 +1295,7 @@ namespace CapriDesktop
 
     internal static class Hearing
     {
-        internal const string NoRecognizer = "Windows has no offline speech recognizer for your language. Turn on Online speech recognition in Settings > Privacy & security > Speech.";
+        internal const string NoRecognizer = "Windows n'a pas de reconnaissance hors ligne pour ta langue. Active la reconnaissance en ligne dans Paramètres > Confidentialité et sécurité > Voix.";
         internal static Func<short[], string> Run = Recognize;
         // Her own Parakeet ears while they suit her language; Windows' offline recognizer otherwise.
         internal static volatile LocalEars Own;
@@ -1364,7 +1364,7 @@ namespace CapriDesktop
                         {
                             engine.RecognizeAsyncCancel();
                             done.WaitOne(3000);
-                            throw new IOException("Hearing that took too long. Try a shorter line.");
+                            throw new IOException("L'écoute a pris trop de temps. Essaie une phrase plus courte.");
                         }
                     }
                 }
@@ -1396,7 +1396,7 @@ namespace CapriDesktop
             return table;
         }
 
-        private static IOException Damaged() { return new IOException("The ears download is damaged."); }
+        private static IOException Damaged() { return new IOException("Le téléchargement de l'écoute est endommagé."); }
 
         private sealed class Bits
         {
@@ -1424,7 +1424,7 @@ namespace CapriDesktop
                 while (count < n)
                 {
                     int b = Next();
-                    if (b < 0) throw new IOException("The ears download ended early.");
+                    if (b < 0) throw new IOException("Le téléchargement de l'écoute s'est arrêté trop tôt.");
                     held = (held << 8) | (uint)b;
                     count += 8;
                 }
@@ -1624,7 +1624,7 @@ namespace CapriDesktop
     // Only files and folders come out, and only inside the folder she's unpacking into.
     internal static class TarReader
     {
-        private static IOException Damaged() { return new IOException("The ears download is damaged."); }
+        private static IOException Damaged() { return new IOException("Le téléchargement de l'écoute est endommagé."); }
 
         private static void Read(Stream from, byte[] buffer, int count)
         {
@@ -1841,24 +1841,24 @@ namespace CapriDesktop
 
         internal void Install(Action<string, long, long> progress)
         {
-            if (IntPtr.Size != 8) throw new IOException("Her ears need 64-bit Windows.");
-            if (!Fits) throw new IOException("Her own ears don't know your language yet.");
+            if (IntPtr.Size != 8) throw new IOException("Son écoute nécessite Windows 64 bits.");
+            if (!Fits) throw new IOException("Son écoute ne connaît pas encore ta langue.");
             bool english = Model == Pack;
             string folder = Folder;
             long size = english ? PackSize : EuropeanSize;
             Directory.CreateDirectory(root);
             long needed = size * 3 + (64L << 20);
             string drive = Path.GetPathRoot(root);
-            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Her ears need " + Engine.Amount(needed) + " free on " + drive.TrimEnd('\\') + ".");
+            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Son écoute a besoin de " + Engine.Amount(needed) + " libres sur " + drive.TrimEnd('\\') + ".");
             string tarball = folder + ".tar.bz2";
-            Engine.Fetch(english ? PackUrl : EuropeanUrl, tarball, size, english ? PackSha : EuropeanSha, "her ears", progress, delegate { return Cancel; });
-            progress("Unpacking her ears", size, size);
+            Engine.Fetch(english ? PackUrl : EuropeanUrl, tarball, size, english ? PackSha : EuropeanSha, "son écoute", progress, delegate { return Cancel; });
+            progress("Décompression de son écoute", size, size);
             string staging = folder + ".new";
             if (Directory.Exists(staging)) Directory.Delete(staging, true);
             Directory.CreateDirectory(staging);
             Untar(tarball, staging);
             string unpacked = Path.Combine(staging, english ? Inside : EuropeanInside);
-            if (!Complete(unpacked)) throw new IOException("The ears download is missing files.");
+            if (!Complete(unpacked)) throw new IOException("Il manque des fichiers au téléchargement de l'écoute.");
             lock (gate)
             {
                 Close();
@@ -1889,7 +1889,7 @@ namespace CapriDesktop
                 {
                     try { Bunzip.Copy(packed, opened); }
                     catch (IOException) { throw; }
-                    catch (Exception) { throw new IOException("The ears download is damaged."); }
+                    catch (Exception) { throw new IOException("Le téléchargement de l'écoute est endommagé."); }
                 }
                 File.Delete(tarball);
                 if (Directory.Exists(into)) Directory.Delete(into, true);
@@ -1916,10 +1916,10 @@ namespace CapriDesktop
                 ProcessStartInfo start = new ProcessStartInfo(tar, arguments) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardError = true, RedirectStandardOutput = true };
                 Process child;
                 try { child = StartTar(start); }
-                catch (System.ComponentModel.Win32Exception) { return "Windows tar couldn't start."; }
+                catch (System.ComponentModel.Win32Exception) { return "L'outil tar de Windows n'a pas démarré."; }
                 using (Process unpacking = child)
                 {
-                    if (unpacking == null) return "Windows tar couldn't start.";
+                    if (unpacking == null) return "L'outil tar de Windows n'a pas démarré.";
                     StringBuilder problem = new StringBuilder();
                     Thread errors = ReadTar(unpacking.StandardError, problem), output = ReadTar(unpacking.StandardOutput, null);
                     Stopwatch waited = Stopwatch.StartNew();
@@ -1929,10 +1929,10 @@ namespace CapriDesktop
                         StopTar(unpacking);
                         errors.Join(1000);
                         output.Join(1000);
-                        return "Windows tar took too long.";
+                        return "L'outil tar de Windows a mis trop de temps.";
                     }
                     string error = problem.ToString().Trim();
-                    if (unpacking.ExitCode != 0) return error.Length == 0 ? "Windows tar couldn't unpack the download." : error;
+                    if (unpacking.ExitCode != 0) return error.Length == 0 ? "L'outil tar de Windows n'a pas pu décompresser le téléchargement." : error;
                     complete = true;
                     return null;
                 }
@@ -1987,7 +1987,7 @@ namespace CapriDesktop
             {
                 Open();
                 IntPtr stream = SherpaOnnxCreateOfflineStream(recognizer);
-                if (stream == IntPtr.Zero) throw new IOException("Her ears glitched.");
+                if (stream == IntPtr.Zero) throw new IOException("Son écoute a buggé.");
                 IntPtr result = IntPtr.Zero;
                 try
                 {
@@ -2011,7 +2011,7 @@ namespace CapriDesktop
             string folder = Folder;
             if (recognizer != IntPtr.Zero && opened == folder) return;
             Close();
-            if (!Ready) throw new IOException("Her ears aren't in yet.");
+            if (!Ready) throw new IOException("Son écoute n'est pas encore installée.");
             LocalVoice.Load(engine);
             List<IntPtr> held = new List<IntPtr>();
             Func<string, IntPtr> keep = delegate(string value) { IntPtr pointer = Utf8(LocalVoice.Plain(value)); held.Add(pointer); return pointer; };
@@ -2035,7 +2035,7 @@ namespace CapriDesktop
                 Marshal.FreeHGlobal(config);
                 foreach (IntPtr pointer in held) Marshal.FreeHGlobal(pointer);
             }
-            if (recognizer == IntPtr.Zero) throw new IOException("Her ears wouldn't start.");
+            if (recognizer == IntPtr.Zero) throw new IOException("Son écoute ne démarre pas.");
             opened = folder;
         }
 
@@ -2891,21 +2891,21 @@ namespace CapriDesktop
 
         internal void Install(Action<string, long, long> progress)
         {
-            if (IntPtr.Size != 8) throw new IOException("Listening for \"Hey Capri\" needs 64-bit Windows.");
+            if (IntPtr.Size != 8) throw new IOException("Écouter « Hey Capri » nécessite Windows 64 bits.");
             string folder = Folder;
             Directory.CreateDirectory(root);
             long needed = PackSize * 3 + (16L << 20);
             string drive = Path.GetPathRoot(Path.GetFullPath(root));
-            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Listening for \"Hey Capri\" needs " + Engine.Amount(needed) + " free on " + drive.TrimEnd('\\') + ".");
+            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Écouter « Hey Capri » a besoin de " + Engine.Amount(needed) + " libres sur " + drive.TrimEnd('\\') + ".");
             string tarball = folder + ".tar.bz2";
-            Engine.Fetch(PackUrl, tarball, PackSize, PackSha, "her wake word", progress, delegate { return Cancel; });
-            progress("Unpacking her wake word", PackSize, PackSize);
+            Engine.Fetch(PackUrl, tarball, PackSize, PackSha, "son mot d'éveil", progress, delegate { return Cancel; });
+            progress("Décompression de son mot d'éveil", PackSize, PackSize);
             string staging = folder + ".new";
             if (Directory.Exists(staging)) Directory.Delete(staging, true);
             Directory.CreateDirectory(staging);
             LocalEars.Untar(tarball, staging);
             string unpacked = Path.Combine(staging, Inside);
-            if (!Complete(unpacked)) throw new IOException("The \"Hey Capri\" download is missing files.");
+            if (!Complete(unpacked)) throw new IOException("Il manque des fichiers au téléchargement de « Hey Capri ».");
             lock (gate)
             {
                 Close();
@@ -3015,7 +3015,7 @@ namespace CapriDesktop
             {
                 Open();
                 IntPtr own = SherpaOnnxCreateKeywordStream(spotter);
-                if (own == IntPtr.Zero) throw new IOException("Her wake word glitched.");
+                if (own == IntPtr.Zero) throw new IOException("Son mot d'éveil a buggé.");
                 try
                 {
                     int found = 0;
@@ -3075,7 +3075,7 @@ namespace CapriDesktop
         private void Open()
         {
             if (spotter != IntPtr.Zero) return;
-            if (!Ready) throw new IOException("Her wake word isn't in yet.");
+            if (!Ready) throw new IOException("Son mot d'éveil n'est pas encore installé.");
             LocalVoice.Load(engine);
             List<IntPtr> kept = new List<IntPtr>();
             Func<string, IntPtr> keep = delegate(string value) { IntPtr pointer = LocalVoice.Utf8(LocalVoice.Plain(value)); kept.Add(pointer); return pointer; };
@@ -3116,7 +3116,7 @@ namespace CapriDesktop
                 Marshal.FreeHGlobal(config);
                 foreach (IntPtr pointer in kept) Marshal.FreeHGlobal(pointer);
             }
-            if (spotter == IntPtr.Zero) throw new IOException("Her wake word wouldn't start.");
+            if (spotter == IntPtr.Zero) throw new IOException("Son mot d'éveil ne démarre pas.");
         }
 
         // More than the real struct's 184 bytes, which only grows at its end.

@@ -199,12 +199,12 @@ namespace CapriDesktop
             switch (doing)
             {
                 case "Chatting": return "chatting";
-                case "Dancing": case "Dancing to music": return "dancing";
+                case "Dancing": case "Danse en musique": return "dancing";
                 case "Asleep": return "asleep";
-                case "Voice chatting": return "voice";
-                case "Taking a break": return "break";
-                case "Using the computer": return "computer";
-                case "Playing a game": case "Gaming": return "game";
+                case "En discussion vocale": return "voice";
+                case "En pause": return "break";
+                case "Utilise l'ordinateur": return "computer";
+                case "Joue à un jeu": case "Gaming": return "game";
                 case "Streaming": return "live";
                 case "Multiplying": return "clones";
                 default: return "plugged";
@@ -214,11 +214,11 @@ namespace CapriDesktop
         // The little picture in the corner: a glitch cursor or a glitch controller.
         internal static string Badge(string doing)
         {
-            return doing == "Using the computer" ? "cursor" : doing == "Playing a game" || doing == "Gaming" || doing == "Streaming" ? "controller" : null;
+            return doing == "Utilise l'ordinateur" ? "cursor" : doing == "Joue à un jeu" || doing == "Gaming" || doing == "Streaming" ? "controller" : null;
         }
 
         // Voice chat reads "Listening to Capri" and Gaming Mode "Watching Capri". The rest stay "Playing Capri".
-        internal static int Header(string doing) { return doing == "Voice chatting" ? 2 : doing == "Gaming" ? 3 : 0; }
+        internal static int Header(string doing) { return doing == "En discussion vocale" ? 2 : doing == "Gaming" ? 3 : 0; }
 
         private static bool OnSite()
         {
@@ -240,7 +240,7 @@ namespace CapriDesktop
                 Details = doing,
                 Times = new DiscordTimes { Start = started },
                 Assets = new DiscordAssets { Image = Picture, Text = "Capri " + version },
-                Buttons = new[] { new DiscordButton { Label = "Get Capri", Url = Site }, new DiscordButton { Label = "Join her Discord", Url = Server } }
+                Buttons = new[] { new DiscordButton { Label = "Get Capri", Url = Site }, new DiscordButton { Label = "Rejoindre son Discord", Url = Server } }
             };
             // If Discord turns any of the extras down, she goes back to the plain line for the rest of this run.
             if (!plain)

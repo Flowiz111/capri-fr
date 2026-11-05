@@ -29,7 +29,7 @@ namespace CapriDesktop
         {
             string id = Path.GetFileNameWithoutExtension(file);
             string details = Path.Combine(SkinHome(id), SkinDetails);
-            if (!File.Exists(details)) throw new ModException("its pictures are missing. Import it again.");
+            if (!File.Exists(details)) throw new ModException("ses images manquent. Importe-la de nouveau.");
             ModFile read = ReadSkin(File.ReadAllText(details));
             if (read.Id != id) throw new ModException("its file name doesn't match its id, " + read.Id + ".");
             return new Mod { File = read, Path = file, Skin = true, On = !off.Contains(read.Id) };
@@ -49,7 +49,7 @@ namespace CapriDesktop
             string unpacking = Path.Combine(folder, "skin-import-" + Guid.NewGuid().ToString("N"));
             try
             {
-                if (new FileInfo(file).Length > LargestSkin) throw new ModException("That skin is too big. The limit is " + LargestSkin / (1024 * 1024) + " MB.");
+                if (new FileInfo(file).Length > LargestSkin) throw new ModException("Cette apparence est trop lourde. La limite est de " + LargestSkin / (1024 * 1024) + " Mo.");
                 Directory.CreateDirectory(unpacking);
                 ModFile read = Unpack(file, unpacking);
                 string home = SkinHome(read.Id), kept = Path.Combine(folder, read.Id + SkinExtension);
@@ -64,8 +64,8 @@ namespace CapriDesktop
                 Reskin();
                 return All.Find(mod => mod.File.Id == read.Id);
             }
-            catch (IOException error) { throw new ModException("Couldn't save that skin: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't save that skin: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible d'enregistrer cette apparence : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible d'enregistrer cette apparence : " + error.Message); }
             finally
             {
                 try { if (Directory.Exists(unpacking)) Directory.Delete(unpacking, true); }
@@ -83,17 +83,17 @@ namespace CapriDesktop
             {
                 using (ZipArchive zip = ZipFile.OpenRead(file))
                 {
-                    if (zip.Entries.Count > MostEntries) throw new ModException("That skin has too many files. It should only hold skin.json and her sprite strips.");
+                    if (zip.Entries.Count > MostEntries) throw new ModException("Trop de fichiers dans cette apparence : seulement skin.json et ses planches de sprites.");
                     foreach (ZipArchiveEntry entry in zip.Entries)
                     {
                         string name = entry.FullName;
                         if (name.Length == 0 || name.IndexOfAny(new[] { '/', '\\', ':' }) >= 0 || name.Contains("..")) throw new ModException("\"" + name + "\" can't be in a skin. Keep every file at the top of the zip.");
                         bool isDetails = name == SkinDetails;
-                        if (!isDetails && !(name.EndsWith(".png", StringComparison.Ordinal) && Companion.HasArt("Capri.Sprite." + name))) throw new ModException("\"" + name + "\" isn't one of her sprite strips.");
+                        if (!isDetails && !(name.EndsWith(".png", StringComparison.Ordinal) && Companion.HasArt("CapriFR.Sprite." + name))) throw new ModException("\"" + name + "\" isn't one of her sprite strips.");
                         string target = Path.Combine(into, name);
                         long size = Copy(entry, target, isDetails ? Largest : LargestPicture);
                         total += size;
-                        if (total > LargestUnpacked) throw new ModException("That skin unpacks too big.");
+                        if (total > LargestUnpacked) throw new ModException("Cette apparence est trop lourde une fois décompressée.");
                         if (isDetails) read = ReadSkin(File.ReadAllText(target));
                         else
                         {
@@ -105,7 +105,7 @@ namespace CapriDesktop
             }
             catch (InvalidDataException) { throw new ModException("That file isn't a valid skin zip."); }
             if (read == null) throw new ModException("A skin needs a " + SkinDetails + " file.");
-            if (pictures == 0) throw new ModException("That skin has no pictures in it.");
+            if (pictures == 0) throw new ModException("Cette apparence ne contient aucune image.");
             return read;
         }
 
@@ -135,7 +135,7 @@ namespace CapriDesktop
             byte[] mark = { 137, 80, 78, 71, 13, 10, 26, 10 };
             for (int i = 0; i < mark.Length; i++) if (head[i] != mark[i]) throw new ModException("\"" + name + "\" isn't a PNG.");
             int width = head[16] << 24 | head[17] << 16 | head[18] << 8 | head[19], height = head[20] << 24 | head[21] << 16 | head[22] << 8 | head[23];
-            Size wanted = Companion.ArtSize("Capri.Sprite." + name);
+            Size wanted = Companion.ArtSize("CapriFR.Sprite." + name);
             if (width != wanted.Width || height != wanted.Height) throw new ModException("\"" + name + "\" is " + width + " x " + height + ". It has to match hers, " + wanted.Width + " x " + wanted.Height + ".");
 #if CROSS
             try { using (Avalonia.Media.Imaging.Bitmap decoded = new Avalonia.Media.Imaging.Bitmap(file)) if (decoded.PixelSize != wanted) throw new ModException("\"" + name + "\" is the wrong size."); }
@@ -223,7 +223,7 @@ namespace CapriDesktop
         private static Bitmap SkinArt(string name)
         {
             string skin = SkinFolder;
-            const string Lead = "Capri.Sprite.";
+            const string Lead = "CapriFR.Sprite.";
             if (skin == null || !name.StartsWith(Lead, StringComparison.Ordinal)) return null;
             string file = Path.Combine(skin, name.Substring(Lead.Length));
             try

@@ -28,47 +28,47 @@ namespace CapriDesktop
             ModAsk = AskToRun;
             int first = Controls.Count;
             Section("MODS >", 0, 58);
-            Caption("Code mods can reach your whole PC. Only trusted ones.", 28, 80, Look.Mono(8.5f, FontStyle.Italic, GraphicsUnit.Point), Faint);
-            Key import = Make("Import mod", 28, 104, 100, 28, delegate { ImportMod(); });
+            Caption("Les mods de code accèdent à tout ton PC. Uniquement ceux de confiance.", 28, 80, Look.Mono(8.5f, FontStyle.Italic, GraphicsUnit.Point), Faint);
+            Key import = Make("Importer un mod", 28, 104, 100, 28, delegate { ImportMod(); });
             import.Accent = Cyan;
             import.Loud = true;
-            modBrowse = Make("Browse mods", 134, 104, 100, 28, delegate { BrowseMods(); });
-            Key folder = Make("Mods folder", 240, 104, 116, 28, delegate { OpenModsFolder(); });
-            Explain(import, "Import mod", "MainframeMods.cs");
-            Explain(modBrowse, "Browse mods", "MainframeMods.cs");
-            Explain(folder, "Open mods folder", "MainframeMods.cs");
+            modBrowse = Make("Parcourir les mods", 134, 104, 100, 28, delegate { BrowseMods(); });
+            Key folder = Make("Dossier des mods", 240, 104, 116, 28, delegate { OpenModsFolder(); });
+            Explain(import, "Importer un mod", "MainframeMods.cs");
+            Explain(modBrowse, "Parcourir les mods", "MainframeMods.cs");
+            Explain(folder, "Ouvrir le dossier des mods", "MainframeMods.cs");
             modStatus = ModLabel("", 28, 138, 328, 36, Font, Faint);
-            modListHead = Section("INSTALLED >", 0, 180);
-            modEmpty = ModLabel("No mods yet. Import a " + Mods.Extension + " file.", 28, ModRowTop, 328, 20, Font, Faint);
+            modListHead = Section("INSTALLÉS >", 0, 180);
+            modEmpty = ModLabel("Aucun mod pour l'instant. Importe un fichier " + Mods.Extension + ".", 28, ModRowTop, 328, 20, Font, Faint);
             for (int i = 0; i < ModRows; i++)
             {
                 int row = i, top = ModRowTop + ModRowHeight * i;
                 modNames[i] = ModLabel("", 28, top + 3, 196, 20, Type(10f, true), White);
-                modSwitches[i] = Make("On", 230, top, 54, 22, delegate { SwitchMod(row); });
+                modSwitches[i] = Make("Oui", 230, top, 54, 22, delegate { SwitchMod(row); });
                 modRemoves[i] = Make("Remove", 290, top, 66, 22, delegate { RemoveMod(row); });
                 modAbouts[i] = ModLabel("", 28, top + 26, 256, 30, Look.Mono(8.5f, FontStyle.Regular, GraphicsUnit.Point), Faint);
-                Explain(modSwitches[i], "Mod switch", "MainframeMods.cs", null, "On / Off");
+                Explain(modSwitches[i], "Interrupteur du mod", "MainframeMods.cs", null, "Oui / Non");
                 Explain(modRemoves[i], "Remove", "MainframeMods.cs");
                 modPublishes[i] = Make("Publish", 290, top + 28, 66, 22, delegate { PublishMod(row); });
-                Explain(modPublishes[i], "Publish mod", "MainframeMods.cs");
+                Explain(modPublishes[i], "Publier un mod", "MainframeMods.cs");
             }
             modBack = Make("Back", 28, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst -= ModRows; FillMods(); });
             modPage = ModLabel("", 96, ModRowTop + ModRowHeight * ModRows + 3, 192, 18, Font, Faint);
             modPage.TextAlign = ContentAlignment.MiddleCenter;
-            Explain(modBack, "Mod pages", "MainframeMods.cs");
+            Explain(modBack, "Pages de mods", "MainframeMods.cs");
             modNext = Make("Next", 296, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst += ModRows; FillMods(); });
-            Explain(modNext, "Mod pages", "MainframeMods.cs");
-            Section("COLORS >", 0, ModRowTop + ModRowHeight * ModRows + 30);
+            Explain(modNext, "Pages de mods", "MainframeMods.cs");
+            Section("COULEURS >", 0, ModRowTop + ModRowHeight * ModRows + 30);
             int colourRow = ModRowTop + ModRowHeight * ModRows + 54;
             for (int i = 0; i < ArtColors.Slots; i++)
             {
                 int slot = i;
                 colourKeys[i] = Make(ArtColors.Names[i], 28 + i * 66, colourRow, 62, 26, delegate { PickColour(slot); });
-                colourKeys[i].AccessibleName = "Change her " + ArtColors.Names[i].ToLowerInvariant() + " color";
-                Explain(colourKeys[i], "Her colors", "MainframeMods.cs", null, "Her colors");
+                colourKeys[i].AccessibleName = "Changer sa couleur " + ArtColors.Names[i].ToLowerInvariant() + " color";
+                Explain(colourKeys[i], "Ses couleurs", "MainframeMods.cs", null, "Ses couleurs");
             }
-            Key colourReset = Make("Reset colors", 28, colourRow + 32, 160, 24, delegate { ResetColours(); });
-            Explain(colourReset, "Reset colors", "MainframeMods.cs");
+            Key colourReset = Make("Rétablir les couleurs", 28, colourRow + 32, 160, 24, delegate { ResetColours(); });
+            Explain(colourReset, "Rétablir les couleurs", "MainframeMods.cs");
             for (int i = first; i < Controls.Count; i++)
             {
                 Control control = Controls[i];
@@ -140,20 +140,20 @@ namespace CapriDesktop
                 if (mod == null) continue;
                 modNames[i].Text = mod.File.Name + (string.IsNullOrEmpty(mod.File.Version) ? "" : " v" + mod.File.Version);
                 modNames[i].ForeColor = mod.On ? White : Faint;
-                modAbouts[i].Text = ((mod.Changed ? "CHANGED, approve it again. " : mod.Code ? "RUNS CODE. " : mod.Skin ? "SKIN. " : "") + (string.IsNullOrEmpty(mod.File.Author) ? "" : "by " + mod.File.Author + ". ") + (mod.File.Description ?? "") + (mod.Code || mod.File.WakeNames.Length == 0 ? "" : " Names: " + string.Join(", ", mod.File.WakeNames))).Trim();
+                modAbouts[i].Text = ((mod.Changed ? "MODIFIÉ, approuve-le de nouveau. " : mod.Code ? "EXÉCUTE DU CODE. " : mod.Skin ? "APPARENCE. " : "") + (string.IsNullOrEmpty(mod.File.Author) ? "" : "par " + mod.File.Author + ". ") + (mod.File.Description ?? "") + (mod.Code || mod.File.WakeNames.Length == 0 ? "" : " Noms : " + string.Join(", ", mod.File.WakeNames))).Trim();
                 modAbouts[i].ForeColor = mod.Changed ? Rose : Faint;
-                modSwitches[i].Text = mod.On ? "On" : "Off";
+                modSwitches[i].Text = mod.On ? "Oui" : "Off";
                 modSwitches[i].Accent = mod.On ? Cyan : Rose;
-                modSwitches[i].AccessibleName = (mod.On ? "Turn off " : "Turn on ") + mod.File.Name;
-                modRemoves[i].AccessibleName = "Remove " + mod.File.Name;
-                modPublishes[i].AccessibleName = "Publish " + mod.File.Name + " to the mods directory";
+                modSwitches[i].AccessibleName = (mod.On ? "Désactiver " : "Activer ") + mod.File.Name;
+                modRemoves[i].AccessibleName = "Supprimer " + mod.File.Name;
+                modPublishes[i].AccessibleName = "Publier " + mod.File.Name + " dans l'annuaire des mods";
                 modSwitches[i].Invalidate();
             }
             bool pages = total > pageSize;
             modBack.Visible = modNext.Visible = modPage.Visible = pages;
             modBack.Enabled = modFirst > 0;
             modNext.Enabled = modFirst + pageSize < total;
-            modPage.Text = "Page " + (modFirst / pageSize + 1) + " of " + ((total - 1) / pageSize + 1);
+            modPage.Text = "Page " + (modFirst / pageSize + 1) + " sur " + ((total - 1) / pageSize + 1);
             string[] colours = capri.ModList.ColoursNow;
             for (int i = 0; i < ArtColors.Slots; i++)
             {
@@ -162,7 +162,7 @@ namespace CapriDesktop
                 colourKeys[i].Accent = swatch.GetBrightness() < 0.2f ? Faint : swatch;
                 colourKeys[i].Invalidate();
             }
-            if (capri.ModList.Problems.Count > 0) ModSays("Skipped " + capri.ModList.Problems[0], true);
+            if (capri.ModList.Problems.Count > 0) ModSays("Ignoré " + capri.ModList.Problems[0], true);
         }
 
         private void ModSays(string text, bool problem)
@@ -175,8 +175,8 @@ namespace CapriDesktop
         {
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
-                dialog.Title = "Import a Capri mod";
-                dialog.Filter = "Capri mods (*" + Mods.Extension + ";*" + Mods.CodeExtension + ";*" + Mods.SkinExtension + ")|*" + Mods.Extension + ";*" + Mods.CodeExtension + ";*" + Mods.SkinExtension;
+                dialog.Title = "Importer un mod Capri";
+                dialog.Filter = "Mods Capri (*" + Mods.Extension + ";*" + Mods.CodeExtension + ";*" + Mods.SkinExtension + ")|*" + Mods.Extension + ";*" + Mods.CodeExtension + ";*" + Mods.SkinExtension;
                 if (dialog.ShowDialog(this) == DialogResult.OK) ImportMod(dialog.FileName);
             }
         }
@@ -188,11 +188,11 @@ namespace CapriDesktop
                 Mod mod = capri.ModList.Import(file, ModAsk);
                 if (mod == null)
                 {
-                    ModSays("Not imported. Nothing ran.", false);
+                    ModSays("Non importé. Rien n'a été exécuté.", false);
                     return false;
                 }
                 FillMods();
-                ModSays(mod.Code ? mod.File.Name + " is on and running." : mod.File.WakeNames.Length == 0 ? mod.File.Name + " is on." : mod.File.Name + " is on. She now answers to " + Mods.Listed(mod.File.WakeNames) + " too.", false);
+                ModSays(mod.Code ? mod.File.Name + " est activé et tourne." : mod.File.WakeNames.Length == 0 ? mod.File.Name + " est activé." : mod.File.Name + " est activé. Elle répond maintenant à " + Mods.Listed(mod.File.WakeNames) + " aussi.", false);
                 return true;
             }
             catch (ModException error)
@@ -218,10 +218,10 @@ namespace CapriDesktop
                 {
                     capri.ModList.SetColour(slot, "#" + picked.R.ToString("X2") + picked.G.ToString("X2") + picked.B.ToString("X2"));
                     FillMods();
-                    ModSays("Her " + ArtColors.Names[slot].ToLowerInvariant() + " changed. Saved as My Colors, so you can share it.", false);
+                    ModSays("Sa couleur " + ArtColors.Names[slot].ToLowerInvariant() + " a changé. Enregistrée dans Mes couleurs, tu peux la partager.", false);
                 }
-                catch (IOException error) { ModSays("Couldn't save that color: " + error.Message, true); }
-                catch (UnauthorizedAccessException error) { ModSays("Couldn't save that color: " + error.Message, true); }
+                catch (IOException error) { ModSays("Impossible d'enregistrer cette couleur : " + error.Message, true); }
+                catch (UnauthorizedAccessException error) { ModSays("Impossible d'enregistrer cette couleur : " + error.Message, true); }
             }
         }
 
@@ -231,10 +231,10 @@ namespace CapriDesktop
             {
                 capri.ModList.ResetColours();
                 FillMods();
-                ModSays("Her own colors are back.", false);
+                ModSays("Ses couleurs d'origine sont de retour.", false);
             }
-            catch (IOException error) { ModSays("Couldn't reset her colors: " + error.Message, true); }
-            catch (UnauthorizedAccessException error) { ModSays("Couldn't reset her colors: " + error.Message, true); }
+            catch (IOException error) { ModSays("Impossible de rétablir ses couleurs : " + error.Message, true); }
+            catch (UnauthorizedAccessException error) { ModSays("Impossible de rétablir ses couleurs : " + error.Message, true); }
         }
 
         private bool SwitchMod(int row)
@@ -244,12 +244,12 @@ namespace CapriDesktop
             {
                 bool done = capri.ModList.Set(mod, !mod.On, ModAsk);
                 FillMods();
-                ModSays(!done ? mod.File.Name + " stays off. Nothing ran." : mod.File.Name + (mod.On ? " is on." : " is off."), false);
+                ModSays(!done ? mod.File.Name + " reste désactivé. Rien n'a été exécuté." : mod.File.Name + (mod.On ? " est activé." : " est désactivé."), false);
                 return done;
             }
             catch (ModException error) { ModSays(error.Message, true); }
-            catch (IOException error) { ModSays("Couldn't change that mod: " + error.Message, true); }
-            catch (UnauthorizedAccessException error) { ModSays("Couldn't change that mod: " + error.Message, true); }
+            catch (IOException error) { ModSays("Impossible de modifier ce mod : " + error.Message, true); }
+            catch (UnauthorizedAccessException error) { ModSays("Impossible de modifier ce mod : " + error.Message, true); }
             return false;
         }
 
@@ -260,10 +260,10 @@ namespace CapriDesktop
 
         private bool AskToRun(ModFile mod, string hash)
         {
-            string message = mod.Name + (string.IsNullOrEmpty(mod.Version) ? "" : " v" + mod.Version) + (string.IsNullOrEmpty(mod.Author) ? "" : ", which says it's by " + mod.Author) + ", is a code mod.\n\n"
+            string message = mod.Name + (string.IsNullOrEmpty(mod.Version) ? "" : " v" + mod.Version) + (string.IsNullOrEmpty(mod.Author) ? "" : ", qui se dit créé par " + mod.Author) + ", est un mod de code.\n\n"
                 + "Code mods run as part of Capri with full access to your PC: your files, your accounts and the API keys she has saved. Nothing limits what it can do, and Capri doesn't check whether it's safe.\n\n"
-                + "Only run it if you wrote it, or you've read it and trust who did.\n\nFile fingerprint (SHA-256):\n" + hash + "\n\nRun this code?";
-            return MessageBox.Show(this, message, "Run this code mod?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+                + "Ne le lance que si tu l'as écrit, ou lu et que tu fais confiance à son auteur.\n\nEmpreinte du fichier (SHA-256) :\n" + hash + "\n\nRun this code?";
+            return MessageBox.Show(this, message, "Lancer ce mod de code ?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes;
         }
 
         private void RemoveMod(int row)
@@ -273,10 +273,10 @@ namespace CapriDesktop
             {
                 capri.ModList.Remove(mod);
                 FillMods();
-                ModSays(mod.File.Name + " is removed.", false);
+                ModSays(mod.File.Name + " est supprimé.", false);
             }
-            catch (IOException error) { ModSays("Couldn't remove that mod: " + error.Message, true); }
-            catch (UnauthorizedAccessException error) { ModSays("Couldn't remove that mod: " + error.Message, true); }
+            catch (IOException error) { ModSays("Impossible de supprimer ce mod : " + error.Message, true); }
+            catch (UnauthorizedAccessException error) { ModSays("Impossible de supprimer ce mod : " + error.Message, true); }
         }
 
         private void OpenModsFolder()
@@ -289,7 +289,7 @@ namespace CapriDesktop
             catch (Exception error)
             {
                 if (!(error is IOException || error is UnauthorizedAccessException || error is System.ComponentModel.Win32Exception)) throw;
-                ModSays("Couldn't open the mods folder: " + error.Message, true);
+                ModSays("Impossible d'ouvrir le dossier des mods : " + error.Message, true);
             }
         }
 

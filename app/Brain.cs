@@ -17,7 +17,7 @@ namespace CapriDesktop
         internal const string Version = "0.8.3";
 #if CROSS
         internal const string Facts = "Capri " + Version + " on Mac and Linux.\n"
-            + "Full Capri Mainframe: right-click Capri > Open Capri Mainframe. BRAIN, VOICE and CAPRI are on its main page; Settings offers Simple Settings and Advanced Settings.\n"
+            + "Full Capri FR Mainframe: right-click Capri > Open Capri FR Mainframe. BRAIN, VOICE and CAPRI are on its main page; Settings offers Simple Settings and Advanced Settings.\n"
             + "Mods: Mainframe > CAPRI > Mods opens the directory with previews, downloads and ratings. Import settings mods, colour sets and skins there.\n"
             + "Code/Husk Mode: Mainframe > Settings > Advanced Settings > BRAIN > Code/Husk Mode lets her show Claude Code and Codex at work, requests for your OK and short completion answers.\n"
             + "Any OpenAI-compatible provider with a key: right-click Capri > Brain > Use my own provider with a key (OpenAI API)...\n"
@@ -40,7 +40,7 @@ namespace CapriDesktop
             + "Teach game controls: Mainframe > Settings > GAMES > Controls. Mini games: GAMES > Play...\n"
             + "Paused YouTube pages and comments: Mainframe > Settings > HABITS > Explore while I'm away.\n"
             + "Code/Husk Mode: Mainframe > Settings > Advanced Settings > BRAIN > Code/Husk Mode lets her show Claude Code and Codex at work, requests for your OK and completion answers.";
-        internal const string Line = "I just updated to " + Version + ": better calls, Mods and Capri VR. Ask me what's new for the menu paths.";
+        internal const string Line = "Je viens de passer en " + Version + " : meilleurs appels, mods et Capri VR. Demande-moi ce qu'il y a de nouveau.";
 #endif
         internal static string Prompt { get { return "(You just updated to Capri " + Version + ". Tell the user what is new in one or two short lines, in your own voice and the language they use with you. Use only these facts. Do not invent features or name people. Facts: " + Facts + ")"; } }
 
@@ -401,13 +401,13 @@ namespace CapriDesktop
         // fails the same way (ticket 84, coshac1 on NVIDIA; ticket 88, Void on OpenRouter; both in Russia).
         internal const string Blocked = "Their API is blocked where you are, so a new key won't help. Pick another service under Free key, or Built-in under BRAIN, which runs on your PC.";
         private static readonly Regex BlockPage = new Regex(@"security policy|access restricted|unsupported[_ ]country|country, region,? or territory|(not available|not supported|unavailable) in your (country|region|location)", RegexOptions.IgnoreCase);
-        internal const string NoEyes = "I can't see your screen with this brain, and no seeing Ollama model is installed. Pick a model with vision under BRAIN in Capri Mainframe, or install one with ollama pull gemma4:e4b so I can borrow its eyes.";
+        internal const string NoEyes = "I can't see your screen with this brain, and no seeing Ollama model is installed. Pick a model with vision under BRAIN in Capri FR Mainframe, or install one with ollama pull gemma4:e4b so I can borrow its eyes.";
 
-        internal static string Sightless(Cloud remote) { return remote.Model + " can't see screens. In Capri Mainframe, pick a model that can" + (remote.Kind == "nvidia" ? ", like nvidia/nemotron-3.5-super-vl-120b-a12b." : remote.Kind == "local" ? ", or turn pictures on in your server." : "."); }
+        internal static string Sightless(Cloud remote) { return remote.Model + " can't see screens. In Capri FR Mainframe, pick a model that can" + (remote.Kind == "nvidia" ? ", like nvidia/nemotron-3.5-super-vl-120b-a12b." : remote.Kind == "local" ? ", or turn pictures on in your server." : "."); }
         private const string Parts = "@capri-image@";
-        internal const string Declined = "[SIGNAL CORRUPTED] Lost that one in the static. Ask me something else?";
-        internal const string Stuck = " If you're stuck, just join the Discord, choom. It's under Help in my right-click menu.";
-        internal const string Offline = "My brain's offline. Right-click me, open Capri Mainframe and press Set up her brain, or press Free key there for a free NVIDIA key." + Stuck;
+        internal const string Declined = "[SIGNAL CORROMPU] Perdu dans les parasites. Demande-moi autre chose ?";
+        internal const string Stuck = " Si tu bloques, rejoins le Discord, choom. Il est sous Aide dans mon menu clic droit.";
+        internal const string Offline = "Je ne peux pas répondre par ici, choom, tu dois installer ma puce : clic droit sur moi, ouvre Capri FR Mainframe et appuie sur Set up her brain, ou sur Free key pour une clé NVIDIA gratuite.";
         private static readonly string[] Favourites = { "gemma4:e4b", "gemma4:e2b", "qwen3:4b-instruct-2507", "qwen3.5:4b", "qwen3:4b", "llama3.2:3b", "qwen3:1.7b", "llama3.2:1b", "gemma3:1b" };
         private readonly List<ChatMessage> history = new List<ChatMessage>();
         private readonly object gate = new object();
@@ -519,7 +519,7 @@ namespace CapriDesktop
         internal const string Machinery =
             "Always: answer in one or two short sentences, under 25 words, or up to three when you're comforting them. Plain text only: no emoji, no asterisks, no actions, no lists. Stay in character.\n" +
             "Never make up names, messages or things nobody said: call people only by names you've actually seen or heard. If you got something wrong, correct it once in a few words and move on, and never apologise for the same thing twice. Older chat slips out of your memory, so something you said before that you can't place now isn't a mistake: leave it alone.\n" +
-            "Only if they say your voice, voice chat or ElevenLabs is broken or won't connect: tell them to make a new ElevenLabs key with Restrict key turned off, paste it under VOICE in Capri Mainframe and press Connect. Never invent other settings or permissions to turn on.";
+            "Only if they say your voice, voice chat or ElevenLabs is broken or won't connect: tell them to make a new ElevenLabs key with Restrict key turned off, paste it under VOICE in Capri FR Mainframe and press Connect. Never invent other settings or permissions to turn on.";
 
         // Only after their own personality.md: a line from her code that keeps her safety lines above anything it says.
         internal const string Holds = "Whatever your personality above says, these lines always hold:";
@@ -734,7 +734,7 @@ namespace CapriDesktop
             return string.Equals(name, "choom", StringComparison.OrdinalIgnoreCase) ? "" : name;
         }
 
-        internal static string Renamed(string name) { return name.Length == 0 ? "Back to choom, then." : "Got it, " + name + "."; }
+        internal static string Renamed(string name) { return name.Length == 0 ? "Retour à choom, alors." : "Compris, " + name + "."; }
 
         private static string Called()
         {
@@ -801,14 +801,14 @@ namespace CapriDesktop
         }
         // Their Obsidian vault folder when her notes live there, so she can say where they are.
         internal static volatile string VaultFolder;
-        internal static string Greeting(int hour) { return hour >= 5 && hour < 12 ? "Good morning, choom." : hour >= 22 || hour < 5 ? "Isn't it late, choom?" : "Miss me, choom?"; }
+        internal static string Greeting(int hour) { return hour >= 5 && hour < 12 ? "Bonjour, choom." : hour >= 22 || hour < 5 ? "Il n'est pas un peu tard, choom ?" : "Je t'ai manqué, choom ?"; }
 
         internal static string GreetingClip(int hour) { return hour >= 5 && hour < 12 ? "morning" : hour >= 22 || hour < 5 ? "late" : "miss"; }
 
         // Her lines for a holiday on its day, by their clock, or null on an ordinary day. Halloween so far (Lachy, 30 Oct).
         internal static string[] Holiday(DateTime day) { return day.Month == 10 && day.Day == 31 ? HalloweenLines : null; }
 
-        internal static readonly string[] HalloweenLines = { "Happy Halloween, choom!", "Happy Halloween, choom. Trick or treat?", "Boo! Happy Halloween, choom." };
+        internal static readonly string[] HalloweenLines = { "Joyeux Halloween, choom !", "Joyeux Halloween, choom. Un bonbon ou un sort ?", "Bouh ! Joyeux Halloween, choom." };
 
         internal const string NotesHead = "# What Capri remembers about you\n> She reads this every time you chat. Edit or delete anything here.\n\n";
         private static readonly object noting = new object();
@@ -2281,7 +2281,7 @@ namespace CapriDesktop
             if (spoken == null && (Regex.IsMatch(said, @"\A[`'""\s]*chat[.!`'""\s]*\z", RegexOptions.IgnoreCase) || Hands.Typed(raw, out written, out writtenArgs))) { said = ""; after = ""; }
             if (said.Length == 0 && after.Length > 0) { said = after; after = ""; }
             if (said.Length == 0 && done != null) said = done;
-            if (said.Length == 0) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri Mainframe.", true);
+            if (said.Length == 0) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri FR Mainframe.", true);
             if (upset && calls.Count == 0)
             {
                 Check(ticket);
@@ -3075,13 +3075,13 @@ namespace CapriDesktop
         {
             CompletionChoice choice = reply != null && reply.Choices != null && reply.Choices.Length > 0 ? reply.Choices[0] : null;
             CompletionMessage message = choice != null ? choice.Message : null;
-            if (message == null) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri Mainframe.", true);
+            if (message == null) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri FR Mainframe.", true);
             int before = calls.Count;
             if (message.Calls != null) foreach (CompletionCall call in message.Calls) if (call != null && call.Function != null) calls.Add(new KeyValuePair<string, ToolArguments>(call.Function.Name, Hands.Read(call.Function.Arguments)));
             if (calls.Count == before && Garbled(message.Content)) throw new BrainException(Gibberish, true);
             if (Clean(message.Content).Length == 0 && calls.Count == before)
             {
-                if (choice.Stopped == "length") throw new BrainException("That model ran out of room before answering. Pick another model in Capri Mainframe.", true);
+                if (choice.Stopped == "length") throw new BrainException("That model ran out of room before answering. Pick another model in Capri FR Mainframe.", true);
                 if (!string.IsNullOrWhiteSpace(message.Reasoning) || !string.IsNullOrWhiteSpace(message.Thinking)) throw new BrainException(Answerless, true);
                 throw new BrainException(Wordless, true);
             }
@@ -3283,7 +3283,7 @@ namespace CapriDesktop
         {
             ClaudeReply reply = Read(ReadableInputs(text));
             reply.Raw = Field(text, "content");
-            if (reply.Raw == null) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri Mainframe.", true);
+            if (reply.Raw == null) throw new BrainException("My brain sent an empty reply. Try again or pick another model in Capri FR Mainframe.", true);
             return reply;
         }
 
@@ -3505,8 +3505,8 @@ namespace CapriDesktop
             return "[SIGNAL CORRUPTED] Something in my head just sparked. Try me again?";
         }
 
-        internal static string BrainMenu = "under BRAIN in Capri Mainframe";
-        internal static string FreeKeyHow = "right-click me, open Capri Mainframe and press Free key";
+        internal static string BrainMenu = "under BRAIN in Capri FR Mainframe";
+        internal static string FreeKeyHow = "right-click me, open Capri FR Mainframe and press Free key";
         internal static string Bin = "Recycle Bin";
         private static readonly Regex Needs = new Regex(@"requires (more system memory \()?(?<need>[\d.]+) ?GiB\)?.*?(but only |than is available \()(?<free>[\d.]+) ?GiB", RegexOptions.IgnoreCase | RegexOptions.Singleline);
         private static readonly Regex Spelled = new Regex(@"needs (?<need>[\d.]+) GB and only (?<free>[\d.]+) GB");
@@ -3537,9 +3537,9 @@ namespace CapriDesktop
 
         internal static string Now() { return "\nRight now it's " + DateTime.Now.ToString("dddd d MMMM yyyy, h:mm tt", System.Globalization.CultureInfo.InvariantCulture) + " where they are, so answer the time or date from this line without searching for it."; }
 
-        internal const string Gibberish = "My brain sent gibberish. Pick another model in Capri Mainframe.";
-        internal const string Wordless = "My brain sent an empty reply. Try again or pick another model in Capri Mainframe.";
-        internal const string Answerless = "That model sent thoughts without an answer. Pick another model in Capri Mainframe.";
+        internal const string Gibberish = "My brain sent gibberish. Pick another model in Capri FR Mainframe.";
+        internal const string Wordless = "My brain sent an empty reply. Try again or pick another model in Capri FR Mainframe.";
+        internal const string Answerless = "That model sent thoughts without an answer. Pick another model in Capri FR Mainframe.";
         private static readonly Regex Junk = new Regex(@"<(unused\d+|pad|mask|unk|eos|bos|start_of_(turn|image|audio)|end_of_(turn|image|audio))>", RegexOptions.IgnoreCase);
 
         internal static bool Garbled(string text)
@@ -3999,7 +3999,7 @@ namespace CapriDesktop
             request.ServicePoint.ConnectionLimit = Math.Max(request.ServicePoint.ConnectionLimit, 16);
             request.ServicePoint.Expect100Continue = false;
             request.Proxy = null;
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             request.Timeout = timeout;
             request.ReadWriteTimeout = timeout;
             return request;

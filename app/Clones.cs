@@ -57,21 +57,21 @@ namespace CapriDesktop
         internal const int KeepShowing = 140;
         private static readonly string[] HaulLines =
         {
-            "mine now", "you weren't using this", "redecorating", "this goes over here now", "borrowing this", "i'm taking this one", "stop clicking it"
+            "à moi maintenant", "tu ne t'en servais pas", "redecorating", "ça va là maintenant", "je t'emprunte ça", "je prends celui-là", "arrête de cliquer"
         };
         private static readonly string[] NoteLines =
         {
-            "there are more of me now", "i live here", "nice files", "we voted. you lost.", "your mouse is mine",
-            "hold esc if you're scared", "capri.exe has duplicated", "we're unionising", "who let me out",
-            "don't check task manager", "i named the others", "all of us are the real one"
+            "on est plus nombreuses", "j'habite ici", "jolis fichiers", "on a voté. tu as perdu.", "ta souris est à moi",
+            "maintiens échap si tu as peur", "caprifr.exe s'est dupliquée", "on se syndique", "qui m'a laissée sortir",
+            "ne regarde pas le gestionnaire des tâches", "j'ai donné un nom aux autres", "on est toutes la vraie"
         };
         private static readonly string[] FakeLines =
         {
-            "deleting system32", "deleting your saves", "formatting C:", "uninstalling windows", "deleting your homework",
-            "uninstalling your gpu", "deleting your minecraft world", "sending your search history to your mum"
+            "suppression de system32", "suppression de tes sauvegardes", "formatage de C:", "désinstallation de windows", "suppression de tes devoirs",
+            "désinstallation de ta carte graphique", "suppression de ton monde minecraft", "envoi de ton historique à ta mère"
         };
-        internal const string Owned = "jk. your files are fine";
-        internal const string Sorry = "hold esc if you're sorry";
+        internal const string Owned = "je rigole. tes fichiers vont bien";
+        internal const string Sorry = "maintiens échap si tu regrettes";
         private readonly Random random;
         private readonly int wide, tall;
         private double nabAt, noteAt, holdUntil;
@@ -376,7 +376,7 @@ namespace CapriDesktop
         private volatile int heldMs = -1;
         private bool cleared;
         private Bitmap hint;
-        internal const string Hint = "hold esc to clear us";
+        internal const string Hint = "maintiens échap pour nous effacer";
         internal readonly Swarm Swarm;
         internal Action Cleared, Failed;
         internal Action<double> Ticked;
@@ -929,7 +929,7 @@ namespace CapriDesktop
             {
                 int gone = cloneWindow == null ? 0 : cloneWindow.Swarm.Bodies.Count + cloneWindow.Swarm.Pending;
                 ClonesOff();
-                return gone == 0 ? "I don't have any clones out." : gone == 1 ? "Got rid of my clone." : "Got rid of all " + gone + " of my clones.";
+                return gone == 0 ? "Je n'ai aucun clone dehors." : gone == 1 ? "Clone supprimé." : "J'ai supprimé les " + gone + " clones.";
             }
             double now = clock.Elapsed.TotalSeconds;
             Point centre = new Point(anchor.X + Width / 2, anchor.Y + Height / 2);
@@ -953,9 +953,9 @@ namespace CapriDesktop
             bool freeForAll = count <= 0;
             cloneWindow.Spawn(freeForAll ? 1 : count, centre, freeForAll);
             if (!testing) Animate("glitch");
-            return freeForAll ? "One of me wasn't enough, choom. We'll keep multiplying, so hold Esc when you've had enough."
-                : count == 1 ? "There's two of me now, choom. Hold Esc to clear her."
-                : "There's " + count + " more of me now, choom. Hold Esc to clear them.";
+            return freeForAll ? "Une seule, ça ne suffisait pas, choom. On va se multiplier : maintiens Échap quand tu en auras assez."
+                : count == 1 ? "On est deux maintenant, choom. Maintiens Échap pour l'effacer."
+                : "Il y a " + count + " de plus de moi maintenant, choom. Maintiens Échap pour les effacer.";
         }
 
         internal void ClonesOff()
@@ -978,7 +978,7 @@ namespace CapriDesktop
             if (testing || hidden || working != null || speech != null || talkState != TalkState.Off) return;
             heard = "holds Esc";
             box.Prompt = "> sys: ";
-            Answer(++asking, "Fine. Just me again.", TalkState.Talking);
+            Answer(++asking, "Bon. Plus que moi.", TalkState.Talking);
         }
 
         // One brain call writes a few lines for all of them, however many there are, and each is said in turn.

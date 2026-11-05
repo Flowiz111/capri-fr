@@ -94,28 +94,28 @@ namespace CapriDesktop
                     List<Reminder> waiting = reminders.FindAll(pending => !pending.Said);
                     waiting.Sort(delegate(Reminder left, Reminder right) { return left.Due.CompareTo(right.Due); });
                     List<string> lines = waiting.ConvertAll(listed => listed.Due.ToString("f") + ": " + listed.Text);
-                    return lines.Count == 0 ? "You have no reminders waiting." : "Your reminders:\n" + string.Join("\n", lines.ToArray());
+                    return lines.Count == 0 ? "Tu n'as aucun rappel en attente." : "Tes rappels :\n" + string.Join("\n", lines.ToArray());
                 }
                 List<Reminder> changed = new List<Reminder>(reminders);
                 if (args.Action == "cancel")
                 {
                     string wanted = Key(args.Text);
-                    if (wanted.Length == 0 || wanted == "the" || wanted == "my") return "Couldn't find that reminder.";
+                    if (wanted.Length == 0 || wanted == "the" || wanted == "my") return "Rappel introuvable.";
                     Reminder cancelled = changed.Find(exact => !exact.Said && Key(exact.Text) == wanted)
                         ?? changed.Find(part => !part.Said && (" " + Key(part.Text) + " ").Contains(" " + wanted + " "));
-                    if (cancelled == null) return "Couldn't find that reminder.";
+                    if (cancelled == null) return "Rappel introuvable.";
                     changed.Remove(cancelled);
                     Write(remindersPath, changed);
                     reminders = changed;
-                    return "Cancelled your reminder: " + cancelled.Text;
+                    return "Rappel annulé : " + cancelled.Text;
                 }
                 DateTime when;
-                if (string.IsNullOrWhiteSpace(args.Text)) return "What should I remind you about?";
-                if (!Parse(args.When, Now(), out when)) return "What time should I remind you? Try in 20 minutes or on 5 December at 9am.";
+                if (string.IsNullOrWhiteSpace(args.Text)) return "De quoi dois-je te rappeler ?";
+                if (!Parse(args.When, Now(), out when)) return "À quelle heure ? Essaie « dans 20 minutes » ou « le 5 décembre à 9h ».";
                 changed.Add(new Reminder { Text = args.Text.Trim(), When = DateTime.SpecifyKind(when, DateTimeKind.Unspecified).ToString("o", CultureInfo.InvariantCulture) });
                 Write(remindersPath, changed);
                 reminders = changed;
-                return "I'll remind you " + when.ToString("f") + ": " + args.Text.Trim();
+                return "Je te le rappellerai " + when.ToString("f") + ": " + args.Text.Trim();
             }
         }
 
@@ -131,7 +131,7 @@ namespace CapriDesktop
                 next.Said = true;
                 try { Write(remindersPath, reminders); }
                 catch { next.Said = false; throw; }
-                return next.Late ? "Late reminder, due " + next.Due.ToString("f") + ": " + next.Text : "Reminder: " + next.Text;
+                return next.Late ? "Rappel en retard, prévu " + next.Due.ToString("f") + ": " + next.Text : "Rappel : " + next.Text;
             }
         }
 
@@ -143,26 +143,26 @@ namespace CapriDesktop
                 if (args.Action == "list")
                 {
                     List<string> lines = routines.ConvertAll(listedRoutine => listedRoutine.Phrase + ": " + listedRoutine.Steps);
-                    return lines.Count == 0 ? "You have no saved routines." : "Your routines:\n" + string.Join("\n", lines.ToArray());
+                    return lines.Count == 0 ? "Tu n'as aucune routine enregistrée." : "Tes routines :\n" + string.Join("\n", lines.ToArray());
                 }
                 string phrase = (args.Phrase ?? "").Trim().Trim('"', '\'', '“', '”');
-                if (Key(phrase).Length == 0) return "What phrase should start your routine?";
+                if (Key(phrase).Length == 0) return "Quelle phrase doit lancer ta routine ?";
                 List<Routine> changed = new List<Routine>(routines);
                 Routine existing = changed.Find(savedRoutine => Key(savedRoutine.Phrase) == Key(phrase));
                 if (args.Action == "forget")
                 {
-                    if (existing == null) return "Couldn't find that routine.";
+                    if (existing == null) return "Routine introuvable.";
                     changed.Remove(existing);
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(args.Steps)) return "What should I do when you say " + phrase + "?";
+                    if (string.IsNullOrWhiteSpace(args.Steps)) return "Que dois-je faire quand tu dis " + phrase + "?";
                     if (existing != null) changed.Remove(existing);
                     changed.Add(new Routine { Phrase = phrase, Steps = args.Steps.Trim() });
                 }
                 Write(routinesPath, changed);
                 routines = changed;
-                return args.Action == "forget" ? "Forgot your routine: " + phrase : "When you say " + phrase + ", I'll " + args.Steps.Trim();
+                return args.Action == "forget" ? "Routine oubliée : " + phrase : "Quand tu diras " + phrase + ", je " + args.Steps.Trim();
             }
         }
 
@@ -179,10 +179,10 @@ namespace CapriDesktop
         internal string Run(string phrase, Func<string, string> run)
         {
             string steps = Steps(phrase);
-            if (steps == null) return "Couldn't find that routine.";
+            if (steps == null) return "Routine introuvable.";
             if (running == null) running = new HashSet<string>();
             string key = Key(phrase);
-            if (!running.Add(key)) return "Already doing that routine.";
+            if (!running.Add(key)) return "Je fais déjà cette routine.";
             try { return run(steps); }
             finally { running.Remove(key); }
         }
@@ -207,7 +207,7 @@ namespace CapriDesktop
             if (cancel.Success && !Regex.IsMatch(Key(cancel.Groups[1].Value), @"^(?:the|my)$")) return Call("remind", new ToolArguments { Action = "cancel", Text = cancel.Groups[1].Value });
             // "Cancel my timer" or "stop the 10 min timer": a timer is a reminder whose words say timer.
             Match unset = Regex.Match(text, @"^(?:cancel|stop|remove|delete|forget|end|kill)(?: the| my)?((?: \S+)? (?:minutes?|mins?|hours?|hrs?|seconds?|secs?))? timer$", RegexOptions.IgnoreCase);
-            if (unset.Success) return Call("remind", new ToolArguments { Action = "cancel", Text = (TimerSize(unset.Groups[1].Value) + " timer").Trim() });
+            if (unset.Success) return Call("remind", new ToolArguments { Action = "cancel", Text = (TimerSize(unset.Groups[1].Value) + " minuteur").Trim() });
             Match forget = Regex.Match(text, @"^(?:forget|remove|delete)(?: the| my)? (.+?) routine$", RegexOptions.IgnoreCase);
             if (forget.Success && Steps(forget.Groups[1].Value) != null) return Call("routine", new ToolArguments { Action = "forget", Phrase = forget.Groups[1].Value });
             const string actions = @"(?:open|launch|start|run|play|turn|mute|unmute|pause|resume|close|switch|search|google|look|tell|send|write|type|press|click|take|show|set|remind|go|dance|shut|lock|join|leave|make|create|move)\b";
@@ -230,7 +230,7 @@ namespace CapriDesktop
             string span = timer.Success ? timer.Groups[1].Value.Trim() : sized.Success ? sized.Groups[1].Value + " " + sized.Groups[2].Value : null;
             DateTime timerDue;
             if (span != null && Parse("in " + span, now, out timerDue))
-                return Call("remind", new ToolArguments { Text = "your " + TimerSize(span) + " timer is done", When = "in " + span });
+                return Call("remind", new ToolArguments { Text = "your " + TimerSize(span) + " minuteur terminé", When = "in " + span });
             foreach (string starter in starters)
             {
                 Match ask = Regex.Match(text, starter, RegexOptions.IgnoreCase);

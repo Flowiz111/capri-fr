@@ -116,7 +116,7 @@ namespace CapriDesktop
 
         internal string Describe()
         {
-            string ram = Math.Round(Ram / (double)(1L << 30)) + " GB RAM";
+            string ram = Math.Round(Ram / (double)(1L << 30)) + " Go de RAM";
             if (string.IsNullOrEmpty(Gpu) || Vram < (1L << 30)) return ram;
             return ram + " · " + Gpu.Replace("NVIDIA GeForce ", "").Replace("AMD Radeon ", "Radeon ") + " (" + Math.Round(Vram / (double)(1L << 30)) + " GB)";
         }
@@ -183,8 +183,8 @@ namespace CapriDesktop
             if (pick.EyesFile == null || HasEyes(pick)) return;
             Cancel = false;
             string drive = Path.GetPathRoot(root);
-            if (new DriveInfo(drive).AvailableFreeSpace < pick.EyesSize + (64L << 20)) throw new IOException("Storage too full: her eyes need " + Amount(pick.EyesSize) + " free on " + drive.TrimEnd('\\') + ".");
-            Fetch(pick.EyesUrl, EyesPath(pick), pick.EyesSize, pick.EyesSha256, "her eyes", progress, delegate { return Cancel; });
+            if (new DriveInfo(drive).AvailableFreeSpace < pick.EyesSize + (64L << 20)) throw new IOException("Stockage plein : ses yeux ont besoin de " + Amount(pick.EyesSize) + " libres sur " + drive.TrimEnd('\\') + ".");
+            Fetch(pick.EyesUrl, EyesPath(pick), pick.EyesSize, pick.EyesSha256, "ses yeux", progress, delegate { return Cancel; });
         }
 
         internal Pick Installed()
@@ -203,15 +203,15 @@ namespace CapriDesktop
             Directory.CreateDirectory(root);
             long needed = (File.Exists(Server) ? 0 : ZipSize * 4) + (File.Exists(ModelPath(pick)) ? 0 : pick.Size) + (256L << 20);
             string drive = Path.GetPathRoot(root);
-            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Storage too full: her brain needs " + Amount(needed) + " free on " + drive.TrimEnd('\\') + ".");
+            if (new DriveInfo(drive).AvailableFreeSpace < needed) throw new IOException("Stockage plein : son cerveau a besoin de " + Amount(needed) + " libres sur " + drive.TrimEnd('\\') + ".");
             if (!File.Exists(Server))
             {
                 string zip = Path.Combine(root, "engine-" + Build + ".zip");
-                Fetch(ZipUrl, zip, ZipSize, ZipSha, "the engine", progress, delegate { return Cancel; });
+                Fetch(ZipUrl, zip, ZipSize, ZipSha, "le moteur", progress, delegate { return Cancel; });
                 string staging = Folder + ".new";
                 if (Directory.Exists(staging)) Directory.Delete(staging, true);
                 ZipFile.ExtractToDirectory(zip, staging);
-                if (!File.Exists(Path.Combine(staging, "llama-server.exe"))) throw new IOException("The engine download is missing llama-server.exe.");
+                if (!File.Exists(Path.Combine(staging, "llama-server.exe"))) throw new IOException("Il manque llama-server.exe au téléchargement du moteur.");
                 if (Directory.Exists(Folder)) Directory.Delete(Folder, true);
                 Directory.Move(staging, Folder);
                 File.Delete(zip);
@@ -236,7 +236,7 @@ namespace CapriDesktop
                 try
                 {
                     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    request.UserAgent = "Capri-Desktop";
+                    request.UserAgent = "CapriFR-Desktop";
                     request.Timeout = 30000;
                     request.ReadWriteTimeout = 60000;
                     if (have > 0) request.AddRange(have);
@@ -254,7 +254,7 @@ namespace CapriDesktop
                                 if (stopped()) throw new OperationCanceledException();
                                 file.Write(buffer, 0, read);
                                 have += read;
-                                if (have - shown >= (4L << 20)) { shown = have; progress("Downloading " + label, have, size); }
+                                if (have - shown >= (4L << 20)) { shown = have; progress("Téléchargement de " + label, have, size); }
                             }
                         }
                     }
@@ -264,12 +264,12 @@ namespace CapriDesktop
                 if (have < size)
                 {
                     stalls = have > before ? 0 : stalls + 1;
-                    if (stalls >= 4) throw new IOException("The download of " + label + " keeps stopping. Check your connection and try again.");
+                    if (stalls >= 4) throw new IOException("Le téléchargement de " + label + " s'arrête sans cesse. Vérifie ta connexion et réessaie.");
                     Thread.Sleep(1500 * stalls);
                 }
             }
-            if (have != size) { File.Delete(part); throw new IOException(label + " came down the wrong size. Try again."); }
-            progress("Checking " + label, size, size);
+            if (have != size) { File.Delete(part); throw new IOException(label + " n'a pas la bonne taille. Réessaie."); }
+            progress("Vérification de " + label, size, size);
             if (!string.Equals(Hash(part), sha256, StringComparison.OrdinalIgnoreCase)) { File.Delete(part); throw new IOException(label + " failed its checksum. Try again."); }
             if (File.Exists(target)) File.Delete(target);
             File.Move(part, target);
@@ -321,7 +321,7 @@ namespace CapriDesktop
                 int window = Brain.Window;
                 if (server != null && !server.HasExited && serverEyes == eyes && serverCpu == CpuOnly && serverWindow == window) return;
                 if (server != null) Stop();
-                if (!File.Exists(Server) || !File.Exists(ModelPath(pick))) throw new BrainException("Brain not downloaded. Press Set up her brain.");
+                if (!File.Exists(Server) || !File.Exists(ModelPath(pick))) throw new BrainException("Cerveau non téléchargé. Appuie sur Installer son cerveau.");
                 port = FreePort();
                 serverEyes = eyes;
                 serverCpu = CpuOnly;
@@ -341,7 +341,7 @@ namespace CapriDesktop
                     // Its own log is off, so the exit code is the only clue Copy error details can carry. A graphics driver that crashes it while loading gets one try on the CPU, as a crash mid-chat does.
                     bool retry = running != null && onGpu;
                     Brain.Log("brain", -1, "llama-server stopped while loading " + pick.Name + (onGpu ? "" : " on the CPU") + (running == null ? "" : " with exit code 0x" + ((uint)ExitCode(running)).ToString("X8")) + (retry ? ", restarting it on the CPU" : ""));
-                    if (!retry) throw new BrainException("Brain crashed loading. Close games, press Refresh.");
+                    if (!retry) throw new BrainException("Le cerveau a planté au chargement. Ferme tes jeux, appuie sur Actualiser.");
                     CpuOnly = true;
                     Ensure(pick);
                     return;
@@ -349,7 +349,7 @@ namespace CapriDesktop
                 if (Healthy()) return;
                 Thread.Sleep(400);
             }
-            throw new BrainException("Brain loaded too slowly. Close games, press Refresh.");
+            throw new BrainException("Le cerveau charge trop lentement. Ferme tes jeux, appuie sur Actualiser.");
         }
 
         private bool Healthy()

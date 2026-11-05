@@ -68,7 +68,7 @@ namespace CapriDesktop
 
         internal static string Choice { get { return choice; } }
         internal static CallApp Current { get { return current; } }
-        internal const string Note = "Browser captures sound from all tabs.";
+        internal const string Note = "Navigateur : capte le son de tous les onglets.";
 
         private static string[] MakeChoices()
         {

@@ -42,7 +42,7 @@ namespace CapriDesktop
             if (defaults.Fit(3840, 2160) != new Size(1920, 1080) || defaults.Fit(98, 66) != new Size(98, 66)
                 || defaults.Bits(1920, 1080) != 8294400) throw new Exception("Auto clip sizing or bitrate changed.");
             checks.Add("PASS clip folder, length, FPS, resolution and bitrate survive saving; old and invalid preferences retain safe defaults, aspect ratio and no upscaling");
-            string tidy = Path.Combine(Path.GetTempPath(), "Capri-custom-clips-" + Guid.NewGuid().ToString("N"));
+            string tidy = Path.Combine(Path.GetTempPath(), "CapriFR-custom-clips-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(tidy);
             try
             {
@@ -207,7 +207,7 @@ namespace CapriDesktop
 
         private static void SmokeClipEncoding(List<string> checks)
         {
-            string folder = Path.Combine(Path.GetTempPath(), "Capri-clip-options-" + Guid.NewGuid().ToString("N"));
+            string folder = Path.Combine(Path.GetTempPath(), "CapriFR-clip-options-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(folder);
             try
             {

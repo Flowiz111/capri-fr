@@ -9,7 +9,7 @@ namespace CapriDesktop
     internal sealed class Care
     {
         internal const long Away = 600000;
-        internal static readonly string[] Names = { "Water", "Stretch", "Look away", "Sleep nudge", "Meals", "Game break", "Bored" };
+        internal static readonly string[] Names = { "Eau", "Étirements", "Regarder ailleurs", "Rappel de sommeil", "Repas", "Pause de jeu", "Ennui" };
         private readonly Func<double> seconds;
         private readonly Func<DateTime> local;
         private readonly Func<CareKind, string> words;
@@ -147,17 +147,17 @@ namespace CapriDesktop
     internal sealed class CareLines
     {
         internal const string Defaults =
-            "# Capri's check-ins\n\n" +
-            "Edit the bullet lines under each heading to change what she says. Remove a bullet to stop using it, or all the bullets under a heading to silence that check-in. These lines stay on this PC.\n\n" +
-            "## Water\n- Have a sip of water, choom. I'll keep your spot.\n- Water break. Even you need a refill.\n\n" +
-            "## Stretch\n- Unfold yourself a little. Those legs still work.\n- Tiny stretch break. I'll be right here.\n\n" +
-            "## Look away\n- Give your eyes 20 seconds looking away from the screen. I'll survive.\n- Look at something far away for 20 seconds. Yes, even farther than me.\n\n" +
-            "## Sleep nudge\n- It's late, choom. Your bed misses you.\n\n" +
-            "## Meals\n- Been here since before lunch. Go grab something to eat.\n- Food break. Can't run that brain on empty.\n\n" +
-            "## Game break\n- Long session. Take a little break when you've got a good spot.\n- You've been at that game a while. Stretch those hands when you can.\n\n" +
-            "## Bored\n- So boreddd.\n- I've counted your desktop icons twice now.\n- One of my minds is making its own entertainment. Worrying.\n- Tiny gremlin. Big boredom.\n\n" +
-            "## Bored noticed\n- There you are.\n- Finally. Hi.\n\n" +
-            "## Bored ignored\n- Fine. I'll entertain myself.\n- Cool. Cool cool cool.\n";
+            "# Rappels de Capri\n\n" +
+            "Modifie les lignes sous chaque titre pour changer ce qu'elle dit. Retire une ligne pour ne plus l'utiliser, ou toutes les lignes d'un titre pour couper ce rappel. Ces lignes restent sur ce PC.\n\n" +
+            "## Eau\n- Bois un peu d'eau, choom. Je garde ta place.\n- Pause hydratation. Même toi, tu as besoin de faire le plein.\n\n" +
+            "## Étirements\n- Déplie-toi un peu. Ces jambes marchent encore.\n- Petite pause étirements. Je reste là.\n\n" +
+            "## Regarder ailleurs\n- Regarde ailleurs 20 secondes pour tes yeux. Je survivrai.\n- Regarde au loin pendant 20 secondes. Oui, encore plus loin que moi.\n\n" +
+            "## Rappel de sommeil\n- Il est tard, choom. Ton lit t'attend.\n\n" +
+            "## Repas\n- Tu es là depuis avant le déjeuner. Va manger quelque chose.\n- Pause repas. Ce cerveau ne tourne pas à vide.\n\n" +
+            "## Pause de jeu\n- Longue session. Fais une petite pause dès que tu peux.\n- Ça fait un moment que tu joues. Étire tes mains quand tu peux.\n\n" +
+            "## Ennui\n- Je m'ennuiiie.\n- J'ai déjà compté tes icônes deux fois.\n- Un de mes esprits s'invente des distractions. Inquiétant.\n- Petit gremlin. Grand ennui.\n\n" +
+            "## Ennui remarqué\n- Te voilà.\n- Enfin. Salut.\n\n" +
+            "## Ennui ignoré\n- Très bien. Je vais m'occuper toute seule.\n- Cool. Cool cool cool.\n";
         private readonly string path;
         private readonly Dictionary<string, string> last = new Dictionary<string, string>();
         private readonly Random dice = new Random();

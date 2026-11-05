@@ -834,8 +834,8 @@ namespace CapriDesktop
         // Seconds to wait for another game in front once this one's gone. A launcher hands over to its game, which can take a
         // while to open a window, and it's the short stays that are launchers.
         private const double GoneWait = 3, LauncherWait = 20, LauncherLife = 120;
-        private const string ArmedLine = "Gaming Mode's armed. I'll dock as soon as a game's up.";
-        private const string ArmedOut = "Gaming Mode's armed. I'll watch as soon as a game's up.";
+        private const string ArmedLine = "Mode jeu prêt. Je me place dès qu'un jeu est lancé.";
+        private const string ArmedOut = "Mode jeu prêt. Je regarde dès qu'un jeu est lancé.";
         private readonly HashSet<string> warned = new HashSet<string>();
         private double dockedAt, goneAt = -1;
         // She came in by herself and nobody's heard about it.
@@ -858,7 +858,7 @@ namespace CapriDesktop
         internal string On(double now)
         {
             if (quiet) { quiet = false; return Landing(Game); }
-            if (State != Stage.Off) return "Gaming Mode's already on.";
+            if (State != Stage.Off) return "Le mode jeu est déjà activé.";
             GameSeen found = Find();
             if (found != null) return Land(found, now);
             State = Stage.Armed;
@@ -868,7 +868,7 @@ namespace CapriDesktop
 
         internal string Off()
         {
-            if (State == Stage.Off) return "Gaming Mode's already off.";
+            if (State == Stage.Off) return "Le mode jeu est déjà coupé.";
             bool on = State == Stage.Docked;
             State = Stage.Off;
             Game = null;
@@ -876,7 +876,7 @@ namespace CapriDesktop
             quiet = false;
             if (on) Undock();
             Changed();
-            return "Gaming Mode off.";
+            return "Mode jeu coupé.";
         }
 
         private string Land(GameSeen game, double now)
@@ -890,7 +890,7 @@ namespace CapriDesktop
             return Landing(game);
         }
 
-        private string Landing(GameSeen game) { return "Gaming Mode on, " + Name() + (Warn(game) ? ". " + Borderless : (Hud() ? ". Docking top-left until you close the game." : ". I'll stay out here with you until you close the game.")); }
+        private string Landing(GameSeen game) { return "Mode jeu activé, " + Name() + (Warn(game) ? ". " + Borderless : (Hud() ? ". Je me place en haut à gauche jusqu'à la fermeture du jeu." : ". Je reste ici avec toi jusqu'à la fermeture du jeu.")); }
 
         // On by default (Lachy, 31 Oct): a game in front takes her in with nothing said, unless she can't show over it.
         internal void Notice(double now)
@@ -903,8 +903,8 @@ namespace CapriDesktop
             if (line.EndsWith(Borderless, StringComparison.Ordinal)) Say(line);
         }
 
-        private string Borderless { get { return Hud() ? BorderlessHud : "That game's in exclusive full screen, so I can't show over it. Switch it to borderless and you'll see me."; } }
-        private const string BorderlessHud = "That game's in exclusive full screen, so I can't show over it. Switch it to borderless and I'll dock top-left.";
+        private string Borderless { get { return Hud() ? BorderlessHud : "Ce jeu est en plein écran exclusif : je ne peux pas m'afficher dessus. Passe en sans bordure et tu me verras."; } }
+        private const string BorderlessHud = "Ce jeu est en plein écran exclusif : je ne peux pas m'afficher dessus. Passe en sans bordure et je me placerai en haut à gauche.";
 
         // True the first time this game is seen in exclusive full screen.
         private bool Warn(GameSeen game) { return Exclusive(game) && warned.Add(game.Name.ToLowerInvariant()); }
@@ -939,7 +939,7 @@ namespace CapriDesktop
             if (now - goneAt < (goneAt - dockedAt < LauncherLife ? LauncherWait : GoneWait)) return;
             bool told = !quiet;
             Off();
-            if (told) Say("GG, " + Name() + (Stays() ? "." : ". Gaming Mode off."));
+            if (told) Say("GG, " + Name() + (Stays() ? "." : ". Mode jeu coupé."));
         }
     }
 
@@ -1002,16 +1002,16 @@ namespace CapriDesktop
                 bool wanted = GamingWanted;
                 WantGaming(false);
                 string left = gaming.Off();
-                return wanted ? "Gaming Mode off." : left;
+                return wanted ? "Mode jeu coupé." : left;
             }
-            if (!docked) return "My HUD isn't up right now.";
+            if (!docked) return "Mon HUD n'est pas affiché.";
             string game = gaming.Game.Name;
             Point spot = action == "reset" ? GameSpots.Built(game) : GameSpots.Nudged(GameHud.Offset, action);
             GameHud.Offset = spot;
             preferences.GameSpots = GameSpots.Keep(preferences.GameSpots, game, spot);
             SavePreferences();
             GameHud.Show(gaming.Game.Bounds);
-            return action == "reset" ? "Put my HUD back." : "Moved my HUD " + action + ".";
+            return action == "reset" ? "HUD remis en place." : "HUD déplacé " + action + ".";
         }
 
         // Her key and her Mainframe's switch.
@@ -1091,7 +1091,7 @@ namespace CapriDesktop
             if (box.Visible) box.Hide();
             // A job that's already running moves to the HUD, as one started in Gaming Mode does.
             taskPanel.Stop();
-            visibilityItem.Text = "Hide Capri";
+            visibilityItem.Text = "Masquer Capri";
             GameHud.Status(!preferences.Silent, shushed);
             GameHud.Show(game.Bounds);
             UpdateAnimation();
@@ -1109,7 +1109,7 @@ namespace CapriDesktop
             manualHidden = dockHid;
             fullScreenHidden = preferences.HideFullScreen && !GamingOn && FullScreen();
             hidden = manualHidden || fullScreenHidden;
-            visibilityItem.Text = hidden ? "Show Capri" : "Hide Capri";
+            visibilityItem.Text = hidden ? "Afficher Capri" : "Masquer Capri";
             if (!hidden)
             {
                 if (seat == null && !hanging) anchor = KeepOnScreen(anchor);
@@ -1136,7 +1136,7 @@ namespace CapriDesktop
         // said something, and a job's status stays in the box while the task panel stays away.
         private void DockTalk()
         {
-            bool theirs = box.Prompt == "> you: ";
+            bool theirs = box.Prompt == "> \u00e0 toi : ";
             string now = talkState + "|" + (working ?? "") + "|" + (theirs ? heard : "") + "|" + reply;
             if (now != dockTalk)
             {
@@ -1186,9 +1186,9 @@ namespace CapriDesktop
         // Her animations have no body to play on while she's docked, so the ones that say something go to the HUD.
         private string DockAnimate(string name)
         {
-            if (name == "grin" || name == "dance") { GameHud.Mood(HudMood.Happy); return "Grinning."; }
-            if (name == "glitch") { GameHud.Mood(HudMood.Surprise); return "Glitched."; }
-            return name == "blink" ? "Blinked." : name == "idle" ? "Back to my idle." : name == "stop_dancing" ? "I wasn't dancing." : "I don't have an animation called " + name + ".";
+            if (name == "grin" || name == "dance") { GameHud.Mood(HudMood.Happy); return "Je souris."; }
+            if (name == "glitch") { GameHud.Mood(HudMood.Surprise); return "Glitch."; }
+            return name == "blink" ? "J'ai cligné des yeux." : name == "idle" ? "Retour au repos." : name == "stop_dancing" ? "Je ne dansais pas." : "Je n'ai pas d'animation appelée " + name + ".";
         }
     }
 
@@ -1524,7 +1524,7 @@ namespace CapriDesktop
             const int fine = 3;
             int width = wide * fine, high = tall * fine;
             int[] pixels = new int[width * high];
-            using (System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Capri.Sprite.face.png"))
+            using (System.IO.Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CapriFR.Sprite.face.png"))
             using (Bitmap face = new Bitmap(stream))
             using (Bitmap big = new Bitmap(width, high, PixelFormat.Format32bppArgb))
             {
@@ -1829,10 +1829,10 @@ namespace CapriDesktop
                     graphics.FillPath(fill, plate);
                 Words(graphics, "CAPRI", Neon.OnInk, chip.Left + Px(7), y);
                 x = chip.Right + Px(9);
-                x = Words(graphics, "GAMING MODE", Neon.White, x, y) + Px(9);
+                x = Words(graphics, "MODE JEU", Neon.White, x, y) + Px(9);
                 Disc(graphics, Neon.Cyan, new PointF(x, bar.Top + high / 2), 2.6f * s);
-                Words(graphics, "ON", Neon.Cyan, x + Px(7), y);
-                string voice = scene.Voice ? "VOICE ON" : "VOICE OFF";
+                Words(graphics, "OUI", Neon.Cyan, x + Px(7), y);
+                string voice = scene.Voice ? "VOIX OUI" : "VOIX NON";
                 float wide = graphics.MeasureString(voice, smallFont, PointF.Empty, StringFormat.GenericTypographic).Width;
                 float right = bar.Right - Px(14) - wide;
                 Words(graphics, voice, scene.Voice ? Neon.Cyan : Neon.Faint, right, y);
@@ -1867,14 +1867,14 @@ namespace CapriDesktop
             using (Font dim = Look.Mono(13 * s, FontStyle.Italic, GraphicsUnit.Pixel, all))
             {
                 float cw = Look.CharWidth(text), row = 19 * s, pad = Px(20);
-                string body = saying ? scene.Line : "> you: " + scene.Words;
+                string body = saying ? scene.Line : "> \u00e0 toi : " + scene.Words;
                 List<string> lines = Look.Wrap(body, Columns);
                 if (lines.Count == 0) lines.Add("");
                 int[] takes = Look.Takes(lines, body, saying ? scene.Revealed : body.Length);
                 int last = 0;
                 for (int i = 0; i < lines.Count; i++) if (takes[i] > 0) last = i;
                 int first = Math.Max(0, last - (MostRows - 1)), rows = Math.Min(MostRows, last - first + 1);
-                string you = scene.Box == HudBox.Reply && scene.Words.Length > 0 ? "> you: " + scene.Words : null;
+                string you = scene.Box == HudBox.Reply && scene.Words.Length > 0 ? "> \u00e0 toi : " + scene.Words : null;
                 if (you != null && Look.Cells(you) > Columns) you = Look.Cut(you, Columns - 3) + "...";
                 float tall = Px(11) + Px(16) + (you != null ? row : 0) + Px(5) + row * rows + Px(11);
                 boxUsed = (int)Math.Ceiling(tall) + Px(6);
@@ -1921,7 +1921,7 @@ namespace CapriDesktop
 
         private void Header(Graphics graphics, HudScene scene, float x, float y, RectangleF panel)
         {
-            string title = scene.Box == HudBox.Listening ? "LISTENING" : scene.Box == HudBox.Thinking ? "THINKING" : scene.Box == HudBox.Job ? "ON A JOB" : "CAPRI";
+            string title = scene.Box == HudBox.Listening ? "LISTENING" : scene.Box == HudBox.Thinking ? "THINKING" : scene.Box == HudBox.Job ? "EN TÂCHE" : "CAPRI";
             Color colour = scene.Box == HudBox.Listening || scene.Box == HudBox.Job ? Neon.Cyan : Neon.Rose;
             if (scene.Box == HudBox.Listening) { Disc(graphics, Look.Red, new PointF(x + 4 * s, y + 8 * s), 4 * s); x += Px(14); }
             using (Brush ink = new SolidBrush(colour)) graphics.DrawString(title, labelFont, ink, x, y, StringFormat.GenericTypographic);

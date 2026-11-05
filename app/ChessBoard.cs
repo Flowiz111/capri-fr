@@ -12,7 +12,7 @@ namespace CapriDesktop
         internal ChessPosition Board;
         internal readonly MiniScore Score;
         internal int You = 1, Result;
-        internal string Level = "normal", Last = "Your move.", Moment;
+        internal string Level = "normal", Last = "À toi.", Moment;
         internal ChessMove LastMove = new ChessMove(-1, -1, 0);
         private readonly List<ChessUndo> played = new List<ChessUndo>();
         private int? expected;
@@ -31,7 +31,7 @@ namespace CapriDesktop
             played.Clear();
             Result = 0; expected = null; Moment = "reset";
             LastMove = new ChessMove(-1, -1, 0);
-            Last = You == 1 ? "Your move." : "Capri has white.";
+            Last = You == 1 ? "À toi." : "Capri a les blancs.";
         }
 
         internal bool Move(ChessMove move, ChessChoice thinking)
@@ -45,7 +45,7 @@ namespace CapriDesktop
             played.Add(undo);
             LastMove = move;
             Moment = null;
-            Last = (yours ? "You: " : "Capri: ") + ChessPosition.Square(move.From) + " - " + ChessPosition.Square(move.To) + (move.Promotion == 0 ? "" : " = " + " PNBRQK"[move.Promotion]);
+            Last = (yours ? "Toi : " : "Capri: ") + ChessPosition.Square(move.From) + " - " + ChessPosition.Square(move.To) + (move.Promotion == 0 ? "" : " = " + " PNBRQK"[move.Promotion]);
             string end = Board.Ending();
             if (end != null)
             {
@@ -71,7 +71,7 @@ namespace CapriDesktop
         internal void Resign()
         {
             if (Result != 0) return;
-            Last = "You resigned.";
+            Last = "Tu as abandonné.";
             Moment = "resign";
             End(2);
         }
@@ -90,15 +90,15 @@ namespace CapriDesktop
                 played.RemoveAt(played.Count - 1);
             }
             LastMove = played.Count == 0 ? new ChessMove(-1, -1, 0) : played[played.Count - 1].Move;
-            Last = "Taken back.";
+            Last = "Coup annulé.";
         }
 
         internal string Status
         {
             get
             {
-                if (Result != 0) return Last + (Result == 1 ? " You win." : Result == 2 ? " Capri wins." : " Draw.");
-                return (Board.Check ? "Check. " : "") + (Board.Turn == You ? "Your turn." : "Capri is thinking.");
+                if (Result != 0) return Last + (Result == 1 ? " Tu gagnes." : Result == 2 ? " Capri gagne." : " Nulle.");
+                return (Board.Check ? "Échec. " : "") + (Board.Turn == You ? "À toi." : "Capri réfléchit.");
             }
         }
 
@@ -127,15 +127,15 @@ namespace CapriDesktop
     {
         internal static readonly string[][] Lines =
         {
-            new[] { "Your queen just joined my payroll.", "Royalty has terrible survival instincts.", "That's one expensive parking spot.", "Queen collected. No receipt.", "Night City takes its cut. So do I." },
-            new[] { "That was my favourite problem piece.", "My queen has left the group chat.", "You just made this personal. Mildly.", "Fine. I'll delegate.", "A hostile takeover. Cute." },
-            new[] { "Check. Your king has a visitor.", "Your king's address just leaked.", "Tiny crown. Large problem.", "Check. Relocation might be wise.", "Your security detail missed something." },
-            new[] { "Check. Yes, I noticed.", "My king enjoys unnecessary cardio.", "That's inconveniently competent.", "You found the executive suite.", "Fine. Moving management." },
-            new[] { "Mate. I'll try to be unbearable quietly.", "Your king's out of exits.", "Board's mine. Ego also expanding.", "Mate. No chrome required.", "Good game, choom. Same time, same ego?" },
-            new[] { "Mate. You earned that smug face.", "You got me. I'm keeping the board warm.", "My other minds would like a recount.", "That was clean. Annoyingly clean.", "King down. Dignity buffering." },
-            new[] { "That move came with an invoice.", "You left something expensive unattended.", "I think your plan has a loose wire.", "That looked better before the consequences.", "I found a hole in your security." },
-            new[] { "Draw. Two egos, no receipt.", "Nobody gets the crown today.", "We're calling that mutual inconvenience.", "All that plotting. Shared custody of nothing." },
-            new[] { "Resignation accepted. Board's still warm.", "Fair. We can rerack whenever.", "I'll take the point without a speech.", "King clocks off. Understandable." }
+            new[] { "Ta reine vient de rejoindre mes effectifs.", "La royauté n'a aucun instinct de survie.", "Voilà une place de parking bien chère.", "Reine récupérée. Sans reçu.", "Night City prend sa part. Moi aussi." },
+            new[] { "C'était ma pièce à problèmes préférée.", "Ma reine a quitté le groupe.", "Là, ça devient personnel. Un peu.", "Bien. Je vais déléguer.", "Une OPA hostile. Mignon." },
+            new[] { "Échec. Ton roi a de la visite.", "L'adresse de ton roi vient de fuiter.", "Petite couronne. Gros problème.", "Échec. Un déménagement serait sage.", "Ta sécurité a raté quelque chose." },
+            new[] { "Échec. Oui, j'ai vu.", "Mon roi aime le cardio inutile.", "C'est agaçant de compétence.", "Tu as trouvé la suite de la direction.", "Bien. La direction déménage." },
+            new[] { "Mat. J'essaierai d'être insupportable en silence.", "Ton roi n'a plus d'issue.", "Le plateau est à moi. Mon ego s'étend aussi.", "Mat. Aucun implant requis.", "Bien joué, choom. Même heure, même ego ?" },
+            new[] { "Mat. Tu as mérité cet air satisfait.", "Tu m'as eue. Je garde le plateau au chaud.", "Mes autres esprits demandent un recomptage.", "C'était propre. Agaçant de propreté.", "Roi à terre. Dignité en chargement." },
+            new[] { "Ce coup est livré avec une facture.", "Tu as laissé un truc cher sans surveillance.", "Je crois qu'il y a un faux contact dans ton plan.", "C'était mieux avant les conséquences.", "J'ai trouvé une faille dans ta sécurité." },
+            new[] { "Nulle. Deux egos, pas de reçu.", "Personne n'a la couronne aujourd'hui.", "Appelons ça une gêne mutuelle.", "Tous ces complots. Garde partagée de rien." },
+            new[] { "Abandon accepté. Le plateau est encore chaud.", "Ça marche. On replace quand tu veux.", "Je prends le point sans discours.", "Le roi débauche. Compréhensible." }
         };
         private static readonly string[] Moments = { "your_queen", "her_queen", "your_check", "her_check", "won", "lost", "blunder", "draw", "resign" };
 
@@ -251,7 +251,7 @@ namespace CapriDesktop
             if (action == "hint")
             {
                 if (Game.Result != 0) { note = Game.Status; Redraw(); return; }
-                if (Game.Board.Turn != Game.You) { hintAfter = true; note = "Hint after Capri's move."; Redraw(); return; }
+                if (Game.Board.Turn != Game.You) { hintAfter = true; note = "Indice après le coup de Capri."; Redraw(); return; }
                 Cancel();
                 Think(true);
                 return;
@@ -281,7 +281,7 @@ namespace CapriDesktop
             if (work != null || Game.Result != 0 || !help && Game.Board.Turn == Game.You) return;
             hintWork = help;
             work = ChessWork.Start(Game.Board, help ? "hard" : Game.Level, dice.Next());
-            if (help) note = "Looking for a hint...";
+            if (help) note = "Recherche d'un indice...";
             Redraw();
         }
 
@@ -294,7 +294,7 @@ namespace CapriDesktop
             if (finished.Cancelled) return;
             if (finished.Error != null || finished.Choice == null || finished.Choice.Move.From < 0)
             {
-                note = "Couldn't finish that search. Try a level or new game.";
+                note = "Recherche inachevée. Essaie un niveau ou une nouvelle partie.";
                 Redraw();
                 return;
             }
@@ -302,7 +302,7 @@ namespace CapriDesktop
             {
                 hint = finished.Choice.Move;
                 selected = hint.From;
-                note = "Try " + ChessPosition.Square(hint.From) + " - " + ChessPosition.Square(hint.To) + (hint.Promotion == 0 ? "." : " = " + " PNBRQK"[hint.Promotion] + ".");
+                note = "Essaie " + ChessPosition.Square(hint.From) + " - " + ChessPosition.Square(hint.To) + (hint.Promotion == 0 ? "." : " = " + " PNBRQK"[hint.Promotion] + ".");
                 Redraw();
             }
             else
@@ -407,7 +407,7 @@ namespace CapriDesktop
                 Words(paint, "CHESS", title, Neon.Rose, new RectangleF(24, 22, 300, 32), false);
                 Words(paint, "X", body, Neon.Rose, Button(128), true);
                 Words(paint, "SESSION  /  " + game.Score.Text, small, Neon.Cyan, new RectangleF(24, 65, 430, 24), false);
-                Words(paint, "YOU  /  " + (game.You == 1 ? "WHITE" : "BLACK"), small, Neon.White, new RectangleF(24, 101, 180, 24), false);
+                Words(paint, "TOI  / " + (game.You == 1 ? "WHITE" : "BLACK"), small, Neon.White, new RectangleF(24, 101, 180, 24), false);
                 for (int level = 0; level < 3; level++)
                 {
                     string name = new[] { "easy", "normal", "hard" }[level];
@@ -443,7 +443,7 @@ namespace CapriDesktop
                     Words(paint, (game.You == 1 ? 8 - coordinate : coordinate + 1).ToString(), small, Neon.Faint, new RectangleF(9, 132 + coordinate * 52, 20, 52), true);
                 }
                 Words(paint, string.IsNullOrEmpty(note) ? game.Status : note, body, game.Result == 2 ? Neon.Rose : Neon.White, new RectangleF(24, 563, 434, 24), false);
-                string[] buttons = { "UNDO", "NEW GAME", "HINT", "RESIGN" };
+                string[] buttons = { "UNDO", "NOUVELLE PARTIE", "HINT", "RESIGN" };
                 for (int action = 0; action < buttons.Length; action++)
                 {
                     Panel(paint, Button(129 + action), false);
@@ -452,7 +452,7 @@ namespace CapriDesktop
                 if (promotion)
                 {
                     using (Brush veil = new SolidBrush(Color.FromArgb(215, Neon.Ground))) paint.FillRectangle(veil, 32, 132, 416, 416);
-                    Words(paint, "PROMOTE TO", body, Neon.White, new RectangleF(80, 266, 320, 32), true);
+                    Words(paint, "PROMOUVOIR EN", body, Neon.White, new RectangleF(80, 266, 320, 32), true);
                     int[] kinds = { 5, 4, 3, 2 };
                     string[] names = { "QUEEN", "ROOK", "BISHOP", "KNIGHT" };
                     for (int pick = 0; pick < kinds.Length; pick++)

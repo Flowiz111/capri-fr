@@ -13,9 +13,9 @@ namespace CapriDesktop
     internal sealed class ChaosScreen : Overlay
     {
         internal const double Seconds = 5, RevealAt = 3.7;
-        internal const string StopCode = "CHOOM_OVERFLOW", Failed = "capri.sys", Punchline = "jk. you're fine, choom";
+        internal const string StopCode = "CHOOM_OVERFLOW", Failed = "capri.sys", Punchline = "je rigole. tout va bien, choom";
         // Windows' wording, broken where it breaks at 1080p.
-        private static readonly string[] Message = { "Your PC ran into a problem and needs to restart. We're", "just collecting some error info, and then we'll restart for", "you." };
+        private static readonly string[] Message = { "Ton PC a rencontré un problème et doit redémarrer. Nous", "collectons quelques infos, puis nous redémarrerons pour", "you." };
         private static readonly Color Blue = Color.FromArgb(0, 120, 215);
         // Where she lies on that 1080p screen: the middle of her lying cells, their top and her size. Her legs hang off the end of
         // the first line.
@@ -53,7 +53,7 @@ namespace CapriDesktop
 
         internal Bitmap Canvas { get { return surface == null ? null : surface.Image; } }
         internal bool Running { get { return ticks.Enabled; } }
-        internal string Said { get { return "CAPRI // CHAOS\nFAKE CRASH\n" + (Revealed ? ":)" : ":(") + "\n" + string.Join(" ", Message) + "\n" + (Revealed ? Punchline : Percent + "% complete") + "\nFor more information about this issue and possible fixes, visit https://www.windows.com/stopcode\nIf you call a support person, give them this info:\nStop code: " + StopCode + "\nWhat failed: " + Failed + "\nclick anywhere or press esc"; } }
+        internal string Said { get { return "CAPRI // CHAOS\nFAKE CRASH\n" + (Revealed ? ":)" : ":(") + "\n" + string.Join(" ", Message) + "\n" + (Revealed ? Punchline : Percent + " % effectués") + "\nFor more information about this issue and possible fixes, visit https://www.windows.com/stopcode\nIf you call a support person, give them this info:\nStop code: " + StopCode + "\nWhat failed: " + Failed + "\nclick anywhere or press esc"; } }
 
         internal bool Open()
         {
@@ -127,14 +127,14 @@ namespace CapriDesktop
                     else graphics.DrawString(":(", face, white, 181, 123, exact);
                     for (int line = 0; line < Message.Length; line++) graphics.DrawString(Message[line], text, white, 208, 388 + 64 * line, exact);
                     if (Revealed) Split(graphics, Punchline, text, white, pink, green, 208, 606, 3);
-                    else graphics.DrawString(Percent + "% complete", text, white, 208, 606, exact);
+                    else graphics.DrawString(Percent + " % effectués", text, white, 208, 606, exact);
                     graphics.FillRectangle(white, 208, 700, 108, 108);
                     Code(graphics, ink, 208, 700, 4);
-                    graphics.DrawString("For more information about this issue and possible fixes, visit https://www.windows.com/stopcode", small, white, 343, 692, exact);
-                    graphics.DrawString("If you call a support person, give them this info:", small, white, 343, 760, exact);
+                    graphics.DrawString("Pour en savoir plus sur ce problème et les solutions, va sur https://www.windows.com/stopcode", small, white, 343, 692, exact);
+                    graphics.DrawString("Si tu appelles l'assistance, donne-leur ces infos :", small, white, 343, 760, exact);
                     graphics.DrawString("Stop code: " + StopCode, small, white, 343, 794, exact);
-                    graphics.DrawString("What failed: " + Failed, small, white, 343, 828, exact);
-                    if (Revealed) graphics.DrawString("click anywhere or press esc", small, white, 343, 882, exact);
+                    graphics.DrawString("Ce qui a échoué : " + Failed, small, white, 343, 828, exact);
+                    if (Revealed) graphics.DrawString("clique n'importe où ou appuie sur échap", small, white, 343, 882, exact);
                 }
                 Her(graphics, passed);
             }
@@ -220,10 +220,10 @@ namespace CapriDesktop
         private string CrashTool(string action)
         {
             if (InvokeRequired) return (string)Invoke(new Func<string, string>(CrashTool), action);
-            if (action == "stop") { ChaosOff(); return "Stopped my fake blue screen."; }
-            if (chaosScreen != null) return "My fake blue screen is already showing.";
-            if (quitting || ChaosHeld()) return "I can't show that during full screen, a stream or a mouse job.";
-            return ShowCrash() ? "Showing my fake blue screen." : "Couldn't show my fake blue screen.";
+            if (action == "stop") { ChaosOff(); return "Faux écran bleu arrêté."; }
+            if (chaosScreen != null) return "Mon faux écran bleu est déjà affiché.";
+            if (quitting || ChaosHeld()) return "Impossible de l'afficher en plein écran, en stream ou pendant une tâche à la souris.";
+            return ShowCrash() ? "J'affiche mon faux écran bleu." : "Impossible d'afficher mon faux écran bleu.";
         }
 
         // Opens her fake blue screen on the monitor she's on, and says whether it opened.

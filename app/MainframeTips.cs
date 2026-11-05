@@ -90,63 +90,63 @@ namespace CapriDesktop
         {
             Explain(minimize, "Minimize");
             Explain(close, "Close");
-            Explain(more, "Settings", "Mainframe.cs", null, "Settings / Back");
-            Explain(advancedKey, "Advanced Settings", "Mainframe.cs", null, "Simple / Advanced Settings");
-            Explain(models, "Brain model", "Mainframe.cs", null, "Brain model");
+            Explain(more, "Settings", "Mainframe.cs", null, "Réglages / retour");
+            Explain(advancedKey, "Réglages avancés", "Mainframe.cs", null, "Réglages simples / avancés");
+            Explain(models, "Modèle du cerveau", "Mainframe.cs", null, "Modèle du cerveau");
             Explain(refresh, "Refresh");
             Explain(provider, "Provider", "Mainframe.cs", null, "Provider");
-            Explain(freeKey, "Free key", "Mainframe.cs", null, "Free key providers");
-            Explain(setup, "Set up her brain", "Mainframe.cs", hint, "Set up her brain");
-            for (int i = 0; i < rungs.Length; i++) Explain(rungs[i], i == 2 ? "MAX INTELLIGENCE" : i == 1 ? "MEDIUM INTELLIGENCE" : "NORMAL");
-            Explain(textEntry, "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key", "Mainframe.cs", null, "Brain API key");
-            Explain(textConnect, "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key", "Mainframe.cs", null, "Connect / Forget brain key");
-            Explain(movePaid, "Move key to MAX INTELLIGENCE");
-            for (int i = 0; i < voiceRungs.Length; i++) Explain(voiceRungs[i], i == 0 ? "OFF" : i == 1 ? "PREBUILT LOCAL" : i == 2 ? "CUSTOM LOCAL" : "Cloud voice service");
-            Explain(setUpModel, "CUSTOM LOCAL", "Mainframe.cs", null, "Set up your voice model");
-            Explain(customVoice, "CUSTOM LOCAL", "Mainframe.cs", null, "Your voice model");
-            Explain(keyHelp, "Setup guide");
-            Explain(cloudPick, "Cloud voice service", "Mainframe.cs", null, "Cloud voice service");
-            Explain(cloudVoice, "Cloud voice service", "Mainframe.cs", null, "Cloud voice setup");
-            Explain(keyEntry, "ElevenLabs API key", "Mainframe.cs", null, "ElevenLabs API key");
-            Explain(connect, "ElevenLabs API key", "Mainframe.cs", null, "Connect / Forget voice key");
-            Explain(voiceEntry, "ElevenLabs voice ID", "Mainframe.cs", null, "Voice ID");
-            Explain(speechModels, "Default model", "Mainframe.cs", null, "Speech model");
-            Explain(freeVoices, "Free voice: Her own", "Mainframe.cs", null, "Free voice style");
-            Explain(freeSetup, "Get free voice");
-            Explain(mics, "Mic: default", "Mainframe.cs", null, "Microphone");
-            Explain(speakers, "Her speaker", "Mainframe.cs", null, "Her speaker");
-            Explain(screens, "Screens", "Mainframe.cs", FindHintLabel("Screens"), "Screens to watch");
-            Explain(callApp, "Call app", "Mainframe.cs", callAppName, "Call app");
-            Explain(shortcut, "KEYS >", "Mainframe.cs", null, "Talk key");
-            Explain(muteShortcut, "Mic: default", "Mainframe.cs", null, "Mute mic key");
-            Explain(voiceNote, "Mic: default", "Mainframe.cs", null, "Voice status");
-            foreach (Key fix in hearingFixes) Explain(fix, "Hearing status", "Mainframe.cs", null, "Hearing fix");
-            Explain(hearingChoice, "Hearing engine", "Mainframe.cs", null, "Hearing");
-            Explain(micLoudness, "Her voice in your mic: loudness", "Mainframe.cs", micLoudnessName, "Her voice in your mic: loudness");
-            Explain(showHide, "Hide Capri", "Mainframe.cs", null, "Hide / Show Capri");
-            Explain(perch, "Ride cursor", "Mainframe.cs", null, "Ride cursor / Hop off");
-            Explain(notesKey, "Open her notes");
-            Explain(memoriesKey, "Remember our chats", "Mainframe.cs", null, "Her memories");
-            Explain(popTimes, "Pop-ins", "Mainframe.cs", null, "Pop-in times");
-            Explain(gameNotes, "game_notes", "Hands.cs", null, "Game controls");
-            Explain(miniGames, "mini_game", "Hands.cs", null, "Mini-games");
+            Explain(freeKey, "Clé gratuite", "Mainframe.cs", null, "Fournisseurs de clés gratuites");
+            Explain(setup, "Installer son cerveau", "Mainframe.cs", hint, "Installer son cerveau");
+            for (int i = 0; i < rungs.Length; i++) Explain(rungs[i], i == 2 ? "INTELLIGENCE MAX" : i == 1 ? "INTELLIGENCE MOYENNE" : "NORMAL");
+            Explain(textEntry, "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key", "Mainframe.cs", null, "Clé API du cerveau");
+            Explain(textConnect, "NVIDIA, Google AI Studio (Gemini) or OpenRouter API key", "Mainframe.cs", null, "Connecter / oublier la clé du cerveau");
+            Explain(movePaid, "Déplacer la clé vers INTELLIGENCE MAX");
+            for (int i = 0; i < voiceRungs.Length; i++) Explain(voiceRungs[i], i == 0 ? "OFF" : i == 1 ? "LOCALE INTÉGRÉE" : i == 2 ? "LOCALE PERSO" : "Service de voix cloud");
+            Explain(setUpModel, "LOCALE PERSO", "Mainframe.cs", null, "Configurer ton modèle vocal");
+            Explain(customVoice, "LOCALE PERSO", "Mainframe.cs", null, "Ton modèle vocal");
+            Explain(keyHelp, "Guide");
+            Explain(cloudPick, "Service de voix cloud", "Mainframe.cs", null, "Service de voix cloud");
+            Explain(cloudVoice, "Service de voix cloud", "Mainframe.cs", null, "Réglage de la voix cloud");
+            Explain(keyEntry, "Clé API ElevenLabs", "Mainframe.cs", null, "Clé API ElevenLabs");
+            Explain(connect, "Clé API ElevenLabs", "Mainframe.cs", null, "Connecter / oublier la clé de voix");
+            Explain(voiceEntry, "ID de voix ElevenLabs", "Mainframe.cs", null, "ID de voix");
+            Explain(speechModels, "Modèle par défaut", "Mainframe.cs", null, "Modèle vocal");
+            Explain(freeVoices, "Voix gratuite : la sienne", "Mainframe.cs", null, "Style de la voix gratuite");
+            Explain(freeSetup, "Obtenir la voix gratuite");
+            Explain(mics, "Micro : par défaut", "Mainframe.cs", null, "Microphone");
+            Explain(speakers, "Sa sortie audio", "Mainframe.cs", null, "Sa sortie audio");
+            Explain(screens, "Screens", "Mainframe.cs", FindHintLabel("Screens"), "Écrans à regarder");
+            Explain(callApp, "Appli d'appel", "Mainframe.cs", callAppName, "Appli d'appel");
+            Explain(shortcut, "TOUCHES >", "Mainframe.cs", null, "Touche pour parler");
+            Explain(muteShortcut, "Micro : par défaut", "Mainframe.cs", null, "Touche du micro");
+            Explain(voiceNote, "Micro : par défaut", "Mainframe.cs", null, "État de la voix");
+            foreach (Key fix in hearingFixes) Explain(fix, "État de l'écoute", "Mainframe.cs", null, "Réparer l'écoute");
+            Explain(hearingChoice, "Moteur d'écoute", "Mainframe.cs", null, "Hearing");
+            Explain(micLoudness, "Sa voix dans ton micro : volume", "Mainframe.cs", micLoudnessName, "Sa voix dans ton micro : volume");
+            Explain(showHide, "Masquer Capri", "Mainframe.cs", null, "Masquer / afficher Capri");
+            Explain(perch, "Sur le curseur", "Mainframe.cs", null, "Monter sur le curseur / descendre");
+            Explain(notesKey, "Ouvrir ses notes");
+            Explain(memoriesKey, "Retenir nos discussions", "Mainframe.cs", null, "Ses souvenirs");
+            Explain(popTimes, "Apparitions", "Mainframe.cs", null, "Apparitions");
+            Explain(gameNotes, "game_notes", "Hands.cs", null, "Commandes de jeu");
+            Explain(miniGames, "mini_game", "Hands.cs", null, "Mini-jeux");
             Explain(languages, "Language", "Mainframe.cs", FindHintLabel("Language"), "Language");
-            Explain(nickname, "What should she call you?", "Mainframe.cs", FindHintLabel("What should she call you?"), "What should she call you?");
-            Explain(layersKey, "Voice layers", "Mainframe.cs", null, "Layers");
+            Explain(nickname, "Comment doit-elle t'appeler ?", "Mainframe.cs", FindHintLabel("Comment doit-elle t'appeler ?"), "Comment doit-elle t'appeler ?");
+            Explain(layersKey, "Couches de voix", "Mainframe.cs", null, "Layers");
             layersKey.StateValue = true;
-            Explain(personalityKey, "Edit personality.md", "Mainframe.cs", null, "Her personality");
-            Explain(huskMode, "Code/Husk Mode", "Mainframe.cs", FindHintLabel("Code/Husk Mode"), "Code/Husk Mode");
+            Explain(personalityKey, "Modifier personality.md", "Mainframe.cs", null, "Sa personnalité");
+            Explain(huskMode, "Mode Code/Husk", "Mainframe.cs", FindHintLabel("Mode Code/Husk"), "Mode Code/Husk");
             Control[] bindings = { talkKeys, muteKeys, typeKeys, hideKeys, pushKeys, gameKeys, confirmKeys, cancelKeys, clearKeys };
-            string[] names = { "Talk key", "Mute mic key", "Type key", "Hide / Show key", "Push to talk key", "Gaming Mode key", "Confirm keys", "Cancel keys", "Turn push to talk off" };
-            for (int i = 0; i < bindings.Length; i++) Explain(bindings[i], i == 4 ? "Push to talk: not set" : "KEYS >", "Mainframe.cs", null, names[i]);
-            Explain(quietKeys, "Quiet: Ctrl + Alt + P", "Mainframe.cs", null, "Quiet key");
-            Explain(custom, "Custom model name", "Mainframe.cs", null, "Custom model name");
-            Explain(localAddress, "Local server address", "Mainframe.cs", FindHintLabel("Local server address"), "Local server address");
-            Explain(security, "SECURITY >", "Mainframe.cs", null, "Security");
-            Explain(checkIns, "Check in on me");
-            for (int i = 0; i < careTimes.Length; i++) Explain(careTimes[i], Care.Names[i], "Care.cs", null, Care.Names[i] + " time");
-            Explain(clipChoose, "Save folder", "Mainframe.cs", FindHintLabel("Save folder"), "Save folder");
-            Explain(clipsFolder, "Save folder", "Mainframe.cs", null, "Open clips folder");
+            string[] names = { "Touche pour parler", "Touche du micro", "Touche pour écrire", "Touche masquer / afficher", "Touche appuyer-pour-parler", "Touche du mode jeu", "Confirmer les touches", "Annuler les touches", "Désactiver appuyer-pour-parler" };
+            for (int i = 0; i < bindings.Length; i++) Explain(bindings[i], i == 4 ? "Appuyer pour parler : non défini" : "TOUCHES >", "Mainframe.cs", null, names[i]);
+            Explain(quietKeys, "Silence : Ctrl + Alt + P", "Mainframe.cs", null, "Touche de silence");
+            Explain(custom, "Nom du modèle perso", "Mainframe.cs", null, "Nom du modèle perso");
+            Explain(localAddress, "Adresse du serveur local", "Mainframe.cs", FindHintLabel("Adresse du serveur local"), "Adresse du serveur local");
+            Explain(security, "SÉCURITÉ >", "Mainframe.cs", null, "Security");
+            Explain(checkIns, "Prendre de mes nouvelles");
+            for (int i = 0; i < careTimes.Length; i++) Explain(careTimes[i], Care.Names[i], "Care.cs", null, Care.Names[i] + " fois");
+            Explain(clipChoose, "Dossier des clips", "Mainframe.cs", FindHintLabel("Dossier des clips"), "Dossier des clips");
+            Explain(clipsFolder, "Dossier des clips", "Mainframe.cs", null, "Ouvrir le dossier des clips");
             hintDelay.Tick += delegate { ShowHint(); };
             Deactivate += delegate { DismissHint(); };
             VisibleChanged += delegate { if (!Visible) DismissHint(); };
@@ -314,7 +314,7 @@ namespace CapriDesktop
 
             // Her answers lead with where a setting lives, like "Mainframe > Settings > VOICE > Volume ...", which a tip beside
             // that setting doesn't need.
-            private static readonly Regex Breadcrumb = new Regex(@"^Mainframe(?: > (?:Settings|Simple Settings|Advanced Settings|[A-Z][A-Z &-]+))* > ");
+            private static readonly Regex Breadcrumb = new Regex(@"^Mainframe(?: > (?:Settings|Simple Settings|Advanced Settings|Réglages|Réglages simples|Réglages avancés|[A-ZÀ-Ý][A-ZÀ-Ý &-]+))* > ");
 
             internal static string Unpathed(string facts)
             {
@@ -327,9 +327,9 @@ namespace CapriDesktop
                 facts = Unpathed(facts);
                 int height = font.Height * Math.Max(1, lines);
                 if (Measure(facts, font, width).Height <= height) return facts;
-                const string more = " Ask Capri for more";
+                const string more = " Demande-lui plus de détails";
                 string kept = "";
-                foreach (Match sentence in Regex.Matches(facts, @".+?(?:[.!?](?=\s+[A-Z]|$)|$)"))
+                foreach (Match sentence in Regex.Matches(facts, @".+?(?:[.!?](?=\s+[A-ZÀ-Ý«]|$)|$)"))
                 {
                     string next = facts.Substring(0, sentence.Index + sentence.Length).Trim();
                     if (Measure(next + more, font, width).Height > height) break;
@@ -363,7 +363,7 @@ namespace CapriDesktop
                 int lines = Math.Min(6, (room.Height - padding * 2 - gap - titleHeight) / bodyFont.Height);
                 if (lines < 1) return false;
                 Body = Brief(facts, bodyFont, inside, lines);
-                if (Body == "Ask Capri for more") return false;
+                if (Body == "Demande-lui plus de détails") return false;
                 int bodyHeight = Measure(Body, bodyFont, inside).Height;
                 if (bodyHeight + titleHeight + gap + padding * 2 > room.Height) return false;
                 titleBox = new Rectangle(padding, padding, inside, titleHeight);

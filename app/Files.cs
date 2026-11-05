@@ -318,7 +318,7 @@ namespace CapriDesktop
                 catch { Dispose(); throw; }
             }
 
-            private static FileStream Temporary() { return new FileStream(Path.Combine(Path.GetTempPath(), "Capri-strings-" + Guid.NewGuid().ToString("N")), FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose); }
+            private static FileStream Temporary() { return new FileStream(Path.Combine(Path.GetTempPath(), "CapriFR-strings-" + Guid.NewGuid().ToString("N")), FileMode.CreateNew, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose); }
 
             internal void Add(int number, Extract words)
             {

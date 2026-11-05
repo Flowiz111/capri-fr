@@ -12,7 +12,7 @@ namespace CapriDesktop
     internal sealed class MiniScore
     {
         internal int You, Her, Draws;
-        internal string Text { get { return "YOU " + You + "   CAPRI " + Her + "   DRAWS " + Draws; } }
+        internal string Text { get { return "TOI " + You + "   CAPRI " + Her + "   NULS " + Draws; } }
     }
 
     internal sealed class MiniGame
@@ -23,7 +23,7 @@ namespace CapriDesktop
         private readonly Random random;
         private bool slip;
         internal int Result, You, Her, YourHand = -1, HerHand = -1;
-        internal string Last = "Your move, choom.";
+        internal string Last = "À toi, choom.";
         private static readonly string[] Hands = { "rock", "paper", "scissors" };
         private static readonly int[] Columns = { 3, 2, 4, 1, 5, 0, 6 };
 
@@ -36,7 +36,7 @@ namespace CapriDesktop
             Again();
         }
 
-        internal string Title { get { return Kind == "tic_tac_toe" ? "TIC-TAC-TOE" : Kind == "connect_four" ? "CONNECT FOUR" : "ROCK PAPER SCISSORS"; } }
+        internal string Title { get { return Kind == "tic_tac_toe" ? "MORPION" : Kind == "connect_four" ? "PUISSANCE 4" : "PIERRE FEUILLE CISEAUX"; } }
 
         internal void Again()
         {
@@ -44,12 +44,12 @@ namespace CapriDesktop
             Result = You = Her = 0;
             YourHand = HerHand = -1;
             slip = random.Next(4) == 0;
-            Last = "Your move, choom.";
+            Last = "À toi, choom.";
         }
 
         internal bool Move(int move)
         {
-            if (Result != 0) { Last = "Round over. Press N for another."; return false; }
+            if (Result != 0) { Last = "Manche finie. Appuie sur N pour une autre."; return false; }
             if (Kind == "rock_paper_scissors")
             {
                 if (move < 0 || move > 2) return false;
@@ -58,18 +58,18 @@ namespace CapriDesktop
                 int won = HandResult(YourHand, HerHand);
                 if (won == 1) You++;
                 if (won == 2) Her++;
-                Last = "You: " + Hands[YourHand] + ". Capri: " + Hands[HerHand] + ". " + (won == 0 ? "Tie." : won == 1 ? "Your point." : "My point.");
+                Last = "Toi : " + Hands[YourHand] + ". Capri: " + Hands[HerHand] + ". " + (won == 0 ? "Égalité." : won == 1 ? "Point pour toi." : "Point pour moi.");
                 if (You == 3 || Her == 3) End(You == 3 ? 1 : 2);
                 return true;
             }
             int square = Kind == "connect_four" ? Landing(Cells, move) : move;
             if (square < 0 || square >= Cells.Length || Cells[square] != 0)
             {
-                Last = Kind == "connect_four" ? "That column's full. Pick another." : "That square's taken. Pick another.";
+                Last = Kind == "connect_four" ? "Colonne pleine. Choisis-en une autre." : "Case prise. Choisis-en une autre.";
                 return false;
             }
             Cells[square] = 1;
-            Last = "You played " + Place(square) + ".";
+            Last = "Tu as joué " + Place(square) + ".";
             int state = Outcome(Cells, Kind == "connect_four");
             if (state != 0) { End(state); return true; }
             int reply;
@@ -88,7 +88,7 @@ namespace CapriDesktop
                 reply = Landing(Cells, FourMove(Cells, random));
                 Cells[reply] = 2;
             }
-            Last += " Capri played " + Place(reply) + ".";
+            Last += " Capri a joué " + Place(reply) + ".";
             state = Outcome(Cells, Kind == "connect_four");
             if (state != 0) End(state);
             return true;
@@ -96,7 +96,7 @@ namespace CapriDesktop
 
         private string Place(int square)
         {
-            if (Kind == "connect_four") return "column " + (square % 7 + 1);
+            if (Kind == "connect_four") return "colonne " + (square % 7 + 1);
             return new[] { "top left", "top middle", "top right", "middle left", "middle", "middle right", "bottom left", "bottom middle", "bottom right" }[square];
         }
 
@@ -108,7 +108,7 @@ namespace CapriDesktop
             else Score.Draws++;
         }
 
-        internal string Status { get { return Result == 1 ? "You win. Another round?" : Result == 2 ? "Capri wins. Another round?" : Result == 3 ? "Draw. Rematch?" : Last.StartsWith("That ", StringComparison.Ordinal) ? Last : Kind == "rock_paper_scissors" ? "First to 3: you " + You + " / Capri " + Her : "Your turn. You're X, Capri is O."; } }
+        internal string Status { get { return Result == 1 ? "Tu as gagné. Une autre ?" : Result == 2 ? "Capri gagne. Une autre ?" : Result == 3 ? "Match nul. Revanche ?" : Last.StartsWith("That ", StringComparison.Ordinal) ? Last : Kind == "rock_paper_scissors" ? "Premier à 3 : toi " + You + " / Capri " + Her : "À toi. Tu es X, Capri est O."; } }
 
         internal string BoardText()
         {
@@ -286,10 +286,10 @@ namespace CapriDesktop
         private int quietMoves;
         internal double Last = -8;
         internal int Count { get { return waiting.Count; } }
-        private static readonly string[] Moves = { "Oh, we're doing this?", "I've got my eye on that, choom.", "One of my minds has a plan.", "Your move. Make it interesting." };
-        private static readonly string[] Wins = { "Mine. I am being so normal about this.", "That one's mine, choom. Rematch?" };
-        private static readonly string[] Losses = { "You got me. I'm blaming the other minds.", "Okay, choom. That one hurt my ego." };
-        private static readonly string[] Draws = { "Stalemate. We're both impossible.", "Nobody wins. My ego survives." };
+        private static readonly string[] Moves = { "Oh, on y va ?", "J'ai l'œil là-dessus, choom.", "Un de mes esprits a un plan.", "À toi. Rends ça intéressant." };
+        private static readonly string[] Wins = { "À moi. Je suis tellement normale là-dessus.", "Celle-là est pour moi, choom. Revanche ?" };
+        private static readonly string[] Losses = { "Tu m'as eue. Je blâme mes autres esprits.", "D'accord, choom. Mon ego a mal." };
+        private static readonly string[] Draws = { "Pat. On est impossibles toutes les deux.", "Personne ne gagne. Mon ego survit." };
 
         internal void Observe(MiniGame game, double now, Random dice)
         {
@@ -523,8 +523,8 @@ namespace CapriDesktop
                 Neon.Frame(paint, new Size(Wide, Tall), 1, 20, 5, 55, 20);
                 Words(paint, game.Title, title, Neon.Rose, new RectangleF(24, 22, 298, 32), false);
                 Words(paint, "X", body, Neon.Rose, Part(game.Kind, 9), true);
-                Words(paint, "SESSION  /  " + game.Score.Text, small, Neon.Cyan, new RectangleF(24, 72, 324, 22), false);
-                string keys = game.Kind == "tic_tac_toe" ? "1-9 or arrows + Enter  /  say top left, middle..." : game.Kind == "connect_four" ? "1-7 or arrows + Enter  /  say column 3..." : "R / P / S or arrows + Enter  /  first to 3";
+                Words(paint, "SESSION  / " + game.Score.Text, small, Neon.Cyan, new RectangleF(24, 72, 324, 22), false);
+                string keys = game.Kind == "tic_tac_toe" ? "1-9 ou flèches + Entrée  /  dis haut gauche, milieu..." : game.Kind == "connect_four" ? "1-7 ou flèches + Entrée  /  dis colonne 3..." : "R / P / S ou flèches + Entrée  /  premier à 3";
                 Words(paint, keys, small, Neon.Faint, new RectangleF(24, 108, 324, 22), false);
                 int count = game.Kind == "tic_tac_toe" ? 9 : game.Kind == "connect_four" ? 7 : 3;
                 for (int pick = 0; pick < count; pick++)
@@ -562,8 +562,8 @@ namespace CapriDesktop
                 }
                 if (game.Kind == "rock_paper_scissors") Words(paint, game.Last, body, Neon.White, new RectangleF(24, 326, 324, 74), false);
                 Words(paint, game.Status, body, game.Result == 1 ? Neon.Cyan : game.Result == 2 ? Neon.Rose : Neon.White, new RectangleF(24, 421, 324, 25), false);
-                Words(paint, "PLAY AGAIN  [N]", small, Neon.Cyan, Part(game.Kind, 10), false);
-                Words(paint, "ESC  CLOSE", small, Neon.Faint, new RectangleF(246, 450, 104, 24), false);
+                Words(paint, "REJOUER  [N]", small, Neon.Cyan, Part(game.Kind, 10), false);
+                Words(paint, "ÉCHAP  FERMER", small, Neon.Faint, new RectangleF(246, 450, 104, 24), false);
             }
             return bitmap;
         }
@@ -622,15 +622,15 @@ namespace CapriDesktop
         private string MiniTool(ToolArguments args)
         {
             if (InvokeRequired) return (string)Invoke(new Func<ToolArguments, string>(MiniTool), args);
-            if (!Hands.Valid("mini_game", args)) return "Couldn't find that desktop board.";
+            if (!Hands.Valid("mini_game", args)) return "Plateau introuvable.";
             if (args.Action == "close")
             {
                 if (MidJob(job) && string.Equals((args.Text ?? "").Trim(), "stop", StringComparison.OrdinalIgnoreCase)) StopJob(Lines.Pick(Lines.Stopped));
                 CloseMinis(args.Name == "chess");
-                return "Board's away, choom.";
+                return "Plateau rangé, choom.";
             }
             if (args.Name == "chess") return ChessTool(args);
-            if (args.Action == "move" && (minis == null || minis.Game.Kind != args.Name)) return "That board isn't open.";
+            if (args.Action == "move" && (minis == null || minis.Game.Kind != args.Name)) return "Ce plateau n'est pas ouvert.";
             if (minis == null || minis.Game.Kind != args.Name)
             {
                 CloseMinis();
@@ -649,13 +649,13 @@ namespace CapriDesktop
             if (args.Action == "move")
             {
                 int move = MiniGame.Input(args.Name, args.Text);
-                if (move < 0) return "Pick a square, column or hand on this board.";
+                if (move < 0) return "Choisis une case, une colonne ou une main sur ce plateau.";
                 if (!minis.PlayMove(move)) return minis.Game.Last;
                 return miniContext;
             }
             else if (args.Action == "again") minis.Again();
             MiniContext();
-            return "Board's up, choom. " + minis.Game.Status;
+            return "Plateau prêt, choom. " + minis.Game.Status;
         }
 
         private string ChessTool(ToolArguments args)
@@ -687,7 +687,7 @@ namespace CapriDesktop
                 chess.Command(action, args.Level, args.Side);
             }
             MiniContext();
-            return action == "hint" ? "Looking for a hint on the board." : chess.Game.Status;
+            return action == "hint" ? "Je cherche un indice sur le plateau." : chess.Game.Status;
         }
 
         private void ChessPlayed()
@@ -720,7 +720,7 @@ namespace CapriDesktop
             string done = DoTool(tool, args, ticket);
             if (args.Action != "move")
             {
-                brain.Remember(text, done); heard = text; box.Prompt = "> you: ";
+                brain.Remember(text, done); heard = text; box.Prompt = "> \u00e0 toi : ";
                 if (args.Name == "chess") ChessSay(done, ticket); else Answer(ticket, done, TalkState.Talking);
             }
             return true;
@@ -752,7 +752,7 @@ namespace CapriDesktop
         {
             miniContext = chess != null ? chess.Game.BoardText() : minis == null ? "" : minis.Game.BoardText();
             Agent told = agent;
-            if (!localOnly && chess == null && told != null && told.Ready) told.Tell(miniContext.Length == 0 ? "Capri's desktop board is closed." : miniContext);
+            if (!localOnly && chess == null && told != null && told.Ready) told.Tell(miniContext.Length == 0 ? "Le plateau de Capri est fermé." : miniContext);
         }
 
         private void MiniPlayed()
@@ -760,7 +760,7 @@ namespace CapriDesktop
             MiniContext();
             if (minis == null) return;
             if (miniLine != null && miniLine.Result == 0) { miniTicket++; miniLine = null; }
-            if (minis.Game.Last == "Your move, choom.") { miniChat.NewRound(); return; }
+            if (minis.Game.Last == "À toi, choom.") { miniChat.NewRound(); return; }
             int result = minis.Game.Result;
             if (result != 0)
             {

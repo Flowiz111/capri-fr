@@ -55,7 +55,7 @@ namespace CapriDesktop
             DoubleBuffered = true;
             float s = DeviceDpi / 96f;
             Font = Neon.Type(10.5f);
-            using (Stream source = Assembly.GetExecutingAssembly().GetManifestResourceStream("Capri.Chip.ico")) if (source != null) Icon = new Icon(source);
+            using (Stream source = Assembly.GetExecutingAssembly().GetManifestResourceStream("CapriFR.Chip.ico")) if (source != null) Icon = new Icon(source);
             int wide = Px(Wide, s);
             int inset = Px(26, s);
             title = new Neon.Caption();

@@ -214,9 +214,9 @@ namespace CapriDesktop
         private static readonly string[] Keep = { "hook_event_name", "session_id", "cwd", "session_title", "permission_mode", "tool_name", "tool_input", "tool_use_id", "duration_ms", "error", "is_interrupt", "prompt", "message", "title", "notification_type", "last_assistant_message", "agent_id", "agent_type", "source", "reason", "trigger" };
         private static readonly object Missing = new object();
 #if CROSS
-        internal static string Data { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Capri"); } }
+        internal static string Data { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CapriFR"); } }
 #else
-        internal static string Data { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Capri"); } }
+        internal static string Data { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CapriFR"); } }
 #endif
 
         internal static string Cap(string text, int limit) { return text.Length > limit ? text.Substring(0, limit - 1) + "\u2026" : text; }
@@ -357,7 +357,7 @@ namespace CapriDesktop
                                 client.SendTimeout = client.ReceiveTimeout = 500;
                                 using (NetworkStream stream = client.GetStream())
                                 {
-                                    byte[] head = Encoding.ASCII.GetBytes("POST /event HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/json\r\nX-Capri-Token: " + token + "\r\nContent-Length: " + body.Length + "\r\nConnection: close\r\n\r\n");
+                                    byte[] head = Encoding.ASCII.GetBytes("POST /event HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/json\r\nX-CapriFR-Token: " + token + "\r\nContent-Length: " + body.Length + "\r\nConnection: close\r\n\r\n");
                                     stream.Write(head, 0, head.Length); stream.Write(body, 0, body.Length);
                                     stream.Read(chunk, 0, chunk.Length);
                                 }
@@ -479,7 +479,7 @@ namespace CapriDesktop
                     }
                     if (headers.ContainsKey("Origin")) { Reply(stream, 403); return; }
                     string token;
-                    if (!headers.TryGetValue("X-Capri-Token", out token) || !SameToken(token, Token)) { Reply(stream, 403); return; }
+                    if (!headers.TryGetValue("X-CapriFR-Token", out token) || !SameToken(token, Token)) { Reply(stream, 403); return; }
                     string length;
                     int size;
                     if (headers.ContainsKey("Transfer-Encoding") || !headers.TryGetValue("Content-Length", out length) || !int.TryParse(length, NumberStyles.None, CultureInfo.InvariantCulture, out size) || size < 0) { Reply(stream, 400); return; }
@@ -544,7 +544,7 @@ namespace CapriDesktop
 #if CROSS
             return (source == "claude" || source == "codex") && Regex.IsMatch(command ?? "", @"\ACAPRI_HUSK=1 '(?:[^'\r\n]|'\\'')+' --hook " + source + @"\z", RegexOptions.CultureInvariant);
 #else
-            return Regex.IsMatch(command ?? "", "^\\s*(?:\"[^\"\\r\\n]*[\\\\/]Capri\\.exe\"|\"Capri\\.exe\"|[^\\s\"\\r\\n]*[\\\\/]Capri\\.exe|Capri\\.exe)\\s+--hook\\s+" + source + "\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            return Regex.IsMatch(command ?? "", "^\\s*(?:\"[^\"\\r\\n]*[\\\\/]CapriFR\\.exe\"|\"CapriFR\\.exe\"|[^\\s\"\\r\\n]*[\\\\/]CapriFR\\.exe|CapriFR\\.exe)\\s+--hook\\s+" + source + "\\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 #endif
         }
 
@@ -642,7 +642,7 @@ namespace CapriDesktop
 #if CROSS
                 string command = Command(exe, source);
 #else
-                if (exe.IndexOfAny(new[] { '"', '\r', '\n' }) >= 0 || !string.Equals(Path.GetFileName(exe), "Capri.exe", StringComparison.OrdinalIgnoreCase)) throw new BrainException("I need the installed Capri.exe path to set up hooks.");
+                if (exe.IndexOfAny(new[] { '"', '\r', '\n' }) >= 0 || !string.Equals(Path.GetFileName(exe), "CapriFR.exe", StringComparison.OrdinalIgnoreCase)) throw new BrainException("I need the installed CapriFR.exe path to set up hooks.");
                 string command = "\"" + Path.GetFullPath(exe) + "\" --hook " + source;
 #endif
                 foreach (string name in source == "codex" ? CodexEvents : ClaudeEvents)

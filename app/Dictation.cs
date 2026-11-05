@@ -10,9 +10,9 @@ namespace CapriDesktop
 {
     internal abstract class Dictation : IDisposable
     {
-        internal const string PrivacyOff = "Online speech recognition is off in Windows. Turn it on in Settings > Privacy & security > Speech.";
-        internal const string MicBlocked = "Windows is blocking the mic. Turn on Microphone access and Let desktop apps access your microphone in Settings > Privacy & security > Microphone.";
-        internal const string NoMic = "Windows can't find a mic. Plug one in, or pick one in Settings > System > Sound.";
+        internal const string PrivacyOff = "La reconnaissance en ligne est coupée dans Windows. Active-la dans Paramètres > Confidentialité et sécurité > Voix.";
+        internal const string MicBlocked = "Windows bloque le micro. Active l'accès au microphone et l'accès pour les applications de bureau dans Paramètres > Confidentialité et sécurité > Microphone.";
+        internal const string NoMic = "Windows ne trouve aucun micro. Branches-en un, ou choisis-en un dans Paramètres > Système > Son.";
         internal static Func<Dictation> Make = delegate { return new WindowsDictation(); };
         internal static Func<string> DefaultMic = delegate
         {
@@ -34,7 +34,7 @@ namespace CapriDesktop
         internal static string OtherMic(string chosen, string name, string defaultId)
         {
             if (string.IsNullOrEmpty(chosen) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(defaultId) || defaultId.IndexOf(chosen, StringComparison.OrdinalIgnoreCase) >= 0) return null;
-            return "Windows speech only hears your default mic, not " + name + ". Make " + name + " the default in Windows Settings > System > Sound > Input, or pick Mic: default here.";
+            return "La voix de Windows n'entend que ton micro par défaut, pas " + name + ". Mets " + name + " par défaut dans Paramètres Windows > Système > Son > Entrée, ou choisis Micro : par défaut ici.";
         }
 
         internal static string Explain(Exception error)
@@ -43,7 +43,7 @@ namespace CapriDesktop
             if (error.HResult == unchecked((int)0x80045509)) return PrivacyOff;
             if (error.HResult == unchecked((int)0x80070005)) return MicBlocked;
             if (error.HResult == unchecked((int)0xC00DABE0)) return NoMic;
-            return "Windows speech recognition didn't start: " + Voice.Short(error.Message);
+            return "La reconnaissance vocale de Windows n'a pas démarré : " + Voice.Short(error.Message);
         }
     }
 
@@ -67,7 +67,7 @@ namespace CapriDesktop
                 {
                     made.Constraints.Add(new SpeechRecognitionTopicConstraint(SpeechRecognitionScenario.Dictation, "dictation"));
                     SpeechRecognitionCompilationResult compiled = made.CompileConstraintsAsync().AsTask().Result;
-                    return compiled.Status == SpeechRecognitionResultStatus.Success ? null : "Windows speech recognition couldn't load (" + compiled.Status + ").";
+                    return compiled.Status == SpeechRecognitionResultStatus.Success ? null : "La reconnaissance vocale de Windows n'a pas pu se charger (" + compiled.Status + ").";
                 }
             }
             catch (Exception error) { return Explain(error); }
@@ -130,7 +130,7 @@ namespace CapriDesktop
             }
             made.Constraints.Add(new SpeechRecognitionTopicConstraint(SpeechRecognitionScenario.Dictation, "dictation"));
             SpeechRecognitionCompilationResult compiled = made.CompileConstraintsAsync().AsTask().Result;
-            if (compiled.Status != SpeechRecognitionResultStatus.Success) throw new IOException("Windows speech recognition couldn't load (" + compiled.Status + ").");
+            if (compiled.Status != SpeechRecognitionResultStatus.Success) throw new IOException("La reconnaissance vocale de Windows n'a pas pu se charger (" + compiled.Status + ").");
             try { made.ContinuousRecognitionSession.AutoStopSilenceTimeout = TimeSpan.FromMinutes(30); } catch (ArgumentException) { }
             made.ContinuousRecognitionSession.ResultGenerated += Result;
             made.HypothesisGenerated += Guessed;
@@ -200,7 +200,7 @@ namespace CapriDesktop
             if (result.Status != SpeechRecognitionResultStatus.Success || result.Confidence == SpeechRecognitionConfidence.Rejected || text.Length == 0)
             {
                 Action<string> rejected = Rejected;
-                if (rejected != null) rejected("No words came back");
+                if (rejected != null) rejected("Aucun mot reçu");
                 return;
             }
             Action<string> heard = Heard;
@@ -226,7 +226,7 @@ namespace CapriDesktop
                     return;
                 }
             }
-            Fail(status == SpeechRecognitionResultStatus.NetworkFailure ? "Windows speech recognition lost its internet connection." : status == SpeechRecognitionResultStatus.MicrophoneUnavailable ? "Windows speech recognition couldn't use the mic." : "Windows speech recognition stopped (" + status + ").");
+            Fail(status == SpeechRecognitionResultStatus.NetworkFailure ? "Windows speech recognition lost its internet connection." : status == SpeechRecognitionResultStatus.MicrophoneUnavailable ? "La reconnaissance vocale de Windows ne peut pas utiliser le micro." : "La reconnaissance vocale de Windows s'est arrêtée (" + status + ").");
         }
 
         private void Fail(string problem)

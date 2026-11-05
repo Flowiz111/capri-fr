@@ -416,7 +416,7 @@ namespace CapriDesktop
                 {
                     chosen = chosen ?? settings;
                     capturedSession = session;
-                    if (pictures.Count == 0 || disposed) return Task.FromResult(new ClipResult { Problem = "I haven't buffered any game video yet." });
+                    if (pictures.Count == 0 || disposed) return Task.FromResult(new ClipResult { Problem = "Je n'ai pas encore gardé de vidéo de jeu." });
                     // A repeated voice or tool request gets the same save while it's written and for ten seconds after, even with fresh
                     // settings of the same values, so a slow save or a repeat a few seconds later doesn't make a second file (john
                     // sandevistan, 3 Nov).
@@ -458,7 +458,7 @@ namespace CapriDesktop
                 }
                 catch (Exception error)
                 {
-                    ClipResult failed = new ClipResult { Problem = "Couldn't save that clip: " + error.Message };
+                    ClipResult failed = new ClipResult { Problem = "Impossible d'enregistrer ce clip : " + error.Message };
                     lock (gate) pending = null;
                     if (save != null) { save.Dispose(); save.Done.SetResult(failed); }
                     return Task.FromResult(failed);
@@ -480,7 +480,7 @@ namespace CapriDesktop
                 }
                 ClipResult result;
                 try { result = encode(save); }
-                catch (Exception error) { result = new ClipResult { Problem = "Couldn't save that clip: " + error.Message }; }
+                catch (Exception error) { result = new ClipResult { Problem = "Impossible d'enregistrer ce clip : " + error.Message }; }
                 finally { save.Dispose(); }
                 result.Path = save.Path;
                 result.Merged = save.Merged;
@@ -493,14 +493,14 @@ namespace CapriDesktop
         // After a clip saves, off the UI thread: its path, how many seconds, and the game.
         internal Action<string, double, string, string> Saved;
 
-        // Where clips go: Videos\Capri Clips, wherever Windows keeps their Videos.
-        internal static string Folder { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Capri Clips"); } }
+        // Where clips go: Videos\Capri FR Clips, wherever Windows keeps their Videos.
+        internal static string Folder { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Capri FR Clips"); } }
 
         // What she says for a saved clip: how long and of what, without the file's path, which the CLIP SAVED popup shows.
         internal static string Spoken(string result)
         {
-            if (result == null || !result.StartsWith("Saved ", StringComparison.Ordinal)) return result;
-            return "Clipped " + Regex.Replace(result.Substring(6), @": (?:[A-Za-z]:\\|\\\\)[^\r\n]*?\.mp4", ".");
+            if (result == null || !result.StartsWith("Enregistré : ", StringComparison.Ordinal)) return result;
+            return "Clip de " + Regex.Replace(result.Substring(6), @": (?:[A-Za-z]:\\|\\\\)[^\r\n]*?\.mp4", ".");
         }
 
         internal string Clip(int seconds)
@@ -512,13 +512,13 @@ namespace CapriDesktop
         internal string Clip(int seconds, out bool saved)
         {
             saved = false;
-            if (!Enabled) return "Turn on Clip my games in Settings > CLIPS, then I can clip that.";
+            if (!Enabled) return "Active « Clips de mes jeux » dans Réglages > CLIPS, et je pourrai enregistrer ça.";
             ClipSettings recording = Settings;
             if (seconds <= 0) seconds = recording.Seconds;
             string open = Computer.GameOpen();
             lock (gate)
             {
-                if (game == null) return "I haven't buffered any game video yet.";
+                if (game == null) return "Je n'ai pas encore gardé de vidéo de jeu.";
                 if (open == null) open = game.Name;
             }
             string title = open;
@@ -544,8 +544,8 @@ namespace CapriDesktop
         internal static string Report(ClipResult result, string game, bool repeated)
         {
             if (result.Problem != null) return result.Problem;
-            if (repeated) return "That clip is already saved.";
-            return "Saved " + result.Seconds.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + " seconds of " + game + (result.Sound ? "" : " without sound") + ": " + result.Path + (result.Merged ? " Merged your clip requests into this clip." : "");
+            if (repeated) return "Ce clip est déjà enregistré.";
+            return "Enregistré : " + result.Seconds.ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + " secondes de " + game + (result.Sound ? "" : " sans son") + ": " + result.Path + (result.Merged ? " Tes demandes de clips sont fusionnées dans ce clip." : "");
         }
 
         public void Dispose()
@@ -582,7 +582,7 @@ namespace CapriDesktop
         private long tail;
         internal long Count;
 
-        private static FileStream Temporary() { return new FileStream(Path.Combine(Path.GetTempPath(), "Capri-clip-" + Guid.NewGuid().ToString("N")), FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read, 65536, FileOptions.DeleteOnClose); }
+        private static FileStream Temporary() { return new FileStream(Path.Combine(Path.GetTempPath(), "CapriFR-clip-" + Guid.NewGuid().ToString("N")), FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read, 65536, FileOptions.DeleteOnClose); }
 
         private static void Put(Stream stream, ClipPart part)
         {
@@ -741,9 +741,9 @@ namespace CapriDesktop
             catch (COMException error)
             {
                 bool missing = error.ErrorCode == unchecked((int)0xc00d5212) || error.ErrorCode == unchecked((int)0x80040154);
-                return new ClipResult { Problem = missing ? "Windows couldn't find an H.264 encoder on this PC, so I couldn't save a video." : "Windows couldn't encode that clip: " + error.Message, Unavailable = missing };
+                return new ClipResult { Problem = missing ? "Windows ne trouve pas d'encodeur H.264 sur ce PC : impossible d'enregistrer la vidéo." : "Windows n'a pas pu encoder ce clip : " + error.Message, Unavailable = missing };
             }
-            catch (Exception error) { return new ClipResult { Problem = "Couldn't save that clip: " + error.Message }; }
+            catch (Exception error) { return new ClipResult { Problem = "Impossible d'enregistrer ce clip : " + error.Message }; }
             finally
             {
                 if (temporary != null) { try { File.Delete(temporary); } catch (Exception) { } }
@@ -1373,7 +1373,7 @@ namespace CapriDesktop
         internal bool Motion = true;
         internal event Action<string> Open;
 
-        internal ClipToast() : base("Clip saved")
+        internal ClipToast() : base("Clip enregistré")
         {
             Cursor = Look.Pointer;
             ticks.Interval = Step;
@@ -1396,7 +1396,7 @@ namespace CapriDesktop
         {
             saved = clip;
             seconds = length;
-            game = string.IsNullOrEmpty(title) ? "your game" : title;
+            game = string.IsNullOrEmpty(title) ? "ton jeu" : title;
             scale = ScaleOf(area);
             home = Corner(area, scale);
             age = Motion ? 0 : Slide;
@@ -1497,7 +1497,7 @@ namespace CapriDesktop
                 TalkPill.Plate(graphics, body, s, hovered ? body : Rectangle.Empty, Look.Pink, Look.Cyan);
                 float left = body.Left + 14 * s, right = body.Right - 14 * s, top = body.Top + 10 * s;
                 using (Brush red = new SolidBrush(Look.Red)) graphics.FillEllipse(red, left, top + 2.5f * s, 7 * s, 7 * s);
-                using (Brush pink = new SolidBrush(Look.Pink)) graphics.DrawString("CLIP SAVED", title, pink, left + 13 * s, top, StringFormat.GenericTypographic);
+                using (Brush pink = new SolidBrush(Look.Pink)) graphics.DrawString("CLIP ENREGISTRÉ", title, pink, left + 13 * s, top, StringFormat.GenericTypographic);
                 string length = Length(seconds);
                 float wide = graphics.MeasureString(length, title, PointF.Empty, StringFormat.GenericTypographic).Width;
                 using (Brush dim = new SolidBrush(Look.Dim)) graphics.DrawString(length, title, dim, right - wide, top, StringFormat.GenericTypographic);
@@ -1510,10 +1510,10 @@ namespace CapriDesktop
 
         internal static string Caption(Graphics graphics, Font font, string clip, bool hovered, float width)
         {
-            string folder = clip == null ? "clips folder" : Path.GetDirectoryName(clip);
+            string folder = clip == null ? "dossier des clips" : Path.GetDirectoryName(clip);
             string name = Path.GetFileName(folder.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
             if (name.Length > 0) folder = name;
-            string prefix = hovered ? "Show in " : "", suffix = hovered ? "" : " / click to see it";
+            string prefix = hovered ? "Afficher dans " : "", suffix = hovered ? "" : " / clique pour le voir";
             string caption = prefix + folder + suffix;
             for (int length = folder.Length - 1; length > 0 && graphics.MeasureString(caption, font, PointF.Empty, StringFormat.GenericTypographic).Width > width; length--)
                 caption = prefix + folder.Substring(0, length).TrimEnd() + "\u2026" + suffix;

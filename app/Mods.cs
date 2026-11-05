@@ -54,7 +54,7 @@ namespace CapriDesktop
     {
 #if CROSS
         internal const string CodeExtension = ".capri-code";
-        internal const string WindowsOnly = "Windows only for now";
+        internal const string WindowsOnly = "Windows uniquement pour l'instant";
 
         private Mod LoadCode(string file, HashSet<string> off) { throw new ModException(WindowsOnly); }
         private Mod ImportCode(string file, Func<ModFile, string, bool> ask) { throw new ModException(WindowsOnly); }
@@ -131,7 +131,7 @@ namespace CapriDesktop
             catch (Exception error)
             {
                 if (!(error is IOException || error is UnauthorizedAccessException)) throw;
-                Problems.Add("the mods folder: " + error.Message);
+                Problems.Add("le dossier des mods : " + error.Message);
                 Brain.Log("mods", -1, Problems[0]);
                 off = new HashSet<string>();
                 files = new string[0];
@@ -167,12 +167,12 @@ namespace CapriDesktop
             string text;
             try
             {
-                if (!string.Equals(Path.GetExtension(file), Extension, StringComparison.OrdinalIgnoreCase)) throw new ModException("That isn't a " + Extension + ", " + CodeExtension + " or " + SkinExtension + " file.");
-                if (new FileInfo(file).Length > Largest) throw new ModException("That mod is too big. A mod is a small settings file.");
+                if (!string.Equals(Path.GetExtension(file), Extension, StringComparison.OrdinalIgnoreCase)) throw new ModException("That isn't a " + Extension + ", " + CodeExtension + " ou " + SkinExtension + ".");
+                if (new FileInfo(file).Length > Largest) throw new ModException("Ce mod est trop gros. Un mod est un petit fichier de réglages.");
                 text = File.ReadAllText(file);
             }
-            catch (IOException error) { throw new ModException("Couldn't read that file: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't read that file: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible de lire ce fichier : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible de lire ce fichier : " + error.Message); }
             ModFile read = Read(text);
             string home = Path.Combine(folder, read.Id + Extension);
             try
@@ -187,8 +187,8 @@ namespace CapriDesktop
                 if (read.Colors != null) { OnlyColours(read.Id, off); changed = true; }
                 if (changed) WriteOff(off);
             }
-            catch (IOException error) { throw new ModException("Couldn't save that mod: " + error.Message); }
-            catch (UnauthorizedAccessException error) { throw new ModException("Couldn't save that mod: " + error.Message); }
+            catch (IOException error) { throw new ModException("Impossible d'enregistrer ce mod : " + error.Message); }
+            catch (UnauthorizedAccessException error) { throw new ModException("Impossible d'enregistrer ce mod : " + error.Message); }
             Load();
             return All.Find(mod => mod.File.Id == read.Id);
         }
@@ -232,8 +232,8 @@ namespace CapriDesktop
             read.HeardAs = read.HeardAs ?? new string[0];
             if (read.WakeNames.Length == 0 && read.HeardAs.Length == 0 && !read.SoundsLike && !read.HearingLog && read.Colors == null) throw new ModException("That mod doesn't change anything. It needs wake_names, heard_as, sounds_like, hearing_log or colors.");
             if (read.Colors != null) CheckColours(read.Colors);
-            if (read.WakeNames.Length > MostNames) throw new ModException("A mod can add up to " + MostNames + " names.");
-            if (read.HeardAs.Length > MostSpellings) throw new ModException("A mod can add up to " + MostSpellings + " spellings.");
+            if (read.WakeNames.Length > MostNames) throw new ModException("Un mod peut ajouter jusqu'à " + MostNames + " noms.");
+            if (read.HeardAs.Length > MostSpellings) throw new ModException("Un mod peut ajouter jusqu'à " + MostSpellings + " orthographes.");
             CheckNames(read.WakeNames);
             CheckNames(read.HeardAs);
             return read;
@@ -247,8 +247,8 @@ namespace CapriDesktop
                 using (MemoryStream body = new MemoryStream(Encoding.UTF8.GetBytes((text ?? "").TrimStart('﻿'))))
                     read = (ModFile)new DataContractJsonSerializer(typeof(ModFile)).ReadObject(body);
             }
-            catch (SerializationException) { throw new ModException("That file isn't valid mod JSON."); }
-            if (read == null) throw new ModException("That file isn't valid mod JSON.");
+            catch (SerializationException) { throw new ModException("Ce fichier n'est pas un JSON de mod valide."); }
+            if (read == null) throw new ModException("Ce fichier n'est pas un JSON de mod valide.");
             return read;
         }
 
@@ -257,19 +257,19 @@ namespace CapriDesktop
             for (int i = 0; i < names.Length; i++)
             {
                 string name = (names[i] ?? "").Trim();
-                if (name.Length < 2 || name.Length > 32 || !GoodName.IsMatch(name)) throw new ModException("\"" + names[i] + "\" can't be a name. Use 2 to 32 letters or numbers, with single spaces, dashes or apostrophes between them.");
+                if (name.Length < 2 || name.Length > 32 || !GoodName.IsMatch(name)) throw new ModException("\"" + names[i] + "\" ne peut pas être un nom. Utilise 2 à 32 lettres ou chiffres, séparés par une espace, un tiret ou une apostrophe.");
                 names[i] = name;
             }
         }
 
         private static void CheckDetails(ModFile read)
         {
-            if (read.Format != Format) throw new ModException("That mod needs format " + read.Format + ", and this Capri reads format " + Format + ".");
-            if (read.Id == null || !GoodId.IsMatch(read.Id)) throw new ModException("A mod's id must be lowercase letters, numbers and dashes.");
-            if (string.IsNullOrWhiteSpace(read.Name) || read.Name.Length > 40) throw new ModException("A mod needs a name of up to 40 characters.");
-            if (read.Version != null && read.Version.Length > 20) throw new ModException("A mod's version can be up to 20 characters.");
-            if (read.Author != null && read.Author.Length > 40) throw new ModException("A mod's author can be up to 40 characters.");
-            if (read.Description != null && read.Description.Length > 200) throw new ModException("A mod's description can be up to 200 characters.");
+            if (read.Format != Format) throw new ModException("Ce mod demande le format " + read.Format + ", et cette Capri lit le format " + Format + ".");
+            if (read.Id == null || !GoodId.IsMatch(read.Id)) throw new ModException("L'identifiant d'un mod : lettres minuscules, chiffres et tirets.");
+            if (string.IsNullOrWhiteSpace(read.Name) || read.Name.Length > 40) throw new ModException("Un mod a besoin d'un nom de 40 caractères maximum.");
+            if (read.Version != null && read.Version.Length > 20) throw new ModException("La version d'un mod : 20 caractères maximum.");
+            if (read.Author != null && read.Author.Length > 40) throw new ModException("L'auteur d'un mod : 40 caractères maximum.");
+            if (read.Description != null && read.Description.Length > 200) throw new ModException("La description d'un mod : 200 caractères maximum.");
         }
 
         internal static string Pattern(string[] names)
@@ -332,7 +332,7 @@ namespace CapriDesktop
             if (names.Length < 2) return string.Join("", names);
             string[] front = new string[names.Length - 1];
             Array.Copy(names, front, front.Length);
-            return string.Join(", ", front) + " or " + names[names.Length - 1];
+            return string.Join(", ", front) + " ou " + names[names.Length - 1];
         }
 
         private HashSet<string> Off()

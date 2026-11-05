@@ -63,7 +63,7 @@ namespace CapriDesktop
         // Her voice chat agent's stability, similarity and speed as JSON, so she's the same person on a call and off it.
         internal volatile string Settings;
         internal static int Patience = 20000;
-        private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("Capri.ElevenLabs");
+        private static readonly byte[] Entropy = Encoding.UTF8.GetBytes("CapriFR.ElevenLabs");
         internal volatile string Key;
         internal volatile string VoiceId;
         internal volatile string Model;
@@ -219,7 +219,7 @@ namespace CapriDesktop
             ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Host + path);
             request.Method = method;
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             request.Headers["xi-api-key"] = key;
             request.ServicePoint.Expect100Continue = false;
             request.Timeout = Patience;
@@ -357,7 +357,7 @@ namespace CapriDesktop
             string key = Key;
             string id = VoiceId;
             string model = Model;
-            if (key == null || id == null) throw new VoiceException("No voice picked.");
+            if (key == null || id == null) throw new VoiceException("Aucune voix choisie.");
             StringBuilder body = new StringBuilder("{\"text\":");
             body.Append(Quote(Sayable(text)));
             string words = body.ToString();
@@ -2235,6 +2235,8 @@ namespace CapriDesktop
 
         internal static string Tongue(string text, string language)
         {
+            // Capri fork: French is in Latin letters, which would otherwise pass for English and get her English voice.
+            if (Brain.LanguageCode(language) == "fr") return "fr";
             if (Reads(text, "en")) return null;
             string code = Brain.LanguageCode(language);
             if (code != "en" && Reads(text, code)) return code;
@@ -2328,7 +2330,7 @@ namespace CapriDesktop
                 case "zu": return "Faka izwi lalolu limi ku-CUSTOM LOCAL ku-Mainframe.";
                 case "xh": return "Yongeza ilizwi lolu lwimi kwi-CUSTOM LOCAL kwi-Mainframe.";
                 case "so": return "Ku dar codka luqaddan qaybta CUSTOM LOCAL ee Mainframe.";
-                default: return "Add a voice for this language under CUSTOM LOCAL in Mainframe.";
+                default: return "Ajoute une voix pour cette langue sous LOCALE PERSO dans Mainframe.";
             }
         }
     }
@@ -2363,8 +2365,11 @@ namespace CapriDesktop
             List<KeyValuePair<string, string>> voices = new List<KeyValuePair<string, string>>();
             try
             {
+                // Capri fork: female voices first, so she never gets a man's voice when a woman's is there.
                 foreach (Windows.Media.SpeechSynthesis.VoiceInformation voice in Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices)
-                    voices.Add(new KeyValuePair<string, string>("winrt:" + voice.Id, voice.Language));
+                    if (voice.Gender == Windows.Media.SpeechSynthesis.VoiceGender.Female) voices.Add(new KeyValuePair<string, string>("winrt:" + voice.Id, voice.Language));
+                foreach (Windows.Media.SpeechSynthesis.VoiceInformation voice in Windows.Media.SpeechSynthesis.SpeechSynthesizer.AllVoices)
+                    if (voice.Gender != Windows.Media.SpeechSynthesis.VoiceGender.Female) voices.Add(new KeyValuePair<string, string>("winrt:" + voice.Id, voice.Language));
             }
             catch (Exception) { }
             try
@@ -2435,7 +2440,7 @@ namespace CapriDesktop
         internal static long PackSize = VoicePack.Size;
         internal static readonly FreeStyle[] Styles =
         {
-            new FreeStyle("Her own", 53, 1.1f, false),
+            new FreeStyle("La sienne", 53, 1.1f, false),
             new FreeStyle("Bright", 2, 1.1f, false),
             new FreeStyle("Sly", 6, 1.08f, false),
             new FreeStyle("Sharp", 21, 1.1f, true)
@@ -2551,7 +2556,7 @@ namespace CapriDesktop
         {
             if (tts != IntPtr.Zero && british == gb) return;
             if (IntPtr.Size != 8) throw new VoiceException("Her free voice needs 64-bit Windows.");
-            if (!Installed) throw new VoiceException("Set up her free voice in Capri Mainframe.");
+            if (!Installed) throw new VoiceException("Set up her free voice in Capri FR Mainframe.");
             Load(folder);
             Close();
             List<IntPtr> held = new List<IntPtr>();
@@ -2619,7 +2624,7 @@ namespace CapriDesktop
             foreach (string home in new[] { Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Environment.GetEnvironmentVariable("PUBLIC") })
             {
                 if (string.IsNullOrEmpty(home)) continue;
-                string alias = Path.Combine(Path.Combine(home, "Capri"), name);
+                string alias = Path.Combine(Path.Combine(home, "CapriFR"), name);
                 if (Directory.Exists(alias)) return alias;
                 try
                 {
@@ -3323,7 +3328,7 @@ namespace CapriDesktop
                     if (awake && (server == null || !server.HasExited)) return;
                     Close();
                     memoryFailed = false;
-                    if (!Installed) throw new VoiceException("Get her HD voice in Capri Mainframe first.");
+                    if (!Installed) throw new VoiceException("Get her HD voice in Capri FR Mainframe first.");
                     number = port = Engine.FreePort();
                     try { running = server = Spawn(StartInfo(number)); }
                     catch (System.ComponentModel.Win32Exception error) { throw new VoiceException(Voice.Short("Her HD voice wouldn't start: " + error.Message)); }
@@ -3779,7 +3784,7 @@ namespace CapriDesktop
                 if (tts.Scheme == Uri.UriSchemeHttps) ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(at.Uri);
                 request.Method = "GET";
-                request.UserAgent = "Capri-Desktop";
+                request.UserAgent = "CapriFR-Desktop";
                 if (tts.IsLoopback) request.Proxy = null;
                 if (!string.IsNullOrEmpty(key)) request.Headers[HttpRequestHeader.Authorization] = "Bearer " + key;
                 request.Timeout = Patience;
@@ -3833,7 +3838,7 @@ namespace CapriDesktop
             if (tts.Scheme == Uri.UriSchemeHttps) ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new UriBuilder(tts.Scheme, tts.Host, tts.Port, "/model").Uri);
             request.Method = "POST";
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             if (tts.IsLoopback) request.Proxy = null;
             request.Headers[HttpRequestHeader.Authorization] = "Bearer " + key;
             request.ContentType = "multipart/form-data; boundary=" + boundary;
@@ -3982,7 +3987,7 @@ namespace CapriDesktop
             request.Method = "POST";
             // A server on this PC is reached directly, never through a proxy.
             if (endpoint.IsLoopback) request.Proxy = null;
-            request.UserAgent = "Capri-Desktop";
+            request.UserAgent = "CapriFR-Desktop";
             request.ContentType = "application/json";
             request.ContentLength = payload.Length;
             if (!string.IsNullOrEmpty(key)) request.Headers[HttpRequestHeader.Authorization] = "Bearer " + key;

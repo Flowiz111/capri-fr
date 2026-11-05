@@ -441,7 +441,7 @@ namespace CapriDesktop
             // The job ended while she was thinking: more for it is a new ask, and chat still gets its answer.
             if (!MidJob(running) || job != running)
             {
-                if (kind == AsideKind.Add || kind == AsideKind.Change) { Hear(text, text, "> you: "); return; }
+                if (kind == AsideKind.Add || kind == AsideKind.Change) { Hear(text, text, "> \u00e0 toi : "); return; }
                 if (kind != AsideKind.Stop && !empty) AsideSay(line, running, text);
                 return;
             }
@@ -778,7 +778,7 @@ namespace CapriDesktop
             if (string.IsNullOrEmpty(text)) { mainframe.VoiceNote("I couldn't make out any words. Try closer to the mic.", false); return; }
             mainframe.VoiceNote(chatting && local && preferences.ListenCapri ? LocalListening : "Heard you.", false);
             Commentary.Stage.Hear(text, true);
-            Hear(text, text, "> you: ");
+            Hear(text, text, "> \u00e0 toi : ");
         }
 
         internal string PushKeyName { get { return preferences.PushVk == 0 ? "not set" : KeyName(preferences.PushMods, preferences.PushVk); } }

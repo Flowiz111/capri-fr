@@ -197,7 +197,7 @@ namespace CapriDesktop
                     graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                     graphics.DrawImage(image, (Width - wide) / 2, (Height - tall) / 2, wide, tall);
                 }
-                else TextRenderer.DrawText(graphics, "NO PREVIEW", Font, ClientRectangle, Faint, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                else TextRenderer.DrawText(graphics, "PAS D'APERÇU", Font, ClientRectangle, Faint, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
                 using (Pen rim = new Pen(WellEdge)) graphics.DrawRectangle(rim, 0, 0, Width - 1, Height - 1);
             }
         }
@@ -313,22 +313,22 @@ namespace CapriDesktop
             private bool installing, statsLive;
             internal bool Inline;
 
-            internal ModsSheet(Mainframe owner, float zoom) : base(owner, zoom, "Mods directory", "MODS DIRECTORY >", Wide, Tall)
+            internal ModsSheet(Mainframe owner, float zoom) : base(owner, zoom, "Annuaire des mods", "ANNUAIRE DES MODS >", Wide, Tall)
             {
                 Words("The directory checks mods for malware first. Code mods still ask before they run.", 28, 52, 688, 16, Small(), Faint);
                 search = new Entry();
                 search.Bounds = Box(28, 74, 352, 26);
-                search.Cue = "Search name, author or description";
-                search.Box.AccessibleName = "Search the mods directory";
-                search.Box.AccessibleDescription = "Search mods";
+                search.Cue = "Chercher un nom, un auteur ou une description";
+                search.Box.AccessibleName = "Chercher dans l'annuaire des mods";
+                search.Box.AccessibleDescription = "Chercher des mods";
                 search.Box.TextChanged += delegate { first = 0; Fill(); };
                 Controls.Add(search);
                 for (int i = 0; i < filters.Length; i++)
                 {
                     int kind = i;
                     filters[i] = Make(ModDirectory.Kinds[i], 388 + i * 82, 76, 76, 22, delegate { first = 0; filter = kind; Fill(); });
-                    filters[i].AccessibleName = "Show " + ModDirectory.Kinds[i].ToLowerInvariant() + " in the mods directory";
-                    filters[i].AccessibleDescription = "Mod filter";
+                    filters[i].AccessibleName = "Afficher " + ModDirectory.Kinds[i].ToLowerInvariant() + " dans l'annuaire des mods";
+                    filters[i].AccessibleDescription = "Filtre de mods";
                 }
                 for (int i = 0; i < Cards; i++)
                 {
@@ -344,14 +344,14 @@ namespace CapriDesktop
                     stars[i] = new ModStars();
                     counts[i] = Words("", x, y + 210, CardWide, 16, Small(), Faint);
                     stars[i].Bounds = Box(x, y + 228, 78, 16);
-                    stars[i].AccessibleDescription = "Rate mod";
+                    stars[i].AccessibleDescription = "Noter le mod";
                     stars[i].Picked += delegate(int picked) { Rate(card, picked); };
                     Controls.Add(stars[i]);
                     stats[i] = Words("", x + 84, y + 228, CardWide - 84, 16, Small(), Faint);
                     installs[i] = Make("Install", x, y + 248, 108, 24, delegate { Install(card); });
-                    installs[i].AccessibleDescription = "Install mod";
+                    installs[i].AccessibleDescription = "Installer le mod";
                     views[i] = Make("View", x + 114, y + 248, 108, 24, delegate { View(card); });
-                    views[i].AccessibleDescription = "View mod";
+                    views[i].AccessibleDescription = "Voir le mod";
                 }
                 back = Make("Back", 28, 680, 60, 22, delegate { first -= Cards; Fill(); });
                 page = Words("", 272, 682, 200, 18, Font, Faint);
@@ -395,14 +395,14 @@ namespace CapriDesktop
                 listings = new List<ModListing>();
                 statsLive = false;
                 first = 0;
-                Says("Looking in the mods directory...", false);
+                Says("Recherche dans l'annuaire des mods...", false);
                 Fill();
                 Run(delegate
                 {
                     List<ModListing> found = null;
                     string problem = null;
                     try { found = ModDirectory.Browse(); }
-                    catch (Exception error) { problem = DirectoryProblem(error, "Couldn't reach the mods directory: "); }
+                    catch (Exception error) { problem = DirectoryProblem(error, "Annuaire des mods injoignable : "); }
                     Back(delegate { if (mine == ticket) Showing(found, problem, mine); });
                 });
             }
@@ -412,7 +412,7 @@ namespace CapriDesktop
                 listings = found ?? new List<ModListing>();
                 Fill();
                 if (problem != null) { Says(problem, true); return; }
-                if (listings.Count == 0) { Says("No mods in the directory yet.", false); return; }
+                if (listings.Count == 0) { Says("Aucun mod dans l'annuaire pour l'instant.", false); return; }
                 status.Text = "";
                 Run(delegate
                 {
@@ -448,7 +448,7 @@ namespace CapriDesktop
                 shown = ModDirectory.Filter(listings, search.Box.Text, filter);
                 first = Math.Max(0, Math.Min(first, (Math.Max(0, shown.Count - 1) / Cards) * Cards));
                 empty.Visible = shown.Count == 0;
-                empty.Text = listings.Count == 0 ? "Nothing to show from the mods directory." : "No mods match that.";
+                empty.Text = listings.Count == 0 ? "Rien à afficher depuis l'annuaire des mods." : "Aucun mod ne correspond.";
                 for (int i = 0; i < filters.Length; i++)
                 {
                     filters[i].Accent = i == filter ? Cyan : Faint;
@@ -467,29 +467,29 @@ namespace CapriDesktop
                     AskForPicture(listing);
                     Image picture;
                     previews[i].Image = listing.PreviewSha != null && pictures.TryGetValue(listing.PreviewSha, out picture) ? picture : null;
-                    previews[i].AccessibleName = listing.Title + " preview";
+                    previews[i].AccessibleName = listing.Title + " aperçu";
                     titles[i].Text = listing.Title;
-                    authors[i].Text = listing.Author.Length > 0 ? "by " + listing.Author : "";
+                    authors[i].Text = listing.Author.Length > 0 ? "par " + listing.Author : "";
                     abouts[i].Text = listing.About;
                     titles[i].AccessibleDescription = listing.About;
                     details.SetToolTip(previews[i], listing.Title + (listing.Author.Length > 0 ? "\nby " + listing.Author : "") + (listing.About.Length > 0 ? "\n" + listing.About : ""));
-                    metas[i].Text = listing.Kind + " " + Math.Max(1, listing.Size / 1024) + " KB." + (have ? " Installed." : "");
+                    metas[i].Text = listing.Kind + " " + Math.Max(1, listing.Size / 1024) + " Ko." + (have ? " Installé." : "");
                     stars[i].Value = listing.Rating;
                     stars[i].CanRate = statsLive && have;
-                    stars[i].AccessibleName = "Rate " + listing.Title + ", " + (listing.Votes == 0 ? "no ratings yet" : listing.Rating.ToString("0.0") + " stars") + (have ? ". Press 1 to 5." : "");
+                    stars[i].AccessibleName = "Noter " + listing.Title + ", " + (listing.Votes == 0 ? "pas encore de note" : listing.Rating.ToString("0.0") + " étoiles") + (have ? ". Appuie sur 1 à 5." : "");
                     stats[i].Text = ModDirectory.RatingLine(listing);
                     counts[i].Text = ModDirectory.DownloadLine(listing);
                     installs[i].Text = have ? "Reinstall" : "Install";
                     installs[i].Enabled = !installing;
-                    installs[i].AccessibleName = (have ? "Reinstall " : "Install ") + listing.Title;
+                    installs[i].AccessibleName = (have ? "Réinstaller " : "Installer ") + listing.Title;
                     installs[i].Invalidate();
-                    views[i].AccessibleName = "View " + listing.Title + " on GitHub";
+                    views[i].AccessibleName = "Voir " + listing.Title + " sur GitHub";
                 }
                 bool pages = shown.Count > Cards;
                 back.Visible = next.Visible = page.Visible = pages;
                 back.Enabled = first > 0;
                 next.Enabled = first + Cards < shown.Count;
-                page.Text = "Page " + (first / Cards + 1) + " of " + (Math.Max(0, shown.Count - 1) / Cards + 1);
+                page.Text = "Page " + (first / Cards + 1) + " sur " + (Math.Max(0, shown.Count - 1) / Cards + 1);
             }
 
             private void Install(int card)
@@ -497,14 +497,14 @@ namespace CapriDesktop
                 ModListing listing = At(card);
                 if (installing || listing == null) return;
                 installing = true;
-                Says("Downloading " + listing.Title + "...", false);
+                Says("Téléchargement de " + listing.Title + "...", false);
                 Fill();
                 string under = Path.Combine(Path.GetTempPath(), "capri-mod-downloads");
                 Run(delegate
                 {
                     string file = null, problem = null;
                     try { file = ModDirectory.Download(listing, under); }
-                    catch (Exception error) { problem = DirectoryProblem(error, "Couldn't download that mod: "); }
+                    catch (Exception error) { problem = DirectoryProblem(error, "Impossible de télécharger ce mod : "); }
                     try { Back(delegate { Finish(listing, file, problem); }); }
                     finally { if (IsDisposed && file != null) ModDirectory.Clean(file); }
                 });
@@ -536,13 +536,13 @@ namespace CapriDesktop
             {
                 ModListing listing = At(card);
                 if (listing == null) return;
-                Says("Saving your rating...", false);
+                Says("Enregistrement de ta note...", false);
                 Run(delegate
                 {
                     ModStats saved = null;
                     string problem = null;
                     try { saved = ModDirectory.Rate(listing.Folder, picked); }
-                    catch (Exception error) { problem = DirectoryProblem(error, "Couldn't save your rating: "); }
+                    catch (Exception error) { problem = DirectoryProblem(error, "Impossible d'enregistrer ta note : "); }
                     Back(delegate
                     {
                         if (saved == null) { Says(problem, true); return; }
@@ -550,7 +550,7 @@ namespace CapriDesktop
                         listing.Rating = saved.Rating;
                         listing.Votes = saved.Votes;
                         Fill();
-                        Says("You gave " + listing.Title + " " + picked + (picked == 1 ? " star." : " stars."), false);
+                        Says("Tu as donné " + listing.Title + " " + picked + (picked == 1 ? " étoile." : " étoiles."), false);
                     });
                 });
             }
@@ -563,7 +563,7 @@ namespace CapriDesktop
                 catch (Exception error)
                 {
                     if (!(error is IOException || error is UnauthorizedAccessException || error is System.ComponentModel.Win32Exception)) throw;
-                    Says("Couldn't open that page: " + error.Message, true);
+                    Says("Impossible d'ouvrir cette page : " + error.Message, true);
                 }
             }
 
@@ -607,16 +607,16 @@ namespace CapriDesktop
             private readonly Label status;
             internal readonly string Steps;
 
-            internal PublishSheet(Mainframe owner, float zoom, Mod mod) : base(owner, zoom, "Publish mod", "PUBLISH MOD >", Wide, Tall)
+            internal PublishSheet(Mainframe owner, float zoom, Mod mod) : base(owner, zoom, "Publier un mod", "PUBLIER UN MOD >", Wide, Tall)
             {
                 this.mod = mod;
                 Steps = ModDirectory.PublishSteps(mod);
-                Words("Share " + mod.File.Name + " in the mods directory with a pull request.", 28, 52, 464, 18, Font, White);
+                Words("Partager " + mod.File.Name + " dans l'annuaire des mods avec une pull request.", 28, 52, 464, 18, Font, White);
                 Words(Steps, 28, 78, 464, 216, Font, Faint);
-                Key fork = Make("Fork capri-mods", 28, 298, 150, 26, delegate { Open(ModDirectory.Page + "/fork", null); });
+                Key fork = Make("Forker capri-mods", 28, 298, 150, 26, delegate { Open(ModDirectory.Page + "/fork", null); });
                 fork.Accent = Cyan;
                 fork.Loud = true;
-                Make("Show my mod file", 186, 298, 150, 26, delegate { Open("explorer.exe", "/select,\"" + mod.Path + "\""); });
+                Make("Afficher mon fichier de mod", 186, 298, 150, 26, delegate { Open("explorer.exe", "/select,\"" + mod.Path + "\""); });
                 status = Words("", 28, 330, 464, 26, Small(), Rose);
             }
 
@@ -626,7 +626,7 @@ namespace CapriDesktop
                 catch (Exception error)
                 {
                     if (!(error is IOException || error is UnauthorizedAccessException || error is System.ComponentModel.Win32Exception)) throw;
-                    status.Text = "Couldn't open that: " + error.Message;
+                    status.Text = "Impossible d'ouvrir : " + error.Message;
                 }
             }
 

@@ -1,5 +1,7 @@
 # Contributing to Capri
 
+> **Capri FR :** ce guide vient du projet Capri d'origine. Les contributions à la traduction française se font sur ce fork, celles au projet d'origine sur [son dépôt](https://github.com/lachydotmcg/capri-desktop).
+
 Thanks for helping her out, choom.
 
 ## Before you start

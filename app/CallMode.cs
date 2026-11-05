@@ -841,7 +841,7 @@ namespace CapriDesktop
             string sure = line.Sure;
             CallSaid(line);
             bool answer = sure.Length > 0 && (CallSession.Agrees(sure) || CallSession.Refuses(sure));
-            if (Hands.HeardName(sure) || answer && (callSession.FriendAsked || OwnCallQuestion())) { Hear(sure, text, "> you: ", 0, true, text); return; }
+            if (Hands.HeardName(sure) || answer && (callSession.FriendAsked || OwnCallQuestion())) { Hear(sure, text, "> \u00e0 toi : ", 0, true, text); return; }
             if (sure.Length > 0) callSession.DropFriend();
             int version = callSession.Generation;
             int friendTurn = callSession.FriendTurn;
