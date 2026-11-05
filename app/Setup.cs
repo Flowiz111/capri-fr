@@ -41,7 +41,7 @@ namespace CapriSetup
             if (args.Length > 0 && args[0] == "--update") return Update(args);
             if (args.Length == 2 && args[0] == "--verify") return Verify(args[1]);
             if (args.Length == 2 && args[0] == "--verify-voice") return VerifyVoice(args[1]);
-            if (args.Length == 1 && args[0] == "--remove-files") return RemoveFiles(false);
+            if (args.Length == 1 && args[0] == "--remove-files") { int removed = RemoveFiles(false); ForgetCopy(); return removed; }
             using (SetupWindow window = new SetupWindow(args.Length == 1 && args[0] == "--uninstall")) Application.Run(window);
             return 0;
         }
@@ -123,7 +123,7 @@ namespace CapriSetup
                     farewell.Close();
                 }
                 // Her notices, which stand in for Windows' grey boxes, fit their message under their title with OK below it.
-                using (Notice told = new Notice("Capri FR a été supprimée.\n\nTes réglages de position et de taille ont été gardés dans " + InstallPath + ".", "Capri FR", false))
+                using (Notice told = new Notice("Capri FR a été supprimée.\n\nTes discussions, ta mémoire et tes réglages sont gardés dans " + InstallPath + ". Supprime ce dossier pour tout effacer.", "Capri FR", false))
                 using (Notice failed = new Notice("Il y a un CapriFR.exe dans " + InstallPath + " qui n'est pas cette Capri FR. Déplace-le hors de ce dossier, puis réinstalle.", "Capri FR n'a pas pu s'installer", true))
                 {
                     told.Show();
@@ -380,6 +380,21 @@ namespace CapriSetup
             Process.Start(new ProcessStartInfo(temporary, "--remove-files") { UseShellExecute = true });
         }
 
+        // The temporary copy BeginUninstall runs can't delete itself while it's running, so a hidden shell does it just after
+        // it exits. Only that copy, by its exact shape of name, ever asks for this; a failure just leaves it in Temp.
+        private static void ForgetCopy()
+        {
+            try
+            {
+                string self = Path.GetFullPath(Application.ExecutablePath);
+                string name = Path.GetFileNameWithoutExtension(self);
+                const string lead = "CapriFR-Uninstall-";
+                if (!name.StartsWith(lead, StringComparison.Ordinal) || name.Length != lead.Length + 32) return;
+                using (Process.Start(new ProcessStartInfo("cmd.exe", "/c ping -n 4 127.0.0.1 > nul & del /f /q \"" + self + "\"") { UseShellExecute = false, CreateNoWindow = true, WorkingDirectory = Path.GetTempPath() })) { }
+            }
+            catch (Exception) { }
+        }
+
         private static int RemoveFiles(bool silent)
         {
             try
@@ -400,7 +415,7 @@ namespace CapriSetup
                 DeleteShortcut(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Capri FR.lnk"), destination);
                 Registry.CurrentUser.DeleteSubKeyTree(RegistryPath, false);
                 File.Delete(Path.Combine(destination, ".capri-install"));
-                if (!silent) Notice.Tell(null, "Capri FR a été supprimée.\n\nTes réglages de position et de taille ont été gardés dans " + destination + ".", "Capri FR", false);
+                if (!silent) Notice.Tell(null, "Capri FR a été supprimée.\n\nTes discussions, ta mémoire et tes réglages sont gardés dans " + destination + ". Supprime ce dossier pour tout effacer.", "Capri FR", false);
                 return 0;
             }
             catch (Exception error) { if (silent) Console.Error.WriteLine(error.Message); else Notice.Tell(null, error.Message, "Capri FR n'a pas pu être supprimée", true); return 1; }
@@ -510,7 +525,7 @@ namespace CapriSetup
             launch.Visible = !removing;
             Controls.Add(desktop);
             Controls.Add(launch);
-            status = LabelAt(removing ? "Ta position et ta taille enregistrées seront gardées." : "", 34, 352, 604, 22, Neon.Type(9.5f), Neon.Faint);
+            status = LabelAt(removing ? "Tes discussions, ta mémoire et tes réglages resteront sur ce PC." : "", 34, 352, 604, 22, Neon.Type(9.5f), Neon.Faint);
             stage = LabelAt("", 34, 282, 604, 28, Neon.Type(13f, true), Neon.White);
             stage.Visible = false;
             note = LabelAt("", 34, 314, 604, 22, Neon.Type(10f), Neon.Faint);

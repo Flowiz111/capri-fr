@@ -27,7 +27,7 @@ Get-FileHash .\CapriFR-Setup.exe -Algorithm SHA256
 - **Démarrage de Windows :** une copie installée se lance au démarrage. Tu peux le couper dans Mainframe > Réglages > HABITUDES > Lancer avec Windows.
 - **Pas de mise à jour automatique :** les correctifs de sécurité de Capri n'arrivent pas tout seuls. Reviens sur cette page pour installer les nouvelles versions de Capri FR.
 - **Clés API :** si tu relies un service d'IA en ligne, tes échanges passent par ce service, selon ses propres conditions.
-- **Désinstallation :** elle retire le programme, ses modèles, ses raccourcis et le lancement au démarrage, mais **garde tes discussions, ta mémoire et tes réglages** dans `%LOCALAPPDATA%\CapriFR`, même si sa fenêtre ne mentionne que la position et la taille. Pour tout effacer, supprime ce dossier après la désinstallation.
+- **Désinstallation :** elle retire le programme, ses modèles, ses raccourcis et le lancement au démarrage, mais **garde tes discussions, ta mémoire et tes réglages** dans `%LOCALAPPDATA%\CapriFR`. Pour tout effacer, supprime ce dossier après la désinstallation.
 
 ## Ce qui change par rapport à Capri
 
