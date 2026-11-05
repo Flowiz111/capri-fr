@@ -11699,7 +11699,30 @@ namespace CapriDesktop
         {
             bool forHer = VoiceCounts(text);
             ModList.LogHearing(text, forHer);
+            if (!forHer) Post(NameHint);
+            else if (preferences.ListenCapri && Hands.HeardName(text)) nameHints = NameHintsMost;
             return forHer;
+        }
+
+        // Capri FR: with Listen for Capri on, a line without her name used to vanish without a word, which looks like she's
+        // broken. Her bubble says why, without her voice. The mic is open all the time and hears the TV too, so it's a few
+        // times a run at most, and never again once they've used her name.
+        internal const int NameHintsMost = 3;
+        internal const double NameHintGap = 300;
+        private const string NameHintLine = "Je t'ai entendu, mais je réponds seulement quand tu dis « Capri ».";
+        private int nameHints;
+        private double lastNameHint;
+
+        internal static bool NameHintDue(int shown, double now, double last) { return shown < NameHintsMost && (shown == 0 || now - last >= NameHintGap); }
+
+        private void NameHint()
+        {
+            double now = clock.Elapsed.TotalSeconds;
+            if (!NameHintDue(nameHints, now, lastNameHint) || !preferences.ListenCapri || testing) return;
+            if (hidden || preferences.Quiet || GamingOn || CallModeOn || MidJob(job) || watchAlong != null || PcEars.Active || LineBusy || now < voiceUntil || speaker.Busy) return;
+            nameHints++;
+            lastNameHint = now;
+            Remark("hint", NameHintLine, true);
         }
 
         private bool VoiceCounts(string text)

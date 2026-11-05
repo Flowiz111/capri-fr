@@ -25,7 +25,7 @@ Les réglages plus détaillés se trouvent dans Mainframe > **Réglages**. Tu pe
 | **Discussion vocale** | `Ctrl + Alt + V` ou l'onde ouvre et ferme la discussion. Dans ce mode, tes phrases lui parviennent sans que tu dises son nom. |
 | **Écouter son nom** | Active-le dans Mainframe > Réglages > VOIX. Le micro reste ouvert, et **seules les phrases contenant « Capri » lui parviennent**. Exemple : « Capri, quelle heure est-il ? ». |
 
-« Écouter son nom » est coupé par défaut. Une fois activé, `Ctrl + Alt + V` ferme ou rouvre ses oreilles.
+« Écouter son nom » est coupé par défaut. Une fois activé, `Ctrl + Alt + V` ferme ou rouvre ses oreilles. Si tu oublies son nom, sa bulle te le rappelle sans voix, trois fois au maximum à chaque lancement, et plus du tout dès que tu l'as dit une fois.
 
 Son écoute fonctionne hors ligne et gère le français. Tu peux aussi lui attribuer une touche dans Réglages > TOUCHES > Appuyer pour parler.
 
