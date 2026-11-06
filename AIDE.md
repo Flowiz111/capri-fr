@@ -122,6 +122,7 @@ Capri FR n'envoie aucune statistique ni aucun rapport au projet Capri ou à ce d
 | Tes recherches et demandes de musique ou de sites | DuckDuckGo, YouTube ou le site demandé | Quand tu le demandes |
 | Son activité | L'application Discord sur ton PC | Activé par défaut. Se coupe dans Réglages > HABITUDES > Afficher sur Discord. |
 | Téléchargement des modèles | GitHub, huggingface.co | Quand ils sont installés |
+| Vérification de la dernière version | GitHub (`api.github.com`), qui voit ton adresse IP comme tout site | Peu après le démarrage, puis toutes les 3 heures, ou quand tu le demandes |
 
 **⚠️ Regarder mon écran :** ce réglage est coupé par défaut. Une fois activé, elle prend des captures de ton écran de sa propre initiative. Avec un cerveau en ligne, **tout ce qui est affiché part chez ce service**, y compris tes messages, tes mails ou tes mots de passe visibles. Coupe-le dans Mainframe > Réglages > OBSERVER si tu travailles sur quelque chose de privé.
 
@@ -131,9 +132,17 @@ Capri FR n'envoie aucune statistique ni aucun rapport au projet Capri ou à ce d
 
 ## Mettre à jour
 
-Capri FR ne se met pas à jour toute seule. Elle ne reçoit donc pas non plus automatiquement les correctifs de sécurité de Capri, et elle repose sur Capri v0.8.3.
+Capri FR vérifie sur ce dépôt s'il y a une nouvelle version, peu après son démarrage puis toutes les 3 heures. S'il y en a une, tu es prévenu par une notification Windows, un message dans sa bulle et une ligne sous le bouton **Mises à jour** du Mainframe.
 
-Pour mettre à jour, installe la dernière version depuis la [page des versions](../../releases/latest) par-dessus l'ancienne. Quitte d'abord Capri FR avec **Quitter Capri** dans le Mainframe. Tes données sont conservées.
+**Pour vérifier tout de suite :** Mainframe > **Mises à jour**, ou clic droit sur son icône près de l'horloge. Si une version plus récente existe, sa page s'ouvre dans ton navigateur.
+
+**Pour l'installer :**
+
+1. Quitte Capri FR avec **Quitter Capri** dans le Mainframe.
+2. Télécharge `CapriFR-Setup.exe` depuis la [page des versions](../../releases/latest), puis compare son [empreinte](#ça-ne-marche-pas-).
+3. Lance-le pour installer la nouvelle version par-dessus l'ancienne. Tes données sont conservées.
+
+Capri FR ne télécharge et n'installe jamais rien toute seule, car l'application n'est pas signée. Elle repose sur Capri v0.8.3 et ne reçoit donc pas les correctifs de Capri d'origine : seulement ce qui est publié dans les versions de Capri FR.
 
 ## Désinstaller
 

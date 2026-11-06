@@ -29,7 +29,7 @@ Tout est expliqué dans **[l'aide de Capri FR](AIDE.md)** : démarrer, lui parle
 - **Contrôle du PC :** une fois reliée à une IA, elle peut voir l'écran et utiliser la souris et le clavier. Capri FR démarre en mode **Guarded**, qui demande avant la plupart des actions. Le réglage se trouve dans Mainframe > Réglages > HABITUDES > Sécurité.
 - **À éviter :** le mode Blackwall et les mods de code, qui ont un accès complet au PC. N'installe que des mods en lesquels tu as confiance.
 - **Démarrage de Windows :** une copie installée se lance au démarrage. Tu peux le couper dans Mainframe > Réglages > HABITUDES > Lancer avec Windows.
-- **Pas de mise à jour automatique :** les correctifs de sécurité de Capri n'arrivent pas tout seuls. Reviens sur cette page pour installer les nouvelles versions de Capri FR.
+- **Mises à jour :** elle te prévient quand une nouvelle version de Capri FR sort, mais ne l'installe jamais toute seule. Les correctifs de sécurité de Capri d'origine n'arrivent pas tout seuls : ils doivent d'abord être repris dans Capri FR.
 - **Clés API :** si tu relies un service d'IA en ligne, tes échanges passent par ce service, selon ses propres conditions.
 - **Désinstallation :** elle retire le programme, ses modèles, ses raccourcis et le lancement au démarrage, mais **garde tes discussions, ta mémoire et tes réglages** dans `%LOCALAPPDATA%\CapriFR`. Pour tout effacer, supprime ce dossier après la désinstallation.
 
@@ -40,7 +40,7 @@ Capri FR repose sur **Capri v0.8.3**. Elle ne contient pas les corrections et no
 - Interface, réponses d'aide, messages et mini-jeux en français, avec le français comme langue par défaut.
 - Voix française par les voix de Windows, voix de femme en priorité.
 - Sécurité **Guarded** par défaut, au lieu de Trusted.
-- Mises à jour automatiques coupées, car celles de Capri remplaceraient cette version.
+- Mises à jour de Capri coupées, car elles remplaceraient cette version : Capri FR vérifie son propre dépôt et te prévient.
 - Nom, fichiers et dossier de données distincts (`CapriFR.exe`, `%LOCALAPPDATA%\CapriFR`), pour cohabiter avec une vraie Capri.
 - La pastille ronde et la barre de saisie cyan, reprises de la démo du site de Capri.
 

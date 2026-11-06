@@ -2393,9 +2393,9 @@ namespace CapriDesktop
             helpItem.DropDownItems.Add(new ToolStripMenuItem("Page d'aide", null, delegate { OpenHelp(); }));
             helpItem.DropDownItems.Add(new ToolStripMenuItem("Rejoindre le Discord", null, delegate { OpenPage(DiscordPage); }));
             helpItem.DropDownItems.Add(new ToolStripMenuItem("Copier les détails de l'erreur", null, delegate { CopyErrors(); }));
-            checkItem = new ToolStripMenuItem("Mises à jour", null, delegate { CheckForUpdates(true); });
+            checkItem = new ToolStripMenuItem("Mises à jour", null, delegate { CheckUpdates(); });
             helpItem.DropDownItems.Add(checkItem);
-            updateItem = new ToolStripMenuItem("Redémarrer pour mettre à jour", null, delegate { InstallUpdate(); });
+            updateItem = new ToolStripMenuItem("Redémarrer pour mettre à jour", null, delegate { if (frFound != null) OpenPage(FrReleases); else InstallUpdate(); });
             menu.Items.Add(helpItem);
             foreach (ToolStripMenuItem parent in new[] { sizes, moves, helpItem })
             {
@@ -2438,7 +2438,7 @@ namespace CapriDesktop
             ModList.SkinChanged = Reskinned;
             if (SkinFolder != null || ArtColors.Active) Clip.ReloadAll();
             Shown += delegate { ModList.StartCode(Post); };
-            mainframe = new Mainframe(this, tray.Icon, Assembly.GetExecutingAssembly().GetName().Version.ToString(3));
+            mainframe = new Mainframe(this, tray.Icon, FrVersion);
             PrepareHusk(data);
             mainframe.VisibleChanged += delegate { mainframeOpen = mainframe.Visible && mainframe.WindowState != FormWindowState.Minimized; };
             mainframe.Resize += delegate { mainframeOpen = mainframe.Visible && mainframe.WindowState != FormWindowState.Minimized; };
@@ -2616,7 +2616,8 @@ namespace CapriDesktop
                 CheckSlow(clock.Elapsed.TotalSeconds);
                 CheckVoiceInMic(signalNow);
                 UpdatePill(clock.Elapsed.TotalSeconds);
-                // Capri fork: no automatic update check. Upstream releases would replace this copy.
+                // Capri FR: checks its own releases and only tells them; it never downloads or runs anything.
+                if (!testing && UpdateDue(preferences.UpdateCheckedAt, DateTime.UtcNow.Ticks, clock.Elapsed.TotalSeconds, updateStarted)) CheckForUpdates(false);
             };
             signals.Start();
             Size = CanvasSize(preferences.Size);
@@ -2984,12 +2985,8 @@ namespace CapriDesktop
 
         private void CheckForUpdates(bool asked)
         {
-            // Capri fork: updates are off outside the app's own self-tests, which use a stand-in release.
-            if (!testing)
-            {
-                if (asked) mainframe.UpdateNote("Mises à jour automatiques désactivées : installe la dernière version depuis la page GitHub de Capri FR.", false);
-                return;
-            }
+            // Capri FR: real checks go to CheckFrUpdate. The upstream path below stays for the app's own self-tests, which use a stand-in release.
+            if (!testing) { CheckFrUpdate(asked); return; }
             if (updating || installing) return;
             updating = true;
             updateStarted = true;
@@ -3017,10 +3014,90 @@ namespace CapriDesktop
             });
         }
 
+        // Capri FR's updates: it reads the newest release number from its own repository and tells them. Its builds aren't signed,
+        // so nothing is downloaded or run here: they install it themselves from the release page, which shows its checksum.
+        // Each release needs FrRevision raised to match its tag, v<FrBase>-fr.<FrRevision>.
+        internal const string FrBase = "0.8.3";
+        internal const int FrRevision = 5;
+        private const string FrReleases = "https://github.com/Flowiz111/capri-fr/releases/latest";
+        private bool frChecking;
+        private bool frOpen;
+        private string frFound;
+        private string frTold;
+
+        internal static string FrVersion { get { return FrBase + "-fr." + FrRevision; } }
+
+        internal static bool FrNewer(string tag, string currentBase, int currentRevision)
+        {
+            Match parts = Regex.Match(tag ?? "", @"\A[vV]([0-9]+\.[0-9]+\.[0-9]+)-fr\.([0-9]{1,6})\z");
+            if (!parts.Success) return false;
+            Version found, current;
+            if (!Version.TryParse(parts.Groups[1].Value, out found) || !Version.TryParse(currentBase, out current)) return false;
+            int order = found.CompareTo(current);
+            return order > 0 || order == 0 && int.Parse(parts.Groups[2].Value) > currentRevision;
+        }
+
+        private void CheckFrUpdate(bool asked)
+        {
+            if (frChecking) return;
+            frChecking = true;
+            updateStarted = true;
+            preferences.UpdateCheckedAt = DateTime.UtcNow.Ticks;
+            SavePreferences();
+            checkItem.Enabled = false;
+            if (asked) mainframe.UpdateNote("Recherche d'une nouvelle version...", false);
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                Release found = null;
+                try { found = FetchLatestRelease(); }
+                catch (Exception) { }
+                Post(delegate { ShowFrUpdate(found, asked); });
+            });
+        }
+
+        private void ShowFrUpdate(Release found, bool asked)
+        {
+            bool open = frOpen;
+            frOpen = false;
+            frChecking = false;
+            checkItem.Enabled = true;
+            if (found == null)
+            {
+                if (asked) mainframe.UpdateNote("Impossible de vérifier pour l'instant. Vérifie ta connexion, puis réessaie.", true);
+                return;
+            }
+            if (found.Draft || found.Prerelease || !FrNewer(found.Tag, FrBase, FrRevision))
+            {
+                frFound = null;
+                menu.Items.Remove(updateItem);
+                if (asked) mainframe.UpdateNote("Tu as déjà la dernière version (" + FrVersion + ").", false);
+                return;
+            }
+            frFound = found.Tag.TrimStart('v', 'V');
+            updateItem.Text = "Télécharger Capri FR " + frFound;
+            updateItem.Enabled = true;
+            if (!menu.Items.Contains(updateItem)) menu.Items.Insert(menu.Items.Count - 2, updateItem);
+            if (open)
+            {
+                mainframe.UpdateNote("Version " + frFound + " disponible : sa page s'ouvre dans ton navigateur.", false);
+                OpenPage(FrReleases);
+                return;
+            }
+            mainframe.UpdateNote("Version " + frFound + " disponible. Appuie sur Mises à jour pour ouvrir sa page.", false);
+            // Once a run for each new version: the check repeats every three hours, and the note and menu item stay meanwhile.
+            if (frTold == frFound) return;
+            frTold = frFound;
+            balloonPage = FrReleases;
+            balloonUpdate = false;
+            balloonMainframe = false;
+            tray.ShowBalloonTip(12000, "Nouvelle version de Capri FR", "La version " + frFound + " est disponible. Clique ici pour ouvrir sa page.", ToolTipIcon.Info);
+            if (!hidden && !preferences.Quiet && !GamingOn && !CallModeOn && !MidJob(job)) Remark("update", "Une nouvelle version de Capri FR est sortie : appuie sur Mises à jour dans le Mainframe.", true);
+        }
+
         internal static Release FetchLatestRelease()
         {
             ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/lachydotmcg/capri-desktop/releases/latest");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://api.github.com/repos/Flowiz111/capri-fr/releases/latest");
             request.UserAgent = "CapriFR-Desktop";
             request.Accept = "application/vnd.github+json";
             request.Timeout = 10000;
@@ -3144,7 +3221,7 @@ namespace CapriDesktop
 
         private static void OpenPage(string page)
         {
-            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != DiscordPage && page != HelpPage && page != CableSetup.Page) return;
+            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != DiscordPage && page != HelpPage && page != FrReleases && page != CableSetup.Page) return;
             Browse(page);
         }
 
@@ -5287,6 +5364,12 @@ namespace CapriDesktop
             if (InvokeRequired) return (string)Invoke(new Func<ToolArguments, string>(UpdateTool), args);
             if (args.Action == "status") return installing ? "The update is installing." : updating ? "I'm checking for an update." : string.IsNullOrEmpty(mainframe.UpdateStatus) ? "I haven't checked for updates yet." : mainframe.UpdateStatus;
             if (installing) return "The update is already installing.";
+            // Capri FR never installs by itself: asking to install opens the release page if there's a newer version.
+            if (!testing && args.Action == "install")
+            {
+                CheckUpdates();
+                return "I'm checking. If there's a newer version I'll open its page, and they install it themselves.";
+            }
             if (args.Action == "check")
             {
                 CheckForUpdates(true);
@@ -8537,7 +8620,7 @@ namespace CapriDesktop
         }
         internal void BringHere() { RestoreAtCursor(); }
         internal void TogglePerch() { if (riding) StopRide(); else StartRide(); }
-        internal void CheckUpdates() { CheckForUpdates(true); }
+        internal void CheckUpdates() { frOpen = !testing; CheckForUpdates(true); }
         internal void OpenOllamaPage() { OpenPage(OllamaPage); }
 
         internal void ToggleOnTop()

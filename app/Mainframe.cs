@@ -573,10 +573,10 @@ namespace CapriDesktop
             Lower(Section("CAPRI >", 0, 184 + v));
             // Shorter than a band's other keys and level with CAPRI, so its lit rim stays off the band's teal rule (Lachy, 4 Nov).
             // Capri FR: no Support button, so her version takes its place at the band's right edge.
-            build = Lower(Caption("v" + version, 290, 183 + v, small, Faint));
+            build = Lower(Caption("v" + version, 236, 183 + v, small, Faint));
             build.AutoSize = false;
             build.TextAlign = ContentAlignment.MiddleRight;
-            build.Bounds = new Rectangle(290, 183 + v, 66, 18);
+            build.Bounds = new Rectangle(236, 183 + v, 120, 18);
             showHide = Lower(Make("Masquer Capri", 28, 206 + v, 104, 28, delegate { capri.ToggleHidden(); }));
             Lower(Make("Amener ici", 140, 206 + v, 104, 28, delegate { capri.BringHere(); }));
             perch = Lower(Make("Sur le curseur", 252, 206 + v, 104, 28, delegate { capri.TogglePerch(); }));
