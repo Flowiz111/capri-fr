@@ -1,6 +1,6 @@
 # Security and privacy
 
-> **Capri FR :** ce document vient du projet Capri d'origine. L'essentiel pour Capri FR est résumé en français dans [l'aide](AIDE.md#vie-privée). Ses « téléchargements officiels » désignent Capri, pas ce fork, et Capri FR ne fait que vérifier son propre dépôt (`api.github.com`, au démarrage puis toutes les 3 heures) pour te prévenir : elle ne télécharge et n'installe rien toute seule. Ses données sont dans `%LOCALAPPDATA%\CapriFR`, et son préréglage par défaut est Guarded. Pour un problème de sécurité dans Capri FR, ouvre une issue sur ce dépôt-ci, sans y mettre de données sensibles.
+> **Capri FR :** ce document vient du projet Capri d'origine. L'essentiel pour Capri FR est résumé en français dans [l'aide](AIDE.md#vie-privée). Ses « téléchargements officiels » désignent Capri, pas ce fork, et Capri FR ne fait que vérifier son propre dépôt (`github.com`, au démarrage puis toutes les 3 heures) pour te prévenir : elle ne télécharge et n'installe rien toute seule. Ses données sont dans `%LOCALAPPDATA%\CapriFR`, et son préréglage par défaut est Guarded. Pour un problème de sécurité dans Capri FR, ouvre une issue sur ce dépôt-ci, sans y mettre de données sensibles.
 
 ## Zero telemetry
 

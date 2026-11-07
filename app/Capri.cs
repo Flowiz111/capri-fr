@@ -3023,7 +3023,7 @@ namespace CapriDesktop
         // so nothing is downloaded or run here: they install it themselves from the release page, which shows its checksum.
         // Each release needs FrRevision raised to match its tag, v<FrBase>-fr.<FrRevision>.
         internal const string FrBase = "0.8.3";
-        internal const int FrRevision = 6;
+        internal const int FrRevision = 7;
         private const string FrReleases = "https://github.com/Flowiz111/capri-fr/releases/latest";
         private bool frChecking;
         private bool frOpen;
@@ -3053,14 +3053,36 @@ namespace CapriDesktop
             if (asked) mainframe.UpdateNote("Recherche d'une nouvelle version...", false);
             ThreadPool.QueueUserWorkItem(delegate
             {
-                Release found = null;
-                try { found = FetchLatestRelease(); }
+                string found = null;
+                try { found = FetchFrTag(); }
                 catch (Exception) { }
                 Post(delegate { ShowFrUpdate(found, asked); });
             });
         }
 
-        private void ShowFrUpdate(Release found, bool asked)
+        // The tag in the address the public release page redirects to. GitHub's API allows only 60 requests an hour per IP address,
+        // which people sharing one on a mobile network can use up, and this page isn't under that limit.
+        internal static string FrTagFrom(string location)
+        {
+            const string lead = "https://github.com/Flowiz111/capri-fr/releases/tag/";
+            if (location == null || !location.StartsWith(lead, StringComparison.Ordinal)) return null;
+            string tag = Uri.UnescapeDataString(location.Substring(lead.Length));
+            return tag.Length == 0 ? null : tag;
+        }
+
+        internal static string FetchFrTag()
+        {
+            ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(FrReleases);
+            request.AllowAutoRedirect = false;
+            request.Method = "HEAD";
+            request.UserAgent = "CapriFR-Desktop";
+            request.Timeout = 10000;
+            request.ReadWriteTimeout = 10000;
+            using (WebResponse response = request.GetResponse()) return FrTagFrom(response.Headers["Location"]);
+        }
+
+        private void ShowFrUpdate(string found, bool asked)
         {
             bool open = frOpen;
             frOpen = false;
@@ -3071,14 +3093,14 @@ namespace CapriDesktop
                 if (asked) mainframe.UpdateNote("Impossible de vérifier pour l'instant. Vérifie ta connexion, puis réessaie.", true);
                 return;
             }
-            if (found.Draft || found.Prerelease || !FrNewer(found.Tag, FrBase, FrRevision))
+            if (!FrNewer(found, FrBase, FrRevision))
             {
                 frFound = null;
                 menu.Items.Remove(updateItem);
                 if (asked) mainframe.UpdateNote("Tu as déjà la dernière version (" + FrVersion + ").", false);
                 return;
             }
-            frFound = found.Tag.TrimStart('v', 'V');
+            frFound = found.TrimStart('v', 'V');
             updateItem.Text = "Télécharger Capri FR " + frFound;
             updateItem.Enabled = true;
             if (!menu.Items.Contains(updateItem)) menu.Items.Insert(menu.Items.Count - 2, updateItem);

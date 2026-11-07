@@ -132,7 +132,7 @@ Capri FR n'envoie aucune statistique ni aucun rapport au projet Capri ou à ce d
 | Tes recherches et demandes de musique ou de sites | DuckDuckGo, YouTube ou le site demandé | Quand tu le demandes |
 | Son activité | L'application Discord sur ton PC | Activé par défaut. Se coupe dans Réglages > HABITUDES > Afficher sur Discord. |
 | Téléchargement des modèles | GitHub, huggingface.co | Quand ils sont installés |
-| Vérification de la dernière version | GitHub (`api.github.com`), qui voit ton adresse IP comme tout site | Peu après le démarrage, puis toutes les 3 heures, ou quand tu le demandes |
+| Vérification de la dernière version | GitHub (`github.com`), qui voit ton adresse IP comme tout site | Peu après le démarrage, puis toutes les 3 heures, ou quand tu le demandes |
 
 **⚠️ Regarder mon écran :** ce réglage est coupé par défaut. Une fois activé, elle prend des captures de ton écran de sa propre initiative. Avec un cerveau en ligne, **tout ce qui est affiché part chez ce service**, y compris tes messages, tes mails ou tes mots de passe visibles. Coupe-le dans Mainframe > Réglages > OBSERVER si tu travailles sur quelque chose de privé.
 
