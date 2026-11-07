@@ -2,7 +2,7 @@
 
 Capri FR est la version française non officielle de [Capri](https://github.com/lachydotmcg/capri-desktop). Cette page concerne Capri FR : le site de Capri décrit le logiciel d'origine, qui diffère sur certains points.
 
-**Sommaire :** [Démarrer](#démarrer) · [Lui parler](#lui-parler) · [Ça ne marche pas ?](#ça-ne-marche-pas-) · [Son cerveau](#son-cerveau) · [Sa voix](#sa-voix) · [Raccourcis](#raccourcis) · [Sécurité](#sécurité) · [Vie privée](#vie-privée) · [Mettre à jour](#mettre-à-jour) · [Désinstaller](#désinstaller) · [Signaler un problème](#signaler-un-problème)
+**Sommaire :** [Démarrer](#démarrer) · [Lui parler](#lui-parler) · [Déplacements et propositions](#ses-déplacements-et-ses-propositions) · [Ça ne marche pas ?](#ça-ne-marche-pas-) · [Son cerveau](#son-cerveau) · [Sa voix](#sa-voix) · [Raccourcis](#raccourcis) · [Sécurité](#sécurité) · [Vie privée](#vie-privée) · [Mettre à jour](#mettre-à-jour) · [Désinstaller](#désinstaller) · [Signaler un problème](#signaler-un-problème)
 
 ## Démarrer
 
@@ -28,6 +28,16 @@ Les réglages plus détaillés se trouvent dans Mainframe > **Réglages**. Tu pe
 « Écouter son nom » est coupé par défaut. Une fois activé, `Ctrl + Alt + V` ferme ou rouvre ses oreilles. Si tu oublies son nom, sa bulle te le rappelle sans voix, trois fois au maximum à chaque lancement, et plus du tout dès que tu l'as dit une fois.
 
 Son écoute fonctionne hors ligne et gère le français. Tu peux aussi lui attribuer une touche dans Réglages > TOUCHES > Appuyer pour parler.
+
+## Ses déplacements et ses propositions
+
+**Déplacements spéciaux :** en balade, elle peut se téléporter dans un glitch, sauter d'une fenêtre à l'autre, faire coucou à moitié cachée au bord de l'écran, ou attraper ton curseur quelques secondes. Tes clics passent à travers elle pendant qu'elle est sur le curseur.
+
+Ils suivent le réglage Mainframe > Réglages > MOUVEMENTS > Balades, et elle les évite pendant un jeu ou devant une vidéo en plein écran. Fais un clic droit sur elle, puis **Déplacer**, pour les déclencher toi-même ou décocher **Mouvements spéciaux en balade**.
+
+**Propositions :** de temps en temps, elle te propose quelque chose : un tour, une partie d'échecs, de la musique ou un rappel de pause. Réponds **oui** ou **non**, à la voix ou par écrit (`Ctrl + Alt + T`), dans la minute qui suit. Elle n'agit qu'après ton oui, et elle espace ses propositions si tu refuses. Son clic droit permet de les couper avec **Me faire des propositions**.
+
+Ces propositions viennent d'une liste fixe et jamais de ce qui est affiché à l'écran : une page web ne peut donc pas lui en souffler une. Une fois ton oui donné, ton niveau de [sécurité](#sécurité) s'applique normalement.
 
 ## Ça ne marche pas ?
 

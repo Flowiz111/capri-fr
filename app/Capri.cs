@@ -805,6 +805,8 @@ namespace CapriDesktop
         [DataMember] public bool HideFullScreen;
         [DataMember] public bool PlayerFullScreen;
         [DataMember] public bool Hologram;
+        [DataMember] public bool NoFancyMoves;
+        [DataMember] public bool NoInitiative;
         [DataMember] public bool ExploreAway;
         [DataMember] public bool AdvancedSettings;
         [DataMember] public int ExploreAfter;
@@ -2357,6 +2359,7 @@ namespace CapriDesktop
             wanderItem = new ToolStripMenuItem("Se balader", null, delegate { ToggleWander(); });
             wanderItem.Checked = preferences.Wander;
             moves.DropDownItems.Add(wanderItem);
+            AddFrMoves(moves);
             danceItem = new ToolStripMenuItem("Danser en musique", null, delegate { ToggleDance(); });
             danceItem.Checked = !preferences.NoDance;
             moves.DropDownItems.Add(danceItem);
@@ -2380,6 +2383,7 @@ namespace CapriDesktop
             screenItem = new ToolStripMenuItem("Aller à l'écran suivant", null, delegate { MoveSelf("other_screen", null); });
             moves.DropDownItems.Add(screenItem);
             menu.Items.Add(moves);
+            menu.Items.Add(FrOffersItem());
             hologramItem = new ToolStripMenuItem("Hologramme", null, delegate { SetHologram(!preferences.Hologram); });
             hologramItem.Checked = preferences.Hologram;
             hologramItem.ToolTipText = "Les clics la traversent tant que tu ne le coupes pas depuis son icône";
@@ -2584,6 +2588,7 @@ namespace CapriDesktop
                 if (!testing) CheckIdle(signalIdle);
                 if (!testing) CheckGlance(signalNow, signalIdle);
                 if (!testing) CheckWander(signalNow, signalIdle);
+                if (!testing) { CheckFrMoves(signalNow); CheckOffer(signalNow, signalIdle); FrDemoTick(signalNow); }
                 if (!testing) CheckSulk(signalNow);
                 if (!testing) CheckMusic(clock.Elapsed.TotalSeconds);
                 if (!testing) CheckPlayer(clock.Elapsed.TotalSeconds);
@@ -2774,7 +2779,7 @@ namespace CapriDesktop
             if (docked) { DockTick(now); return; }
             if (hidden) { frames.Stop(); return; }
             if (riding) FollowCursor(); else if (onPanel) HoldPanel(); else if (falling) Tumble(now); else if (seat != null) HoldSeat(now);
-            if (walking) Walk(now);
+            if (walking) { if (walkTo == LeapMark) LeapStep(now); else Walk(now); }
             if (Sulking) Shy(now);
             if (dizzyGlitchAt >= 0 && now >= dizzyGlitchAt) { dizzyGlitchAt = -1; if (preferences.Motion && clip == perch && SittingStill) Play(perchGlitch); }
             if (!riding && !dragging && !walking && !falling && outro == null && clip != arrive && clip != leave) Face();
@@ -3018,7 +3023,7 @@ namespace CapriDesktop
         // so nothing is downloaded or run here: they install it themselves from the release page, which shows its checksum.
         // Each release needs FrRevision raised to match its tag, v<FrBase>-fr.<FrRevision>.
         internal const string FrBase = "0.8.3";
-        internal const int FrRevision = 5;
+        internal const int FrRevision = 6;
         private const string FrReleases = "https://github.com/Flowiz111/capri-fr/releases/latest";
         private bool frChecking;
         private bool frOpen;
@@ -5452,6 +5457,7 @@ namespace CapriDesktop
             if (now < nextWander) return;
             nextWander = now + (45 + random.NextDouble() * 75) * pace;
             if (talkState != TalkState.Off) CloseTalk();
+            if (FancyMove()) return;
             if (WanderArea().IsEmpty && random.NextDouble() < 0.5 && Blink()) return;
             Wander();
         }
@@ -5531,6 +5537,8 @@ namespace CapriDesktop
         private void EndWalk()
         {
             if (!walking) return;
+            // Capri FR: a jump cut short leaves her in the air, so she falls from there.
+            if (walkTo == LeapMark) { walking = false; walkTo = 0; leapThen = null; leanAngle = 0; Play(idle); DropSoon(); return; }
             Point hip = Hip();
             walking = false;
             leanAngle = 0;
@@ -11812,6 +11820,7 @@ namespace CapriDesktop
         {
             if (watchAlong != null && (WatchAlong.Request(text) == "stop" || VoiceStop(text))) return true;
             if (!preferences.ListenCapri || pushing || Hands.HeardName(text)) return true;
+            if (OfferWaiting && OfferReply(text) != 0) return true;
             return (MidJob(job) || PcEars.Active || talkState == TalkState.Talking || clock.Elapsed.TotalSeconds < voiceUntil || speaker.Busy)
                 && (VoiceStop(text) || PcEars.Active && StopWords(text));
         }
@@ -12643,6 +12652,7 @@ namespace CapriDesktop
         {
             text = (text ?? "").Trim();
             if (text.Length == 0) return;
+            if (prompt == "> \u00e0 toi : " && !callInput && OfferAnswered(ref text)) return;
             Func<int, string> callReply = prompt == "> \u00e0 toi : " ? FriendAnswer(text) : null;
             int callVersion = (callInput || prompt == "> \u00e0 toi : ") && CallModeOn ? callSession.Generation : -1;
             string callContext = callVersion < 0 ? null : callSession.Context(callVersion);

@@ -40,6 +40,7 @@ Capri FR repose sur **Capri v0.8.3**. Elle ne contient pas les corrections et no
 - Interface, réponses d'aide, messages et mini-jeux en français, avec le français comme langue par défaut.
 - Voix française par les voix de Windows, voix de femme en priorité.
 - Sécurité **Guarded** par défaut, au lieu de Trusted.
+- Quatre déplacements en plus (téléportation, sauts entre fenêtres, coucou depuis le bord, poursuite du curseur) et des propositions qu'elle exécute seulement après ton oui.
 - Mises à jour de Capri coupées, car elles remplaceraient cette version : Capri FR vérifie son propre dépôt et te prévient.
 - Nom, fichiers et dossier de données distincts (`CapriFR.exe`, `%LOCALAPPDATA%\CapriFR`), pour cohabiter avec une vraie Capri.
 - La pastille ronde et la barre de saisie cyan, reprises de la démo du site de Capri.
