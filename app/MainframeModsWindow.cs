@@ -315,7 +315,7 @@ namespace CapriDesktop
 
             internal ModsSheet(Mainframe owner, float zoom) : base(owner, zoom, "Annuaire des mods", "ANNUAIRE DES MODS >", Wide, Tall)
             {
-                Words("The directory checks mods for malware first. Code mods still ask before they run.", 28, 52, 688, 16, Small(), Faint);
+                Words("Installe seulement des mods de confiance, surtout ceux de code.", 28, 52, 688, 16, Small(), Faint);
                 search = new Entry();
                 search.Bounds = Box(28, 74, 352, 26);
                 search.Cue = "Chercher un nom, un auteur ou une description";
@@ -337,10 +337,11 @@ namespace CapriDesktop
                     previews[i].Bounds = Box(x, y, CardWide, 110);
                     previews[i].Font = Small();
                     Controls.Add(previews[i]);
-                    titles[i] = Words("", x, y + 114, CardWide, 20, Type(10.5f * zoom, true), White);
-                    authors[i] = Words("", x, y + 136, CardWide, 16, Small(), Cyan);
-                    abouts[i] = Words("", x, y + 156, CardWide, 34, Type(9f * zoom), Faint);
-                    metas[i] = Words("", x, y + 194, CardWide, 16, Small(), Faint);
+                    // Capri FR: no ratings or counts here, so the description takes their room.
+                    titles[i] = Words("", x, y + 112, CardWide, 24, Type(10.5f * zoom, true), White);
+                    authors[i] = Words("", x, y + 136, CardWide, 18, Small(), Cyan);
+                    abouts[i] = Words("", x, y + 156, CardWide, 66, Type(9f * zoom), Faint);
+                    metas[i] = Words("", x, y + 226, CardWide, 18, Small(), Faint);
                     stars[i] = new ModStars();
                     counts[i] = Words("", x, y + 210, CardWide, 16, Small(), Faint);
                     stars[i].Bounds = Box(x, y + 228, 78, 16);
@@ -348,15 +349,15 @@ namespace CapriDesktop
                     stars[i].Picked += delegate(int picked) { Rate(card, picked); };
                     Controls.Add(stars[i]);
                     stats[i] = Words("", x + 84, y + 228, CardWide - 84, 16, Small(), Faint);
-                    installs[i] = Make("Install", x, y + 248, 108, 24, delegate { Install(card); });
+                    installs[i] = Make("Installer", x, y + 248, 108, 24, delegate { Install(card); });
                     installs[i].AccessibleDescription = "Installer le mod";
-                    views[i] = Make("View", x + 114, y + 248, 108, 24, delegate { View(card); });
+                    views[i] = Make("Voir", x + 114, y + 248, 108, 24, delegate { View(card); });
                     views[i].AccessibleDescription = "Voir le mod";
                 }
-                back = Make("Back", 28, 680, 60, 22, delegate { first -= Cards; Fill(); });
+                back = Make("Préc.", 28, 680, 60, 22, delegate { first -= Cards; Fill(); });
                 page = Words("", 272, 682, 200, 18, Font, Faint);
                 page.TextAlign = ContentAlignment.MiddleCenter;
-                next = Make("Next", 656, 680, 60, 22, delegate { first += Cards; Fill(); });
+                next = Make("Suiv.", 656, 680, 60, 22, delegate { first += Cards; Fill(); });
                 empty = Words("", 28, 250, 688, 24, Font, Faint);
                 empty.TextAlign = ContentAlignment.MiddleCenter;
                 status = Words("", 28, 708, 688, 36, Font, Faint);
@@ -414,6 +415,8 @@ namespace CapriDesktop
                 if (problem != null) { Says(problem, true); return; }
                 if (listings.Count == 0) { Says("Aucun mod dans l'annuaire pour l'instant.", false); return; }
                 status.Text = "";
+                // Capri FR: ratings and download counts live on the original project's server, so the real app neither reads nor sends them.
+                if (!Inline) return;
                 Run(delegate
                 {
                     Dictionary<string, ModStats> read = null;
@@ -472,14 +475,14 @@ namespace CapriDesktop
                     authors[i].Text = listing.Author.Length > 0 ? "par " + listing.Author : "";
                     abouts[i].Text = listing.About;
                     titles[i].AccessibleDescription = listing.About;
-                    details.SetToolTip(previews[i], listing.Title + (listing.Author.Length > 0 ? "\nby " + listing.Author : "") + (listing.About.Length > 0 ? "\n" + listing.About : ""));
-                    metas[i].Text = listing.Kind + " " + Math.Max(1, listing.Size / 1024) + " Ko." + (have ? " Installé." : "");
+                    details.SetToolTip(previews[i], listing.Title + (listing.Author.Length > 0 ? "\npar " + listing.Author : "") + (listing.About.Length > 0 ? "\n" + listing.About : ""));
+                    metas[i].Text = listing.Kind + " " + Math.Max(1, listing.Size / 1024) + " Ko";
                     stars[i].Value = listing.Rating;
                     stars[i].CanRate = statsLive && have;
                     stars[i].AccessibleName = "Noter " + listing.Title + ", " + (listing.Votes == 0 ? "pas encore de note" : listing.Rating.ToString("0.0") + " étoiles") + (have ? ". Appuie sur 1 à 5." : "");
                     stats[i].Text = ModDirectory.RatingLine(listing);
                     counts[i].Text = ModDirectory.DownloadLine(listing);
-                    installs[i].Text = have ? "Reinstall" : "Install";
+                    installs[i].Text = have ? "Réinstaller" : "Installer";
                     installs[i].Enabled = !installing;
                     installs[i].AccessibleName = (have ? "Réinstaller " : "Installer ") + listing.Title;
                     installs[i].Invalidate();
@@ -524,7 +527,7 @@ namespace CapriDesktop
                 finally { ModDirectory.Clean(file); }
                 Fill();
                 Says(Frame.modStatus.Text, !done && Frame.modStatus.ForeColor == Rose);
-                if (!done) return;
+                if (!done || !Inline) return;
                 Run(delegate
                 {
                     try { ModDirectory.CountDownload(listing.Folder); }

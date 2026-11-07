@@ -19,11 +19,10 @@ namespace CapriDesktop
         internal static string AppId = "1564889759157850182";
         internal static string PipeName = "discord-ipc-";
         internal const string Picture = "capri";
-        private const string Site = "https://capriai.app/";
-        private const string Server = "https://discord.gg/capridesktop";
-        // Discord only animates pictures at a public link, so her moving art sits on her site. Until it's there, or while the
-        // site's down, her still picture shows.
-        private const string Art = Site + "assets/presence/";
+        private const string Site = "https://github.com/Flowiz111/capri-fr";
+        // Discord only animates pictures at a public link, and that art sits on the original project's site. Capri FR doesn't
+        // call that site, so her still picture shows.
+        private const string Art = "https://capriai.app/assets/presence/";
         private const int Wait = 5000;
         private const int Retry = 30000;
         private const int Refused = 600000;
@@ -31,7 +30,7 @@ namespace CapriDesktop
         private const int Spacing = 4000;
         // Sending the same line again now and then is how she notices Discord quit and came back.
         private const int Refresh = 60000;
-        internal static Func<bool> ArtLive = OnSite;
+        internal static Func<bool> ArtLive = delegate { return false; };
 
         private readonly object gate = new object();
         private readonly AutoResetEvent nudge = new AutoResetEvent(false);
@@ -240,7 +239,7 @@ namespace CapriDesktop
                 Details = doing,
                 Times = new DiscordTimes { Start = started },
                 Assets = new DiscordAssets { Image = Picture, Text = "Capri " + version },
-                Buttons = new[] { new DiscordButton { Label = "Get Capri", Url = Site }, new DiscordButton { Label = "Rejoindre son Discord", Url = Server } }
+                Buttons = new[] { new DiscordButton { Label = "Obtenir Capri FR", Url = Site } }
             };
             // If Discord turns any of the extras down, she goes back to the plain line for the rest of this run.
             if (!plain)

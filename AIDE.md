@@ -84,7 +84,7 @@ Mainframe > **VOIX** propose :
 - **NON** : texte seul.
 - **LOCALE INTÉGRÉE** : voix gratuites sur ton PC. En français, c'est une voix de Windows, féminine en priorité.
 - **LOCALE PERSO** : ton propre modèle.
-- **VOIX CLOUD** : Fish Audio, ElevenLabs ou OpenAI, avec ta clé.
+- **VOIX CLOUD** : Fish Audio, ElevenLabs ou OpenAI, avec ta clé. Crée une clé API chez le service choisi, colle-la dans la case de la section VOIX, puis appuie sur **Connecter**. Pour ElevenLabs, crée la clé avec **Restrict key** désactivé.
 
 Ne clone jamais la voix d'une personne vivante sans son accord explicite.
 
@@ -115,7 +115,7 @@ Une fois reliée à une IA, elle peut ouvrir des applications et, selon tes rég
 | **Trusted** | En plus : gérer les fenêtres, éteindre le PC, utiliser la souris et le clavier, envoyer ce que tu as demandé. Elle demande avant de payer ou pour ce que ta demande ne mentionne pas. |
 | **Blackwall** | Tout, y compris saisir mots de passe et cartes, et elle écoute « Hey Capri ». **À éviter.** |
 
-**Mods :** un fichier `.capri-mod` change seulement des réglages. Un fichier `.capri-code` exécute du code avec un **accès complet à ton PC** : n'installe que ce en quoi tu as confiance.
+**Mods :** ils viennent de [l'annuaire de Capri FR](https://github.com/Flowiz111/capri-mods), copié depuis celui de Capri sans contrôle supplémentaire. Un fichier `.capri-mod` change seulement des réglages. Un fichier `.capri-code` exécute du code avec un **accès complet à ton PC** : n'installe que ce en quoi tu as confiance.
 
 Pendant qu'elle travaille, garde un œil sur ce qu'elle fait. L'IA peut se tromper.
 

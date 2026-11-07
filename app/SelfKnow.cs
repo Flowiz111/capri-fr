@@ -136,7 +136,7 @@ namespace CapriDesktop
             new Topic("Get free voice", "get free voice button|cancel free voice download|download free voice|obtenir la voix gratuite|telecharger la voix gratuite",
                 "Mainframe > VOIX > Obtenir la voix gratuite télécharge et prépare son modèle vocal local, en anglais. Il n'est pas nécessaire pour parler français, car les voix de Windows s'en chargent. Le bouton devient Annuler pendant l'opération, et les parties téléchargées sont gardées.", "Mainframe.cs", "Get free voice"),
             new Topic("Voice setup guide", "voice setup guide|cloud voice setup guide|guide de la voix",
-                "Mainframe > VOIX > Guide ouvre le guide des clés ElevenLabs dans ton navigateur. Avec Fish Audio ou OpenAI, il ouvre plutôt le panneau de ce service.", "Mainframe.cs", "Setup guide"),
+                "Mainframe > VOIX > Guide ouvre la partie voix de l'aide de Capri FR dans ton navigateur. Avec Fish Audio ou OpenAI, il ouvre plutôt le panneau de ce service.", "Mainframe.cs", "Setup guide"),
             new Topic("Sa sortie audio", "her speaker|your speaker|speaker picker|your audio output|your output device|your voice in my headphones|sa sortie audio|ta sortie audio|haut parleur|sortie son",
                 "Mainframe > VOIX > Sa sortie audio choisit où jouent sa voix et ses sons ; Par défaut suit Windows. Une sortie absente reste enregistrée avec la mention (missing), et la sortie par défaut prend le relais jusqu'à son retour.", "Mainframe.cs", "Sa sortie audio"),
             new Topic("Test mic", "test my mic|test the mic|test your mic|mic test|test microphone|test button|is my mic working|tester le micro|teste mon micro|test du micro|mon micro marche",

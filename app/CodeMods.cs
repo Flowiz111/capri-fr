@@ -230,7 +230,7 @@ namespace CapriDesktop
             // The compiler writes temp files, so a blocked temp folder or an antivirus lock fails here too.
             catch (IOException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
             catch (UnauthorizedAccessException error) { throw new ModException("Impossible de compiler ce mod : " + error.Message); }
-            if (mods.Count != 1) throw new ModException("A code mod needs exactly one class that implements ICapriMod. That one has " + mods.Count + ".");
+            if (mods.Count != 1) throw new ModException("Un mod de code doit avoir exactement une classe qui implémente ICapriMod. Celui-ci en a " + mods.Count + ".");
             try { return (ICapriMod)Activator.CreateInstance(mods[0]); }
             catch (Exception error) { throw new ModException("Ce mod a échoué au chargement : " + Inner(error).Message); }
         }

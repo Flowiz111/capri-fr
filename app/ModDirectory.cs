@@ -60,15 +60,17 @@ namespace CapriDesktop
 
     internal static class ModDirectory
     {
-        internal const string Page = "https://github.com/lachydotmcg/capri-mods";
-        internal static readonly string[] Kinds = { "All", "Settings", "Code", "Skins" };
-        private const string Api = "https://api.github.com/repos/lachydotmcg/capri-mods/git/";
+        // Capri FR: the one place that says whose mods repository this is. Page, Api, Raw and the View and Fork buttons all follow it.
+        private const string Repository = "Flowiz111/capri-mods";
+        internal const string Page = "https://github.com/" + Repository;
+        internal static readonly string[] Kinds = { "Tous", "Réglages", "Code", "Apparence" };
+        private const string Api = "https://api.github.com/repos/" + Repository + "/git/";
         private const long Largest = 96L * 1024 * 1024;
         private const long LargestList = 16L * 1024 * 1024;
         private const long LargestPreview = 2L * 1024 * 1024;
         private const long LargestIndex = 2L * 1024 * 1024;
         private const int WidestPreview = 4096, PreviewWide = 444;
-        private const string Raw = "https://raw.githubusercontent.com/lachydotmcg/capri-mods/HEAD/";
+        private const string Raw = "https://raw.githubusercontent.com/" + Repository + "/HEAD/";
         internal const string IndexPage = Raw + "index.json";
         internal const string StatsPage = "https://capri-reactions.lachydotmcg.workers.dev/mods";
         private static readonly byte[] PngStart = { 137, 80, 78, 71, 13, 10, 26, 10 };
@@ -128,7 +130,12 @@ namespace CapriDesktop
 
         internal static List<ModListing> Browse()
         {
-            List<ModListing> found = Parse(Get(Api + "trees/HEAD?recursive=1", LargestList));
+            // Capri FR: GitHub's API allows 60 requests an hour per IP address, which a shared connection can use up. tree.json in the
+            // repository is a copy of the same list, kept for that case. Each download is still checked against its checksum.
+            byte[] tree;
+            try { tree = Get(Api + "trees/HEAD?recursive=1", LargestList); }
+            catch (WebException) { tree = Get(Raw + "tree.json", LargestList); }
+            List<ModListing> found = Parse(tree);
             try { ReadIndex(found, Get(IndexPage, LargestIndex)); }
             catch (Exception) { }
             return found;
@@ -203,8 +210,9 @@ namespace CapriDesktop
 
         internal static string Download(ModListing listing, string under)
         {
-            byte[] bytes = Get(Api + "blobs/" + listing.Sha, Largest);
-            if (bytes.Length != listing.Size || BlobSha(bytes) != listing.Sha) throw new ModException(listing.FileName + " didn't match what the directory listed, so it wasn't installed.");
+            // Capri FR: from the raw file rather than GitHub's API, which allows 60 requests an hour per IP address. The checksum is what makes it safe either way.
+            byte[] bytes = Get(Raw + "mods/" + listing.Folder + "/" + listing.FileName, Largest);
+            if (bytes.Length != listing.Size || BlobSha(bytes) != listing.Sha) throw new ModException(listing.FileName + " ne correspond pas à ce que l'annuaire annonce : il n'a pas été installé.");
             string folder = Path.Combine(under, Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(folder);
             string file = Path.Combine(folder, Path.GetFileName(listing.FileName));
@@ -227,7 +235,7 @@ namespace CapriDesktop
             catch (IOException) { }
             catch (UnauthorizedAccessException) { }
             byte[] bytes = Get(Raw + "mods/" + listing.Folder + "/preview.png", LargestPreview);
-            if (BlobSha(bytes) != listing.PreviewSha || !IsPng(bytes)) throw new ModException(listing.Folder + "'s preview didn't match what the directory listed.");
+            if (BlobSha(bytes) != listing.PreviewSha || !IsPng(bytes)) throw new ModException("L'aperçu de " + listing.Folder + " ne correspond pas à ce que l'annuaire annonce.");
             try
             {
                 Directory.CreateDirectory(cache);
@@ -353,8 +361,8 @@ namespace CapriDesktop
                 + "2. Dans ta copie, ajoute un dossier nommé mods/" + id + "/.\n\n"
                 + "3. Mets-y " + file + " et un court README.md qui dit ce qu'il fait et qui l'a créé.\n\n"
                 + "4. Ajoute une image preview.png, environ 16:9. C'est ce qu'on voit dans la fenêtre des mods.\n\n"
-                + "5. Ouvre une pull request vers capri-mods. Chaque mod est contrôlé contre les malwares avant publication."
-                + (mod.Code ? "\n\nThis is a code mod, so Capri will ask people before running it." : "");
+                + "5. Ouvre une pull request vers Flowiz111/capri-mods. Le responsable du dépôt décide s'il publie ton mod."
+                + (mod.Code ? "\n\nC'est un mod de code : Capri demandera aux gens avant de le lancer." : "");
         }
 
         internal static string BlobSha(byte[] bytes)

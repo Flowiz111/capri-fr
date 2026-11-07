@@ -103,8 +103,8 @@ namespace CapriDesktop
                     }
                 }
             }
-            catch (InvalidDataException) { throw new ModException("That file isn't a valid skin zip."); }
-            if (read == null) throw new ModException("A skin needs a " + SkinDetails + " file.");
+            catch (InvalidDataException) { throw new ModException("Ce fichier n'est pas un zip d'apparence valide."); }
+            if (read == null) throw new ModException("Une apparence a besoin d'un fichier " + SkinDetails + ".");
             if (pictures == 0) throw new ModException("Cette apparence ne contient aucune image.");
             return read;
         }

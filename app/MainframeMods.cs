@@ -45,18 +45,18 @@ namespace CapriDesktop
                 int row = i, top = ModRowTop + ModRowHeight * i;
                 modNames[i] = ModLabel("", 28, top + 3, 196, 20, Type(10f, true), White);
                 modSwitches[i] = Make("Oui", 230, top, 54, 22, delegate { SwitchMod(row); });
-                modRemoves[i] = Make("Remove", 290, top, 66, 22, delegate { RemoveMod(row); });
+                modRemoves[i] = Make("Retirer", 290, top, 66, 22, delegate { RemoveMod(row); });
                 modAbouts[i] = ModLabel("", 28, top + 26, 256, 30, Look.Mono(8.5f, FontStyle.Regular, GraphicsUnit.Point), Faint);
                 Explain(modSwitches[i], "Interrupteur du mod", "MainframeMods.cs", null, "Oui / Non");
                 Explain(modRemoves[i], "Remove", "MainframeMods.cs");
-                modPublishes[i] = Make("Publish", 290, top + 28, 66, 22, delegate { PublishMod(row); });
+                modPublishes[i] = Make("Publier", 290, top + 28, 66, 22, delegate { PublishMod(row); });
                 Explain(modPublishes[i], "Publier un mod", "MainframeMods.cs");
             }
-            modBack = Make("Back", 28, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst -= ModRows; FillMods(); });
+            modBack = Make("Préc.", 28, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst -= ModRows; FillMods(); });
             modPage = ModLabel("", 96, ModRowTop + ModRowHeight * ModRows + 3, 192, 18, Font, Faint);
             modPage.TextAlign = ContentAlignment.MiddleCenter;
             Explain(modBack, "Pages de mods", "MainframeMods.cs");
-            modNext = Make("Next", 296, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst += ModRows; FillMods(); });
+            modNext = Make("Suiv.", 296, ModRowTop + ModRowHeight * ModRows, 60, 22, delegate { modFirst += ModRows; FillMods(); });
             Explain(modNext, "Pages de mods", "MainframeMods.cs");
             Section("COULEURS >", 0, ModRowTop + ModRowHeight * ModRows + 30);
             int colourRow = ModRowTop + ModRowHeight * ModRows + 54;
@@ -117,7 +117,7 @@ namespace CapriDesktop
             DismissHint();
             if (on && paged) ShowSettings(false);
             modded = on;
-            more.Text = on ? "Back" : "Settings";
+            more.Text = on ? "Retour" : "Réglages";
             more.Invalidate();
             Place();
             foreach (KeyValuePair<Control, int> entry in mainLeft) Reachable(entry.Key, !on);
@@ -142,7 +142,7 @@ namespace CapriDesktop
                 modNames[i].ForeColor = mod.On ? White : Faint;
                 modAbouts[i].Text = ((mod.Changed ? "MODIFIÉ, approuve-le de nouveau. " : mod.Code ? "EXÉCUTE DU CODE. " : mod.Skin ? "APPARENCE. " : "") + (string.IsNullOrEmpty(mod.File.Author) ? "" : "par " + mod.File.Author + ". ") + (mod.File.Description ?? "") + (mod.Code || mod.File.WakeNames.Length == 0 ? "" : " Noms : " + string.Join(", ", mod.File.WakeNames))).Trim();
                 modAbouts[i].ForeColor = mod.Changed ? Rose : Faint;
-                modSwitches[i].Text = mod.On ? "Oui" : "Off";
+                modSwitches[i].Text = mod.On ? "Oui" : "Non";
                 modSwitches[i].Accent = mod.On ? Cyan : Rose;
                 modSwitches[i].AccessibleName = (mod.On ? "Désactiver " : "Activer ") + mod.File.Name;
                 modRemoves[i].AccessibleName = "Supprimer " + mod.File.Name;
@@ -204,7 +204,14 @@ namespace CapriDesktop
 
         private static string DirectoryProblem(Exception error, string lead)
         {
-            return error is ModException ? error.Message : lead + error.Message;
+            if (error is ModException) return error.Message;
+            // Capri FR: GitHub's own English error says nothing useful. A 403 here means its hourly limit for this connection is used up.
+            WebException web = error as WebException;
+            HttpWebResponse reply = web == null ? null : web.Response as HttpWebResponse;
+            if (reply != null && (int)reply.StatusCode == 403) return lead + "GitHub limite les demandes sur ta connexion. Réessaie dans une heure.";
+            if (reply != null && (int)reply.StatusCode == 404) return lead + "ce contenu n'existe plus sur GitHub.";
+            if (web != null) return lead + "vérifie ta connexion, puis réessaie.";
+            return lead + error.Message;
         }
 
         private void PickColour(int slot)

@@ -167,7 +167,7 @@ namespace CapriDesktop
             string text;
             try
             {
-                if (!string.Equals(Path.GetExtension(file), Extension, StringComparison.OrdinalIgnoreCase)) throw new ModException("That isn't a " + Extension + ", " + CodeExtension + " ou " + SkinExtension + ".");
+                if (!string.Equals(Path.GetExtension(file), Extension, StringComparison.OrdinalIgnoreCase)) throw new ModException("Ce n'est pas un fichier " + Extension + ", " + CodeExtension + " ou " + SkinExtension + ".");
                 if (new FileInfo(file).Length > Largest) throw new ModException("Ce mod est trop gros. Un mod est un petit fichier de réglages.");
                 text = File.ReadAllText(file);
             }
@@ -230,7 +230,7 @@ namespace CapriDesktop
             CheckDetails(read);
             read.WakeNames = read.WakeNames ?? new string[0];
             read.HeardAs = read.HeardAs ?? new string[0];
-            if (read.WakeNames.Length == 0 && read.HeardAs.Length == 0 && !read.SoundsLike && !read.HearingLog && read.Colors == null) throw new ModException("That mod doesn't change anything. It needs wake_names, heard_as, sounds_like, hearing_log or colors.");
+            if (read.WakeNames.Length == 0 && read.HeardAs.Length == 0 && !read.SoundsLike && !read.HearingLog && read.Colors == null) throw new ModException("Ce mod ne change rien. Il lui faut wake_names, heard_as, sounds_like, hearing_log ou colors.");
             if (read.Colors != null) CheckColours(read.Colors);
             if (read.WakeNames.Length > MostNames) throw new ModException("Un mod peut ajouter jusqu'à " + MostNames + " noms.");
             if (read.HeardAs.Length > MostSpellings) throw new ModException("Un mod peut ajouter jusqu'à " + MostSpellings + " orthographes.");

@@ -2088,8 +2088,7 @@ namespace CapriDesktop
         private const string FreeKeyPage = "https://build.nvidia.com/settings/api-keys";
         private const string GeminiKeyPage = "https://aistudio.google.com/apikey";
         private const string RouterKeyPage = "https://openrouter.ai/keys";
-        private const string GuidePage = "https://capriai.app/setup/#voice";
-        private const string DiscordPage = "https://discord.gg/capridesktop";
+        private const string GuidePage = "https://github.com/Flowiz111/capri-fr/blob/fr/AIDE.md#sa-voix";
         private const string HelpPage = "https://github.com/Flowiz111/capri-fr/blob/fr/AIDE.md";
         private const string GuideLine = "Follow the guide I just opened. Make your ElevenLabs key with Restrict key turned off, paste it in the box under VOICE, press Connect and pick my voice in the Voice ID box." + Brain.Stuck;
         private const string FreeKeyLine = "Connecte-toi sur cette page, appuie sur Generate API Key et copie la clé. Colle-la ensuite dans la case sous CERVEAU et appuie sur Connecter. C'est gratuit." + Brain.Stuck;
@@ -2395,7 +2394,6 @@ namespace CapriDesktop
             clickDelay.Tick += delegate { OnClickDelay(); };
             helpItem = new ToolStripMenuItem("Aide");
             helpItem.DropDownItems.Add(new ToolStripMenuItem("Page d'aide", null, delegate { OpenHelp(); }));
-            helpItem.DropDownItems.Add(new ToolStripMenuItem("Rejoindre le Discord", null, delegate { OpenPage(DiscordPage); }));
             helpItem.DropDownItems.Add(new ToolStripMenuItem("Copier les détails de l'erreur", null, delegate { CopyErrors(); }));
             checkItem = new ToolStripMenuItem("Mises à jour", null, delegate { CheckUpdates(); });
             helpItem.DropDownItems.Add(checkItem);
@@ -3023,7 +3021,7 @@ namespace CapriDesktop
         // so nothing is downloaded or run here: they install it themselves from the release page, which shows its checksum.
         // Each release needs FrRevision raised to match its tag, v<FrBase>-fr.<FrRevision>.
         internal const string FrBase = "0.8.3";
-        internal const int FrRevision = 7;
+        internal const int FrRevision = 8;
         private const string FrReleases = "https://github.com/Flowiz111/capri-fr/releases/latest";
         private bool frChecking;
         private bool frOpen;
@@ -3091,6 +3089,7 @@ namespace CapriDesktop
             if (found == null)
             {
                 if (asked) mainframe.UpdateNote("Impossible de vérifier pour l'instant. Vérifie ta connexion, puis réessaie.", true);
+                if (open) Notice.Tell(null, "Impossible de vérifier pour l'instant.\n\nVérifie ta connexion, puis réessaie.", "Mises à jour", true);
                 return;
             }
             if (!FrNewer(found, FrBase, FrRevision))
@@ -3098,6 +3097,8 @@ namespace CapriDesktop
                 frFound = null;
                 menu.Items.Remove(updateItem);
                 if (asked) mainframe.UpdateNote("Tu as déjà la dernière version (" + FrVersion + ").", false);
+                // Pressed by hand, it answers in a window: the small note under the button was easy to miss, and looked like nothing happened.
+                if (open) Notice.Tell(null, "Tu as déjà la dernière version (" + FrVersion + ").", "Mises à jour", false);
                 return;
             }
             frFound = found.TrimStart('v', 'V');
@@ -3248,7 +3249,7 @@ namespace CapriDesktop
 
         private static void OpenPage(string page)
         {
-            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != DiscordPage && page != HelpPage && page != FrReleases && page != CableSetup.Page) return;
+            if (page != OllamaPage && page != FreeKeyPage && page != GeminiKeyPage && page != RouterKeyPage && page != GuidePage && page != HelpPage && page != FrReleases && page != CableSetup.Page) return;
             Browse(page);
         }
 
@@ -42360,7 +42361,7 @@ namespace CapriDesktop
                                 ((ToolStripMenuItem)helpItem.DropDownItems[1]).PerformClick();
                                 ((ToolStripMenuItem)helpItem.DropDownItems[0]).PerformClick();
                                 OpenHelp();
-                                if (string.Join(" ", browsed.ToArray()) != GuidePage + " " + FreeKeyPage + " " + GeminiKeyPage + " " + RouterKeyPage + " " + DiscordPage + " " + HelpPage + " " + HelpPage) throw new Exception("Key buttons, Join the Discord or Help opened the wrong pages: " + string.Join(" ", browsed.ToArray()));
+                                if (string.Join(" ", browsed.ToArray()) != GuidePage + " " + FreeKeyPage + " " + GeminiKeyPage + " " + RouterKeyPage + " " + HelpPage + " " + HelpPage) throw new Exception("Key buttons or Help opened the wrong pages: " + string.Join(" ", browsed.ToArray()));
                             }
                             finally { mainframe.CloseFreeKeys(); Browse = realBrowse; }
                             checks.Add("PASS key buttons: Setup guide opens the setup guide's voice steps, Free key offers NVIDIA, Google AI Studio and OpenRouter and she says what to do for each, and Help opens the help page");
